@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1B8A4E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="بانگ">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>کاتەکانی بانگ</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1B8A4E;--green-light:#2ECC71;--green-dark:#0D5C33;
+  --white:#fff;--white-dim:rgba(255,255,255,.75);--white-faint:rgba(255,255,255,.45);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Cairo',sans-serif;color:#fff;background:#0a2015}
+
+.bg-mosque{
+  position:fixed;inset:0;z-index:0;
+  background:
+    linear-gradient(180deg,
+      rgba(0,0,0,.82) 0%,
+      rgba(0,5,2,.5) 25%,
+      rgba(0,8,3,.3) 50%,
+      rgba(0,0,0,.75) 100%
+    ),
+    radial-gradient(ellipse at 50% 55%, #0d3d1e 0%, #061a0d 35%, #020a05 70%, #000 100%);
+}
+
+.app{position:relative;z-index:10;max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column}
+
+/* HEADER */
+.hdr{background:rgba(10,30,16,.88);padding:10px 14px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.hdr-date{text-align:center;flex:1;line-height:1.4}
+.hdr-day{font-size:13px;font-weight:700;color:#fff}
+.hdr-hijri{font-family:'Amiri',serif;font-size:13px;color:var(--green-light)}
+.hdr-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.hdr-btn:active{background:rgba(255,255,255,.25)}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+
+/* TOP ROW: شار چەپ + کاتژمێری شوشەیی ڕاست */
+.top-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 4px;gap:10px;flex-shrink:0}
+.city-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:30px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);font-size:18px;font-weight:700;color:#fff;cursor:pointer;text-shadow:0 1px 4px rgba(0,0,0,.5);flex-shrink:0}
+.city-pill:active{background:rgba(255,255,255,.3)}
+
+/* کاتژمێری شوشەیی */
+.glass-clock{
+  flex:1;
+  background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.06) 100%);
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:22px;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  padding:7px 12px;
+  display:flex;flex-direction:row;align-items:center;justify-content:space-between;
+  box-shadow:0 4px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.3);
+  position:relative;overflow:hidden;
+}
+.glass-clock::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.12),transparent);
+  border-radius:22px 22px 0 0;pointer-events:none;
+}
+.gc-time{
+  font-size:28px;font-weight:900;color:#fff;
+  letter-spacing:1px;line-height:1;
+  text-shadow:0 2px 12px rgba(0,0,0,.4),0 0 20px rgba(46,204,113,.3);
+  font-variant-numeric:tabular-nums;
+  font-family:'Cairo',sans-serif;
+}
+.gc-seconds{
+  font-size:13px;font-weight:600;color:rgba(255,255,255,.5);
+  letter-spacing:1px;
+  font-variant-numeric:tabular-nums;
+}
+.gc-ampm{display:none}
+/* دوگمەی ١٢/٢٤ */
+.gc-toggle{
+  display:flex;flex-direction:column;gap:3px;z-index:2;
+}
+.gc-btn{
+  font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.45);cursor:pointer;font-family:'Cairo',sans-serif;
+  transition:all .2s;line-height:1.4;
+}
+.gc-btn.active{background:rgba(46,204,113,.35);border-color:rgba(46,204,113,.6);color:#fff;}
+
+/* COUNTDOWN */
+.cd-wrap{display:flex;align-items:center;gap:8px;padding:4px 16px;flex-shrink:0}
+.cd-tag{font-size:11px;color:var(--white-dim);background:rgba(0,0,0,.32);padding:3px 10px;border-radius:20px;backdrop-filter:blur(6px);flex-shrink:0}
+.cd-bar{flex:1;height:3px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.cd-fill{height:100%;background:linear-gradient(90deg,var(--green-dark),var(--green-light));border-radius:2px;transition:width 1s linear}
+.cd-timer{font-size:13px;font-weight:700;color:var(--green-light);background:rgba(0,0,0,.32);padding:3px 10px;border-radius:20px;backdrop-filter:blur(6px);flex-shrink:0;font-variant-numeric:tabular-nums}
+
+/* PRAYER ROWS */
+.plist-wrap{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 12px 2px}
+.prow{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 10px 14px;border-radius:40px;margin-bottom:5px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(6px);transition:all .2s}
+.prow.is-active{background:rgba(30,155,80,.92);border-color:var(--green-light);box-shadow:0 4px 20px rgba(46,204,113,.35)}
+.prow.is-passed{opacity:.45}
+.prow-left{display:flex;align-items:center;gap:10px}
+.p-vol{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.p-name{font-family:'Amiri',serif;font-size:20px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.p-time{font-size:26px;font-weight:900;color:#fff;letter-spacing:-.5px;text-shadow:0 1px 6px rgba(0,0,0,.35)}
+
+/* MUTE BUTTON */
+.mute-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.mute-btn:active{transform:scale(.9)}
+.mute-btn.muted{background:rgba(255,0,0,.15);border-color:rgba(255,80,80,.3)}
+.bottom-bar{background:rgba(8,25,14,.9);border-top:1px solid rgba(255,255,255,.08);padding:5px 16px;text-align:center;flex-shrink:0}
+.bbar-txt{font-size:12px;color:var(--white-dim)}
+.bbar-txt span{color:var(--green-light);font-weight:700}
+
+/* BOTTOM NAV */
+.bnav{background:rgba(8,22,13,.96);border-top:1px solid rgba(255,255,255,.08);padding:7px 0 18px;display:flex;justify-content:space-around;flex-shrink:0}
+.nbtn{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:5px 14px;border:none;background:none;color:rgba(255,255,255,.4);transition:all .2s}
+.nbtn.active{color:var(--green-light)}
+.nicon{font-size:21px}
+.nlabel{font-size:9px;font-weight:600;font-family:'Cairo',sans-serif}
+
+/* PAGES */
+.pg{display:none;flex:1;overflow-y:auto;padding-bottom:10px}
+.pg.active{display:flex;flex-direction:column}
+::-webkit-scrollbar{width:0}
+
+/* CITY MODAL */
+.city-modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}
+.city-sheet{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:linear-gradient(180deg,#0c2418,#060f0a);border-radius:24px 24px 0 0;border-top:1px solid rgba(46,204,113,.2);padding:14px 12px 36px;max-height:82vh;overflow-y:auto}
+.sheet-handle{width:38px;height:4px;background:rgba(255,255,255,.18);border-radius:2px;margin:0 auto 12px}
+.sheet-title{font-family:'Amiri',serif;font-size:17px;color:var(--green-light);text-align:center;margin-bottom:12px}
+.cities-grid{display:flex;flex-direction:column;gap:7px}
+.city-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;cursor:pointer;overflow:hidden;transition:all .25s}
+.city-card.sel{background:rgba(27,138,78,.22);border-color:rgba(46,204,113,.4)}
+.city-card-header{display:flex;align-items:center;justify-content:space-between;padding:11px 14px}
+.city-card-left{display:flex;align-items:center;gap:10px}
+.city-check{width:19px;height:19px;border-radius:50%;border:1.5px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all .3s}
+.city-card.sel .city-check{background:var(--green);border-color:var(--green-light);color:#fff}
+.ccname{font-family:'Amiri',serif;font-size:17px;color:#fff;font-weight:700}
+.ccdist{font-size:10px;color:var(--green-light);margin-top:1px}
+.city-arrow{font-size:12px;color:var(--white-faint);transition:transform .3s}
+.city-card.sel .city-arrow{transform:rotate(90deg);color:var(--green-light)}
+.city-times-panel{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.city-card.sel .city-times-panel{max-height:150px}
+.city-times-inner{padding:0 10px 10px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.ct-item{background:rgba(0,0,0,.25);border-radius:9px;padding:6px 3px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.ct-lbl{font-size:9px;color:var(--white-faint);margin-bottom:2px}
+.ct-val{font-size:12px;font-weight:700;color:#fff}
+.ct-item.nx{border-color:rgba(46,204,113,.4);background:rgba(27,138,78,.2)}
+.ct-item.nx .ct-val{color:var(--green-light)}
+
+/* SETTINGS */
+.spage{padding:14px}
+.sec-lbl{font-size:10px;color:var(--white-faint);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;font-weight:300}
+.srow{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.sinfo{display:flex;align-items:center;gap:10px}
+.sico{font-size:17px;width:28px;text-align:center}
+.slbl{font-size:13px;font-weight:600;color:#fff}
+.sdesc{font-size:10px;color:var(--white-faint);margin-top:1px}
+.toggle{width:42px;height:24px;background:rgba(255,255,255,.1);border-radius:12px;position:relative;cursor:pointer;transition:background .3s;border:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.toggle.on{background:linear-gradient(135deg,var(--green-dark),var(--green));border-color:var(--green-light)}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 5px rgba(0,0,0,.3)}
+.toggle.on::after{transform:translateX(18px)}
+
+/* CALENDAR */
+.ccal{margin:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:14px}
+.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.calmonth{font-family:'Amiri',serif;font-size:15px;color:var(--green-light)}
+.calnavs{display:flex;gap:7px}
+.calnav{width:27px;height:27px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.dlbls,.dgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.dlbl{text-align:center;font-size:10px;color:var(--white-faint);padding:3px 0}
+.dcell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;padding:2px 0}
+.dcell-mil{font-size:12px;font-weight:700;color:var(--white-faint)}
+.dcell-hij{font-size:8px;color:rgba(46,204,113,.8)}
+.dcell-kur{font-size:8px;color:rgba(255,200,80,.7)}
+.dcell.today .dcell-mil{color:#fff}
+.dcell.today .dcell-hij,.dcell.today .dcell-kur{color:rgba(255,255,255,.85)}
+.dcell.today{background:linear-gradient(135deg,var(--green-dark),var(--green));font-weight:700}
+.dcell.fri .dcell-mil{color:var(--green-light)}
+.ramcard{margin:0 12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:13px}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ritem{text-align:center;padding:9px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07)}
+.rlbl{font-size:11px;color:var(--white-faint);margin-bottom:2px}
+.rval{font-family:'Amiri',serif;font-size:19px;color:var(--green-light)}
+
+/* QIBLA COMPASS */
+.qwrap{padding:14px;text-align:center}
+.compass-wrap{
+  width:220px;height:220px;margin:0 auto;
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.compass-ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.06) 0%,rgba(0,0,0,.3) 100%);
+  border:2px solid rgba(46,204,113,.35);
+  box-shadow:0 0 30px rgba(46,204,113,.1),inset 0 0 20px rgba(0,0,0,.4);
+  transition:transform .1s linear;
+}
+.cdir{position:absolute;font-size:13px;font-weight:700;color:var(--green-light)}
+.ctick{position:absolute;width:2px;background:rgba(255,255,255,.2);left:50%;transform-origin:bottom center}
+.ctick.n{height:14px;top:4px;transform:translateX(-50%)}
+.ctick.ne{height:8px;top:18px;right:18px;transform:rotate(45deg)}
+.ctick.e{height:14px;right:4px;top:50%;transform:translateY(-50%) rotate(90deg)}
+.ctick.se{height:8px;bottom:18px;right:18px;transform:rotate(135deg)}
+.ctick.s{height:14px;bottom:4px;transform:translateX(-50%)}
+.ctick.sw{height:8px;bottom:18px;left:18px;transform:rotate(-135deg)}
+.ctick.w{height:14px;left:4px;top:50%;transform:translateY(-50%) rotate(-90deg)}
+.ctick.nw{height:8px;top:18px;left:18px;transform:rotate(-45deg)}
+
+.qibla-needle-wrap{
+  position:absolute;
+  width:6px;height:180px;
+  left:50%;top:50%;
+  transform:translateX(-50%) translateY(-50%);
+  transform-origin:center center;
+  display:flex;flex-direction:column;align-items:center;
+  transition:transform .3s ease;
+  z-index:10;
+}
+.qn-top{font-size:22px;line-height:1;filter:drop-shadow(0 0 8px rgba(201,168,76,.8))}
+.qn-line{flex:1;width:3px;background:linear-gradient(180deg,#c9a84c,rgba(201,168,76,.2));border-radius:2px;margin:2px 0;box-shadow:0 0 6px rgba(201,168,76,.4)}
+.qn-bottom{width:8px;height:8px;border-radius:50%;background:rgba(201,168,76,.3);border:1px solid rgba(201,168,76,.5)}
+.compass-center{
+  position:absolute;width:14px;height:14px;border-radius:50%;
+  background:var(--green-light);z-index:20;
+  box-shadow:0 0 12px var(--green-light);
+}
+.qinfo-box{margin:8px 12px 0;background:rgba(255,255,255,.07);border-radius:13px;padding:13px;display:flex;flex-direction:column;gap:8px}
+.qrow{display:flex;justify-content:space-between;font-size:13px}
+.qrow-lbl{color:var(--white-faint)}
+.qrow-val{color:var(--green-light);font-weight:700}
+
+/* TOAST */
+.toast{position:fixed;top:-110px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--green-dark),var(--green));border:1px solid rgba(46,204,113,.4);border-radius:16px;padding:11px 18px;display:flex;align-items:center;gap:10px;z-index:400;transition:top .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 24px rgba(27,138,78,.5);min-width:230px}
+.toast.show{top:58px}
+.ticon{font-size:20px}
+.ttext{font-family:'Amiri',serif;font-size:14px;color:#fff}
+</style>
+</head>
+<body>
+
+<div class="bg-mosque"></div>
+
+<!-- SVG Mosque Background -->
+<svg style="position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none" viewBox="0 0 430 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sky gradient -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000000" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#000000" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.85"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="52%" r="45%">
+      <stop offset="0%" stop-color="#0a3018" stop-opacity="0.8"/>
+      <stop offset="60%" stop-color="#020e06" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="domeGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a5530"/>
+      <stop offset="50%" stop-color="#0d3d1e"/>
+      <stop offset="100%" stop-color="#061508"/>
+    </linearGradient>
+    <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a2e14"/>
+      <stop offset="100%" stop-color="#020a04"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background glow -->
+  <rect width="430" height="900" fill="url(#glow)"/>
+
+  <!-- Stars -->
+  <circle cx="60" cy="80" r="1.2" fill="white" opacity=".6"/>
+  <circle cx="120" cy="50" r="1" fill="white" opacity=".5"/>
+  <circle cx="200" cy="30" r="1.5" fill="white" opacity=".7"/>
+  <circle cx="310" cy="60" r="1" fill="white" opacity=".5"/>
+  <circle cx="380" cy="90" r="1.2" fill="white" opacity=".6"/>
+  <circle cx="40" cy="140" r="1" fill="white" opacity=".4"/>
+  <circle cx="390" cy="130" r="1.3" fill="white" opacity=".5"/>
+  <circle cx="260" cy="45" r="1" fill="white" opacity=".6"/>
+  <circle cx="160" cy="110" r="0.8" fill="white" opacity=".4"/>
+
+  <!-- Crescent moon top right -->
+  <g transform="translate(360,55)">
+    <path d="M18 2 Q28 12 18 22 Q10 24 4 18 Q12 18 16 12 Q20 6 18 2Z" fill="#c9a84c" opacity=".85"/>
+    <circle cx="21" cy="4" r="2.5" fill="#c9a84c" opacity=".6"/>
+  </g>
+
+  <!-- Far background minarets (left) -->
+  <rect x="30" y="320" width="18" height="200" fill="#0d3d1e" opacity=".6" rx="2"/>
+  <ellipse cx="39" cy="320" rx="11" ry="18" fill="#0d3d1e" opacity=".6"/>
+  <rect x="36" y="296" width="6" height="26" fill="#0a3018" opacity=".6"/>
+  <polygon points="39,282 43,296 35,296" fill="#c9a84c" opacity=".4"/>
+
+  <!-- Far background minarets (right) -->
+  <rect x="382" y="310" width="18" height="210" fill="#0d3d1e" opacity=".6" rx="2"/>
+  <ellipse cx="391" cy="310" rx="11" ry="18" fill="#0d3d1e" opacity=".6"/>
+  <rect x="388" y="286" width="6" height="26" fill="#0a3018" opacity=".6"/>
+  <polygon points="391,272 395,286 387,286" fill="#c9a84c" opacity=".4"/>
+
+  <!-- Main building walls -->
+  <rect x="60" y="480" width="310" height="420" fill="url(#wallGrad)" opacity=".75" rx="4"/>
+
+  <!-- Side minarets (main) -->
+  <!-- Left minaret -->
+  <rect x="72" y="280" width="32" height="300" fill="#124d28" opacity=".85" rx="3"/>
+  <ellipse cx="88" cy="280" rx="20" ry="28" fill="#124d28" opacity=".85"/>
+  <rect x="84" y="246" width="8" height="36" fill="#0e3d20" opacity=".85"/>
+  <polygon points="88,228 94,246 82,246" fill="#2ECC71" opacity=".7"/>
+  <ellipse cx="88" cy="274" rx="22" ry="8" fill="#1a6b35" opacity=".5"/>
+  <!-- Balcony details left -->
+  <rect x="77" y="340" width="22" height="5" fill="#0a3018" rx="2" opacity=".7"/>
+  <rect x="77" y="390" width="22" height="5" fill="#0a3018" rx="2" opacity=".7"/>
+
+  <!-- Right minaret -->
+  <rect x="326" y="280" width="32" height="300" fill="#124d28" opacity=".85" rx="3"/>
+  <ellipse cx="342" cy="280" rx="20" ry="28" fill="#124d28" opacity=".85"/>
+  <rect x="338" y="246" width="8" height="36" fill="#0e3d20" opacity=".85"/>
+  <polygon points="342,228 348,246 336,246" fill="#2ECC71" opacity=".7"/>
+  <ellipse cx="342" cy="274" rx="22" ry="8" fill="#1a6b35" opacity=".5"/>
+  <!-- Balcony details right -->
+  <rect x="331" y="340" width="22" height="5" fill="#0a3018" rx="2" opacity=".7"/>
+  <rect x="331" y="390" width="22" height="5" fill="#0a3018" rx="2" opacity=".7"/>
+
+  <!-- Main dome base -->
+  <rect x="145" y="440" width="140" height="60" fill="#1a6b35" opacity=".9" rx="4"/>
+
+  <!-- Main dome (green) -->
+  <ellipse cx="215" cy="420" rx="88" ry="76" fill="url(#domeGrad)" opacity=".92"/>
+  <ellipse cx="215" cy="420" rx="88" ry="76" fill="none" stroke="#2ECC71" stroke-width="1.5" opacity=".3"/>
+  <!-- Dome shine -->
+  <ellipse cx="195" cy="390" rx="30" ry="22" fill="white" opacity=".07"/>
+  <!-- Dome top spire -->
+  <rect x="212" y="336" width="6" height="40" fill="#1a5530" opacity=".9"/>
+  <!-- Crescent on dome -->
+  <g transform="translate(215,330)">
+    <path d="M0,-10 Q8,-4 0,10 Q-6,6 -4,0 Q-2,-6 0,-10Z" fill="#c9a84c" opacity=".9"/>
+    <circle cx="4" cy="-6" r="2" fill="#c9a84c" opacity=".6"/>
+  </g>
+
+  <!-- Smaller front domes -->
+  <ellipse cx="140" cy="468" rx="40" ry="32" fill="#155c28" opacity=".8"/>
+  <ellipse cx="290" cy="468" rx="40" ry="32" fill="#155c28" opacity=".8"/>
+  <rect x="100" y="468" width="80" height="40" fill="#124d22" opacity=".8"/>
+  <rect x="250" y="468" width="80" height="40" fill="#124d22" opacity=".8"/>
+
+  <!-- Arched windows on wall -->
+  <rect x="100" y="510" width="24" height="35" fill="#041408" rx="12" opacity=".7"/>
+  <rect x="140" y="510" width="24" height="35" fill="#041408" rx="12" opacity=".7"/>
+  <rect x="200" y="510" width="30" height="40" fill="#041408" rx="15" opacity=".7"/>
+  <rect x="266" y="510" width="24" height="35" fill="#041408" rx="12" opacity=".7"/>
+  <rect x="306" y="510" width="24" height="35" fill="#041408" rx="12" opacity=".7"/>
+
+  <!-- Main entrance arch -->
+  <rect x="185" y="560" width="60" height="80" fill="#041408" rx="30" opacity=".8"/>
+
+  <!-- Foreground overlay -->
+  <rect width="430" height="900" fill="url(#sky)" opacity=".75"/>
+</svg>
+
+<div class="toast" id="toast">
+  <div class="ticon">🕌</div>
+  <div><div class="ttext" id="toastTxt">کاتی بانگی مەغریبە</div></div>
+</div>
+
+<!-- City Modal -->
+<div class="city-modal" id="cityModal" onclick="closeCityModal(event)">
+  <div class="city-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">هەڵبژاردنی شار</div>
+    <div class="cities-grid" id="citiesGrid"></div>
+  </div>
+</div>
+
+<div class="app">
+
+  <div class="hdr">
+    <button class="hdr-btn" id="locBtn" onclick="detectLocation()" title="دیاریکردنی شار بە لۆکەیشن">📍</button>
+    <div class="hdr-date">
+      <div class="hdr-day" id="dayName">—</div>
+      <div class="hdr-hijri" id="hijriDate">—</div>
+    </div>
+    <div style="width:36px"></div>
+  </div>
+
+  <!-- HOME -->
+  <div class="pg active" id="pg-home">
+
+    <!-- ڕیزی سەرەوە: شار ڕاست + کاتژمێری شوشەیی چەپ -->
+    <div class="top-row">
+      <div class="glass-clock">
+        <div style="display:flex;align-items:baseline;gap:4px">
+          <div class="gc-time" id="gcTime">—:——</div>
+          <div class="gc-seconds" id="gcSec">:00</div>
+        </div>
+        <div class="gc-ampm" id="gcAmpm">ب·ن</div>
+        <div class="gc-toggle">
+          <button class="gc-btn active" id="btn12" onclick="setClockMode(12)">١٢</button>
+          <button class="gc-btn" id="btn24" onclick="setClockMode(24)">٢٤</button>
+        </div>
+      </div>
+      <div class="city-pill" onclick="openCityModal()">
+        <div class="cdot"></div>
+        <span id="hdrCity">هەولێر</span>
+      </div>
+    </div>
+
+    <!-- ماوەی ماوە + ناوی نوێژی داهاتوو -->
+    <div class="cd-wrap">
+      <div class="cd-timer" id="cdTimer">—:——:——</div>
+      <div class="cd-bar"><div class="cd-fill" id="cdFill" style="width:50%"></div></div>
+      <div class="cd-tag">
+        <span id="nextName" style="color:var(--green-light);font-weight:700">—</span>
+        <span style="margin-right:4px" id="nextTime">—:——</span>
+      </div>
+    </div>
+
+    <div class="plist-wrap" id="plist"></div>
+
+    <div class="bottom-bar">
+      <div class="bbar-txt" id="bottomBar">ئیمساک <span>—</span> — ئیفتار <span>—</span></div>
+    </div>
+
+  </div>
+
+  <!-- CALENDAR - سێ ساڵنامە -->
+  <div class="pg" id="pg-calendar">
+    <div class="ccal" style="margin-top:12px">
+      <div class="calhead" style="flex-direction:column;align-items:stretch;gap:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <button class="calnav" onclick="changeMonth(-1)">›</button>
+          <div style="text-align:center;flex:1">
+            <div class="calmonth" id="calMonth">—</div>
+            <div style="font-size:11px;color:var(--green-light);margin-top:2px" id="calMonthHijri">—</div>
+            <div style="font-size:11px;color:rgba(255,200,80,.8);margin-top:1px" id="calMonthKurdi">—</div>
+          </div>
+          <button class="calnav" onclick="changeMonth(1)">‹</button>
+        </div>
+      </div>
+      <div class="dlbls" style="margin-top:8px">
+        <div class="dlbl">ش</div><div class="dlbl">ی</div><div class="dlbl">د</div>
+        <div class="dlbl">س</div><div class="dlbl">چ</div><div class="dlbl">پ</div><div class="dlbl">ج</div>
+      </div>
+      <div class="dgrid" id="calGrid" style="margin-top:4px"></div>
+    </div>
+    <div class="ramcard" style="margin-top:9px">
+      <div class="sec-lbl" style="margin-bottom:7px">🌙 کاتی ئیمساک و ئیفتار</div>
+      <div class="rgrid">
+        <div class="ritem"><div class="rlbl">ئیمساک</div><div class="rval" id="cImsak">—</div></div>
+        <div class="ritem"><div class="rlbl">ئیفتار</div><div class="rval" id="cIftar">—</div></div>
+        <div class="ritem"><div class="rlbl">خۆرهەڵاتن</div><div class="rval" id="cSunrise">—</div></div>
+        <div class="ritem"><div class="rlbl">ڕۆژئاوا</div><div class="rval" id="cSunset">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QIBLA -->
+  <div class="pg" id="pg-qibla">
+    <div class="qwrap">
+      <div class="sec-lbl" style="text-align:center;margin-bottom:6px">🧭 قیبلەنما</div>
+
+      <!-- کۆمپاس -->
+      <div class="compass-wrap">
+        <!-- ئەو دایرەیە کە بچوڵێ بە کۆمپاس -->
+        <div class="compass-ring" id="compassRing">
+          <!-- نیشانەی ئاراستەکان -->
+          <div class="cdir" style="top:8px;left:50%;transform:translateX(-50%)">ب</div>
+          <div class="cdir" style="bottom:8px;left:50%;transform:translateX(-50%)">ج</div>
+          <div class="cdir" style="right:8px;top:50%;transform:translateY(-50%)">ڕ</div>
+          <div class="cdir" style="left:8px;top:50%;transform:translateY(-50%)">ئ</div>
+          <!-- خاڵەکانی کەمەر -->
+          <div class="ctick n"></div>
+          <div class="ctick ne"></div>
+          <div class="ctick e"></div>
+          <div class="ctick se"></div>
+          <div class="ctick s"></div>
+          <div class="ctick sw"></div>
+          <div class="ctick w"></div>
+          <div class="ctick nw"></div>
+        </div>
+
+        <!-- گێچی قیبلە — هەمیشە بەرەو کەعبە دەگەڕێتەوە -->
+        <div class="qibla-needle-wrap" id="qiblaNeedle">
+          <div class="qn-top">🕋</div>
+          <div class="qn-line"></div>
+          <div class="qn-bottom"></div>
+        </div>
+
+        <!-- ناوەند -->
+        <div class="compass-center"></div>
+      </div>
+
+      <!-- زانیاری -->
+      <div class="qinfo-box" style="margin-top:12px">
+        <div class="qrow"><span class="qrow-lbl">ئاراستەی قیبلە</span><span class="qrow-val" id="qAngle">—°</span></div>
+        <div style="height:1px;background:rgba(255,255,255,.07)"></div>
+        <div class="qrow"><span class="qrow-lbl">دووری بۆ مەکە</span><span class="qrow-val" id="qDist">—</span></div>
+        <div style="height:1px;background:rgba(255,255,255,.07)"></div>
+        <div class="qrow"><span class="qrow-lbl" id="qSub" style="font-size:12px">— → مەکەی مکەررەمە</span></div>
+        <div style="height:1px;background:rgba(255,255,255,.07)"></div>
+        <div class="qrow"><span class="qrow-lbl">دۆخی کۆمپاس</span><span class="qrow-val" id="compassStatus" style="font-size:11px">چاوەڕێ...</span></div>
+      </div>
+
+      <button onclick="startCompass()" style="margin-top:10px;width:100%;padding:10px;border-radius:14px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.4);color:var(--green-light);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer">
+        📍 چالاککردنی کۆمپاس
+      </button>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="pg" id="pg-settings">
+    <div class="spage">
+      <div class="sec-lbl">ڕێکخستنەکان</div>
+      <div class="srow"><div class="sinfo"><div class="sico">🔔</div><div><div class="slbl">هەواڵی بانگ</div><div class="sdesc">ئاگادارکردنەوەی کاتی نوێژ</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+
+      <!-- آپلۆدی فایلی ئەزان -->
+      <div class="srow" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div class="sinfo"><div class="sico">🕌</div><div><div class="slbl">فایلی دەنگی بانگ</div><div class="sdesc" id="azanFileName">فایلی mp3 ی ئەزانت آپلۆد بکە</div></div></div>
+        <label style="display:flex;align-items:center;justify-content:center;gap:8px;padding:9px;border-radius:12px;background:rgba(46,204,113,.15);border:1px dashed rgba(46,204,113,.4);cursor:pointer;font-size:13px;color:var(--green-light);font-weight:700">
+          📂 هەڵبژاردنی فایل
+          <input type="file" accept="audio/*" style="display:none" onchange="loadAzanFile(this);document.getElementById('azanFileName').textContent=this.files[0]?.name||'فایل هەڵنەبژێردراوە'">
+        </label>
+        <div style="display:flex;gap:8px">
+          <button onclick="playAzan()" style="flex:1;padding:8px;border-radius:10px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.3);color:var(--green-light);font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer">▶ گوێبگرە</button>
+          <button onclick="stopAzan()" style="flex:1;padding:8px;border-radius:10px;background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.2);color:#ff8080;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer">■ بوەستێنە</button>
+        </div>
+      </div>
+      <div class="srow"><div class="sinfo"><div class="sico">🌙</div><div><div class="slbl">دۆخی رەمەزان</div><div class="sdesc">پیشاندانی ئیمساک و ئیفتار</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="srow"><div class="sinfo"><div class="sico">⏰</div><div><div class="slbl">ئاگاداری پێشوەختە</div><div class="sdesc">١٠ خولەک پێش کاتی نوێژ</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+      <div style="margin-top:18px;padding:14px;background:rgba(255,255,255,.05);border-radius:13px;text-align:center;border:1px solid rgba(255,255,255,.08)">
+        <div style="font-family:'Amiri',serif;font-size:16px;color:var(--green-light);margin-bottom:4px">کاتەکانی بانگ</div>
+        <div style="font-size:11px;color:var(--white-faint)">وەشانی ٣.٠ · هەرێمی کوردستانی عێراق</div>
+        <div style="font-size:11px;color:rgba(46,204,113,.35);margin-top:6px">الله أكبر — خوا گەورەیە</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <button class="nbtn active" id="nav-home" onclick="switchPage('home')"><span class="nicon">🕌</span><span class="nlabel">ماڵەوە</span></button>
+    <button class="nbtn" id="nav-calendar" onclick="switchPage('calendar')"><span class="nicon">📅</span><span class="nlabel">ڕۆژژمێر</span></button>
+    <button class="nbtn" id="nav-qibla" onclick="switchPage('qibla')"><span class="nicon">🧭</span><span class="nlabel">قیبلە</span></button>
+    <button class="nbtn" id="nav-settings" onclick="switchPage('settings')"><span class="nicon">⚙️</span><span class="nlabel">ڕێکخستن</span></button>
+  </div>
+
+</div>
+
+<script>
+const CITIES={
+  sulaymaniyah:{name:'سلێمانی',  qibla:228,dist:'٢٬٤٦١',t:[{h:4,m:58},{h:6,m:20},{h:12,m:15},{h:3,m:28},{h:6,m:7},{h:7,m:23}]},
+  hawler:      {name:'هەولێر',   qibla:231,dist:'٢٬٤٣٨',t:[{h:5,m:3},{h:6,m:31},{h:12,m:23},{h:3,m:34},{h:6,m:7},{h:7,m:22}]},
+  karkuk:      {name:'کەرکوک',   qibla:229,dist:'٢٬٤٤٥',t:[{h:5,m:0},{h:6,m:21},{h:12,m:18},{h:3,m:35},{h:6,m:8},{h:7,m:23}]},
+  halebja:     {name:'هەلەبجە',  qibla:227,dist:'٢٬٤٧٠',t:[{h:4,m:54},{h:6,m:26},{h:12,m:13},{h:3,m:29},{h:6,m:2},{h:7,m:15}]},
+  duhok:       {name:'دهۆک',     qibla:234,dist:'٢٬٣٩٨',t:[{h:5,m:5},{h:6,m:35},{h:12,m:27},{h:3,m:43},{h:6,m:13},{h:7,m:36}]},
+  kalar:       {name:'کەلار',    qibla:227,dist:'٢٬٤٦٠',t:[{h:4,m:59},{h:6,m:26},{h:12,m:15},{h:3,m:31},{h:6,m:2},{h:7,m:17}]},
+  chamchamal:  {name:'چەمچەماڵ', qibla:229,dist:'٢٬٤٥٠',t:[{h:5,m:7},{h:6,m:26},{h:12,m:17},{h:3,m:30},{h:6,m:8},{h:7,m:28}]},
+  akre:        {name:'ئاکرێ',    qibla:232,dist:'٢٬٤١٠',t:[{h:5,m:7},{h:6,m:33},{h:12,m:22},{h:3,m:40},{h:6,m:11},{h:7,m:26}]},
+  darbandikhan:{name:'دەربەندیخان',qibla:228,dist:'٢٬٤٥٥',t:[{h:4,m:57},{h:6,m:19},{h:12,m:14},{h:3,m:27},{h:6,m:6},{h:7,m:22}]},
+  zakho:       {name:'زاخۆ',     qibla:235,dist:'٢٬٣٧٨',t:[{h:5,m:6},{h:6,m:36},{h:12,m:28},{h:3,m:44},{h:6,m:14},{h:7,m:37}]},
+  ranya:       {name:'ڕانیە',    qibla:230,dist:'٢٬٤٤٩',t:[{h:5,m:1},{h:6,m:23},{h:12,m:18},{h:3,m:31},{h:6,m:10},{h:7,m:26}]},
+  qaladze:     {name:'قەڵادزێ',  qibla:229,dist:'٢٬٤٤٢',t:[{h:4,m:59},{h:6,m:21},{h:12,m:16},{h:3,m:29},{h:6,m:8},{h:7,m:24}]},
+  koye:        {name:'کۆیە',     qibla:229,dist:'٢٬٤٤٧',t:[{h:5,m:1},{h:6,m:29},{h:12,m:21},{h:3,m:32},{h:6,m:5},{h:7,m:20}]},
+  kifri:       {name:'کفری',     qibla:227,dist:'٢٬٤٩٢',t:[{h:5,m:1},{h:6,m:28},{h:12,m:17},{h:3,m:33},{h:6,m:4},{h:7,m:19}]},
+  bardarash:   {name:'بەردەرەش', qibla:232,dist:'٢٬٤٢٠',t:[{h:5,m:7},{h:6,m:33},{h:12,m:22},{h:3,m:40},{h:6,m:11},{h:7,m:26}]},
+  mosul:       {name:'موسڵ',     qibla:233,dist:'٢٬٣٩٠',t:[{h:5,m:4},{h:6,m:27},{h:12,m:23},{h:3,m:40},{h:6,m:12},{h:7,m:28}]},
+  penjwen:     {name:'پێنجوێن',  qibla:228,dist:'٢٬٤٦٥',t:[{h:4,m:56},{h:6,m:18},{h:12,m:13},{h:3,m:26},{h:6,m:5},{h:7,m:21}]},
+};
+const PM=[
+  {ku:'بەیانی',emoji:'🌙'},{ku:'گزنگ',emoji:'🌅',sr:true},
+  {ku:'نیوەڕۆ',emoji:'☀️'},{ku:'عەسر',emoji:'🌤'},
+  {ku:'ئێواره',emoji:'🌇'},{ku:'خەوتنان',emoji:'🌃'},
+];
+const PM_LABELS=['بەیانی','گزنگ','نیوەڕۆ','عەسر','ئێواره','خەوتنان'];
+const HM=['موحەرەم','سەفەر','ڕەبیول ئەوول','ڕەبیول ئاخیر','جەمادیول ئەوول','جەمادیول ئاخیر','ڕەجەب','شەعبان','رەمەزان','شەوواڵ','زوولقەعدە','زوولحیجە'];
+const DK=['یەکشەممە','دووشەممە','سێشەممە','چوارشەممە','پێنجشەممە','هەینی','شەممە'];
+const KM=['کانوونی دووەم','شوبات','ئازار','نیسان','ئایار','حوزەیران','تەممووز','ئاب','ئەیلوول','تشرینی ئەوول','تشرینی دووەم','کانوونی یەکەم'];
+let CUR='hawler',calOff=0;
+const AR=s=>String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+function fmt(h,m){
+  if(clockMode===24) return h+':'+String(m).padStart(2,'0');
+  const h2=h===0?12:h>12?h-12:h;
+  return h2+':'+String(m).padStart(2,'0');
+}
+function fmtAR(h,m){
+  if(clockMode===24) return AR(h)+':'+AR(String(m).padStart(2,'0'));
+  const h2=h===0?12:h>12?h-12:h;
+  return AR(h2)+':'+AR(String(m).padStart(2,'0'));
+}
+function findNext(t){const now=new Date(),nm=now.getHours()*60+now.getMinutes();for(let i=0;i<t.length;i++){if(i===1)continue;if(t[i].h*60+t[i].m>nm)return i;}return 0;}
+function toHijri(date){
+  // ئەلگۆریزمی ڕاست بۆ مێژووی هیجری
+  const D=date.getDate(), M=date.getMonth()+1, Y=date.getFullYear();
+  let JD = Math.floor((14+153*(M+12*Math.floor((14-M)/12)-3+1)-1)/153+D+365*(Y+4800-Math.floor((14-M)/12))+Math.floor((Y+4800-Math.floor((14-M)/12))/4)-Math.floor((Y+4800-Math.floor((14-M)/12))/100)+Math.floor((Y+4800-Math.floor((14-M)/12))/400)-32045);
+  const l=JD-1948440+10632;
+  const n=Math.floor((l-1)/10631);
+  const l2=l-10631*n+354;
+  const j=Math.floor((10985-l2)/5316)*Math.floor(50*l2/17719)+Math.floor(l2/5670)*Math.floor(43*l2/15238);
+  const l3=l2-Math.floor((30-j)/15)*Math.floor(17719*j/50)-Math.floor(j/16)*Math.floor(15238*j/43)+29;
+  const hm=Math.floor(24*l3/709);
+  const hd=l3-Math.floor(709*hm/24);
+  const hy=30*n+j-30;
+  return {y:hy, m:hm, d:hd};
+}
+
+// دەنگی بێدەنگکردن
+let mutedPrayers = {};  // {0:true, 2:true, ...}
+
+function toggleMute(i, e){
+  e.stopPropagation();
+  mutedPrayers[i] = !mutedPrayers[i];
+  renderPrayers();
+}
+
+// ── دەنگی بانگی ڕاستەقینە ───────────────────────
+let azanAudio = null;
+let customAzanURL = null;
+
+// بەکارهێنەر فایلی ئەزانی خۆی آپلۆد بکات
+function loadAzanFile(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(azanAudio){ azanAudio.pause(); azanAudio=null; }
+  customAzanURL = URL.createObjectURL(file);
+  azanAudio = new Audio(customAzanURL);
+  azanAudio.volume = 1.0;
+  showToast('✅ فایلی بانگ بارکرا: '+file.name);
+}
+
+function playAzan(){
+  try{
+    if(azanAudio){
+      azanAudio.currentTime = 0;
+      azanAudio.play().catch(e=>{ showToast('⚠️ فایلی بانگت آپلۆد بکە'); });
+      return;
+    }
+    showToast('⚠️ فایلی بانگت آپلۆد بکە لە ڕێکخستن');
+  }catch(err){}
+}
+
+function stopAzan(){
+  if(azanAudio){ azanAudio.pause(); azanAudio.currentTime=0; }
+}
+
+function renderPrayers(){
+  const c=CITIES[CUR],times=c.t,now=new Date(),ni=findNext(times),nm=now.getHours()*60+now.getMinutes();
+  const list=document.getElementById('plist');list.innerHTML='';
+  times.forEach((t,i)=>{
+    const meta=PM[i],passed=t.h*60+t.m<nm&&i!==ni,isNext=i===ni;
+    const muted=!!mutedPrayers[i];
+    const row=document.createElement('div');
+    row.className='prow'+(isNext?' is-active':'')+(passed?' is-passed':'');
+    row.innerHTML=`
+      <div class="prow-left">
+        <div class="p-vol">${meta.emoji}</div>
+        <div class="p-name">${meta.ku}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="p-time">${fmt(t.h,t.m)}</div>
+        <button class="mute-btn${muted?' muted':''}" onclick="toggleMute(${i},event)" title="بێدەنگ/دەنگ">${muted?'🔇':'🔔'}</button>
+      </div>`;
+    list.appendChild(row);
+  });
+  document.getElementById('nextName').textContent=PM[ni].ku;
+  document.getElementById('nextTime').textContent=fmt(times[ni].h,times[ni].m);
+  ['cImsak','cIftar','cSunrise','cSunset'].forEach((id,i)=>{
+    const map=[times[0],times[4],times[1],times[4]],el=document.getElementById(id);
+    if(el)el.textContent=fmtAR(map[i].h,map[i].m);
+  });
+  const bt=document.getElementById('bottomBar');
+  if(bt)bt.innerHTML=`ئیمساک <span>${fmt(times[0].h,times[0].m)}</span> &nbsp;—&nbsp; ئیفتار <span>${fmt(times[4].h,times[4].m)}</span>`;
+}
+
+let clockMode = 12; // ١٢ یان ٢٤
+
+function setClockMode(m){
+  clockMode = m;
+  document.getElementById('btn12').classList.toggle('active', m===12);
+  document.getElementById('btn24').classList.toggle('active', m===24);
+  renderPrayers();
+}
+
+let lastAzanMinute = -1;
+
+function tick(){
+  const c=CITIES[CUR],now=new Date(),times=c.t,ni=findNext(times),nxt=times[ni];
+
+  // کاتژمێری زیندوو
+  const hh=now.getHours(), mm=now.getMinutes(), ss=now.getSeconds();
+  const displayH = clockMode===24 ? hh : (hh===0?12:hh>12?hh-12:hh);
+  const gcT=document.getElementById('gcTime');
+  const gcS=document.getElementById('gcSec');
+  if(gcT) gcT.textContent=displayH+':'+String(mm).padStart(2,'0');
+  if(gcS) gcS.textContent=':'+String(ss).padStart(2,'0');
+
+  // countdown
+  const pd=new Date();pd.setHours(nxt.h,nxt.m,0,0);if(pd<=now)pd.setDate(pd.getDate()+1);
+  const diff=Math.max(0,Math.floor((pd-now)/1e3));
+  const dh=Math.floor(diff/3600),dm=Math.floor((diff%3600)/60),ds=diff%60;
+  document.getElementById('cdTimer').textContent=dh+':'+String(dm).padStart(2,'0')+':'+String(ds).padStart(2,'0');
+  let pi=ni-1;if(pi<0)pi=5;if(pi===1)pi=0;
+  const prev=times[pi],pm2=prev.h*60+prev.m,nm2=nxt.h*60+nxt.m;
+  const nowMin=hh*60+mm+ss/60;
+  const total=(nm2-pm2+1440)%1440||180,elapsed=(nowMin-pm2+1440)%1440;
+  document.getElementById('cdFill').style.width=Math.max(3,Math.min(97,(elapsed/total)*100))+'%';
+
+  // دەنگی ئەزان
+  const curMin=hh*60+mm;
+  if(ss===0 && curMin!==lastAzanMinute){
+    times.forEach((t,i)=>{
+      if(t.h*60+t.m===curMin && !mutedPrayers[i]){
+        lastAzanMinute=curMin;
+        playAzan();
+        showToast('🕌 کاتی بانگی '+PM[i].ku+'ە');
+        renderPrayers();
+      }
+    });
+  }
+}
+
+function renderDate(){
+  const now=new Date(),h=toHijri(now);
+  document.getElementById('hijriDate').textContent=AR(h.d)+' '+HM[h.m-1]+' '+AR(h.y);
+  document.getElementById('dayName').textContent=DK[now.getDay()]+' '+now.getDate()+' '+KM[now.getMonth()]+' '+now.getFullYear();
+}
+
+// ── QIBLA COMPASS ────────────────────────────────
+const MECCA={lat:21.4225,lng:39.8262};
+let deviceHeading=0, qiblaAngle=231, compassActive=false;
+
+function calcQiblaAngle(lat,lng){
+  const φ1=lat*Math.PI/180, φ2=MECCA.lat*Math.PI/180;
+  const Δλ=(MECCA.lng-lng)*Math.PI/180;
+  const y=Math.sin(Δλ);
+  const x=Math.cos(φ1)*Math.tan(φ2)-Math.sin(φ1)*Math.cos(Δλ);
+  return(Math.atan2(y,x)*180/Math.PI+360)%360;
+}
+
+function updateCompassDisplay(){
+  const needleRot=qiblaAngle-deviceHeading;
+  const el=document.getElementById('qiblaNeedle');
+  if(el) el.style.transform=`translateX(-50%) translateY(-50%) rotate(${needleRot}deg)`;
+  const ring=document.getElementById('compassRing');
+  if(ring) ring.style.transform=`rotate(${-deviceHeading}deg)`;
+  const diff=((qiblaAngle-deviceHeading)%360+360)%360;
+  const aligned=diff<12||diff>348;
+  const st=document.getElementById('compassStatus');
+  if(st) st.textContent=aligned?'🟢 ڕووی کەعبەتەوەیە!':'✅ چالاکە — '+Math.round(deviceHeading)+'°';
+  const top=document.querySelector('.qn-top');
+  if(top) top.style.filter=aligned?'drop-shadow(0 0 16px gold)':'drop-shadow(0 0 8px rgba(201,168,76,.8))';
+}
+
+function handleOrientation(e){
+  let h=0;
+  if(e.webkitCompassHeading!=null) h=e.webkitCompassHeading;
+  else if(e.alpha!=null) h=(360-e.alpha+360)%360;
+  deviceHeading=h;
+  updateCompassDisplay();
+}
+
+function listenOrientation(){
+  compassActive=true;
+  const st=document.getElementById('compassStatus');
+  if(st) st.textContent='✅ چالاکە';
+  window.addEventListener('deviceorientationabsolute',handleOrientation,true);
+  window.addEventListener('deviceorientation',handleOrientation,true);
+}
+
+function startCompass(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      const{latitude:lat,longitude:lng}=pos.coords;
+      qiblaAngle=calcQiblaAngle(lat,lng);
+      const qa=document.getElementById('qAngle');
+      if(qa) qa.textContent=Math.round(qiblaAngle)+'°';
+      let nearest=null,minDist=Infinity;
+      Object.entries(COORDS).forEach(([k,c])=>{
+        const d=haversine(lat,lng,c.lat,c.lng);
+        if(d<minDist){minDist=d;nearest=k;}
+      });
+      if(nearest){
+        const qs=document.getElementById('qSub');
+        const qd=document.getElementById('qDist');
+        if(qs) qs.textContent=CITIES[nearest].name+' → مەکەی مکەررەمە';
+        if(qd) qd.textContent=CITIES[nearest].dist+' كم';
+      }
+      updateCompassDisplay();
+    },()=>{});
+  }
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission().then(s=>{
+      if(s==='granted') listenOrientation();
+      else{ const st=document.getElementById('compassStatus'); if(st) st.textContent='مۆڵەت نەدرا ❌'; }
+    }).catch(()=>{listenOrientation();});
+  } else {
+    listenOrientation();
+  }
+}
+
+function openCityModal(){renderCities();document.getElementById('cityModal').style.display='block';}
+function closeCityModal(e){if(e.target===document.getElementById('cityModal'))document.getElementById('cityModal').style.display='none';}
+
+function renderCities(){
+  const grid=document.getElementById('citiesGrid');grid.innerHTML='';
+  Object.entries(CITIES).forEach(([k,c])=>{
+    const isSel=k===CUR,ni=findNext(c.t),el=document.createElement('div');
+    el.className='city-card'+(isSel?' sel':'');
+    const th=c.t.map((t,i)=>`<div class="ct-item${isSel&&i===ni?' nx':''}"><div class="ct-lbl">${PM_LABELS[i]}</div><div class="ct-val">${fmt(t.h,t.m)}</div></div>`).join('');
+    el.innerHTML=`<div class="city-card-header"><div class="city-card-left"><div class="city-check">✓</div><div><div class="ccname">${c.name}</div><div class="ccdist">🕋 ${c.dist} كم</div></div></div><span class="city-arrow">❯</span></div><div class="city-times-panel"><div class="city-times-inner">${th}</div></div>`;
+    el.onclick=()=>selectCity(k);
+    grid.appendChild(el);
+  });
+}
+
+function selectCity(k){
+  CUR=k;const c=CITIES[k];
+  document.getElementById('hdrCity').textContent=c.name;
+  // قیبلە بە کۆئۆردینەیتی شار
+  const coord=COORDS[k];
+  if(coord) qiblaAngle=calcQiblaAngle(coord.lat,coord.lng);
+  else qiblaAngle=c.qibla;
+  const qa=document.getElementById('qAngle');
+  if(qa) qa.textContent=Math.round(qiblaAngle)+'°';
+  const qs=document.getElementById('qSub');
+  if(qs) qs.textContent=c.name+' → مەکەی مکەررەمە';
+  const qd=document.getElementById('qDist');
+  if(qd) qd.textContent=c.dist+' كم';
+  updateCompassDisplay();
+  renderPrayers();renderCities();
+  document.getElementById('cityModal').style.display='none';
+}
+
+// ساڵی کوردی (زاگرۆس/کوردی) = میلادی - 621
+// مانگەکانی کوردی
+const KMK=['خاکەلێوە','گوڵان','جۆزەردان','پووشپەڕ','گەلاوێژ','خەرمانان','ڕەزبەر','گەڵاڕێزان','سەرماوەز','بەفرانبار','ڕێبەندان','نەورۆز'];
+
+function toKurdi(date){
+  // ساڵی کوردی = ساڵی میلادی - 621، مانگ و ڕۆژ وەک میلادی
+  // ماوەی نەورۆز (٢١ی مارچ) دەست پێدەکات
+  const y=date.getFullYear(), m=date.getMonth(), d=date.getDate();
+  // مانگی کوردی دەست پێ دەکات لە ٢١ی مارچ (مانگ 2، ڕۆژ 21)
+  let ky, km, kd;
+  if(m>2||(m===2&&d>=21)){
+    ky=y-621;
+    const dayOfYear=Math.floor((date-new Date(y,2,21))/86400000);
+    km=Math.floor(dayOfYear/30);
+    kd=dayOfYear%30+1;
+  }else{
+    ky=y-622;
+    const dayOfYear=Math.floor((date-new Date(y-1,2,21))/86400000);
+    km=Math.floor(dayOfYear/30);
+    kd=dayOfYear%30+1;
+  }
+  return{y:ky, m:Math.min(km,11), d:Math.min(kd,30)};
+}
+
+function renderCal(){
+  const now=new Date();
+  const baseDate=new Date(now.getFullYear(), now.getMonth()+calOff, 1);
+  const by=baseDate.getFullYear(), bm=baseDate.getMonth();
+
+  // سەردێڕ — میلادی
+  document.getElementById('calMonth').textContent=KM[bm]+' '+by;
+
+  // سەردێڕ — هیجری (ئەو مانگەی که زۆرترین ڕۆژی لێیدایە)
+  const midDate=new Date(by,bm,15);
+  const hMid=toHijri(midDate);
+  document.getElementById('calMonthHijri').textContent='🌙 '+HM[hMid.m-1]+' '+AR(hMid.y);
+
+  // سەردێڕ — کوردی
+  const kMid=toKurdi(midDate);
+  document.getElementById('calMonthKurdi').textContent='☀️ '+KMK[kMid.m]+' '+kMid.y;
+
+  const daysInMonth=new Date(by,bm+1,0).getDate();
+  const firstDay=(new Date(by,bm,1).getDay()+1)%7;
+  const grid=document.getElementById('calGrid');grid.innerHTML='';
+
+  for(let i=0;i<firstDay;i++)grid.appendChild(document.createElement('div'));
+
+  for(let d=1;d<=daysInMonth;d++){
+    const thisDate=new Date(by,bm,d);
+    const isToday=d===now.getDate()&&bm===now.getMonth()&&by===now.getFullYear();
+    const dow=thisDate.getDay();
+    const hd=toHijri(thisDate);
+    const kd=toKurdi(thisDate);
+
+    const cell=document.createElement('div');
+    cell.className='dcell'+(isToday?' today':'')+(dow===5?' fri':'');
+    cell.innerHTML=`<div class="dcell-mil">${d}</div><div class="dcell-hij">${AR(hd.d)}</div><div class="dcell-kur">${kd.d}</div>`;
+    grid.appendChild(cell);
+  }
+}
+function changeMonth(dir){calOff+=dir;renderCal();}
+
+function switchPage(p){
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nbtn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('pg-'+p).classList.add('active');
+  document.getElementById('nav-'+p).classList.add('active');
+}
+
+// ── کۆئۆردینەیتی شارەکان ──────────────────────
+const COORDS={
+  sulaymaniyah: {lat:35.5572, lng:45.4351},
+  hawler:       {lat:36.1901, lng:44.0091},
+  karkuk:       {lat:35.4681, lng:44.3922},
+  halebja:      {lat:35.1787, lng:45.9862},
+  duhok:        {lat:36.8674, lng:42.9903},
+  kalar:        {lat:34.6227, lng:45.3214},
+  chamchamal:   {lat:35.5389, lng:44.8364},
+  akre:         {lat:36.7448, lng:43.8909},
+  darbandikhan: {lat:35.1108, lng:45.6953},
+  zakho:        {lat:37.1444, lng:42.6860},
+  ranya:        {lat:36.2560, lng:44.8826},
+  qaladze:      {lat:36.1814, lng:45.1244},
+  koye:         {lat:36.0872, lng:44.6289},
+  kifri:        {lat:34.6886, lng:44.9597},
+  bardarash:    {lat:36.5022, lng:43.5731},
+  mosul:        {lat:36.3350, lng:43.1189},
+  penjwen:      {lat:35.6219, lng:45.9421},
+};
+
+function haversine(lat1,lng1,lat2,lng2){
+  const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function detectLocation(){
+  const btn=document.getElementById('locBtn');
+  if(!navigator.geolocation){
+    showToast('📍 بەرنامەکەت لۆکەیشن پشتگیری ناکات');
+    return;
+  }
+  btn.textContent='⏳'; btn.style.animation='spin 1s linear infinite';
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      const {latitude:lat, longitude:lng}=pos.coords;
+      let nearest=null, minDist=Infinity;
+      Object.entries(COORDS).forEach(([k,c])=>{
+        const d=haversine(lat,lng,c.lat,c.lng);
+        if(d<minDist){minDist=d;nearest=k;}
+      });
+      btn.textContent='📍'; btn.style.animation='';
+      if(nearest){
+        selectCity(nearest);
+        showToast('📍 شارەکەت: '+CITIES[nearest].name);
+      }
+    },
+    err=>{
+      btn.textContent='📍'; btn.style.animation='';
+      showToast('📍 مۆڵەتی لۆکەیشن بدە');
+    },
+    {timeout:8000, maximumAge:60000}
+  );
+}
+
+function showToast(msg){
+  document.getElementById('toastTxt').textContent=msg;
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+(function(){
+  selectCity('hawler');renderDate();renderCal();tick();
+  setInterval(tick,1000);
+  setInterval(()=>{renderDate();renderPrayers();},60000);
+  setTimeout(()=>{
+    const ni=findNext(CITIES[CUR].t);
+    showToast('🕌 کاتی بانگی '+PM[ni].ku+'ە');
+  },2000);
+})();
+
+// PWA Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
