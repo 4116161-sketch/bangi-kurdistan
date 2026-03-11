@@ -13,7 +13,7 @@
 <title>کاتەکانی بانگ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
 /* فۆنتی باکئەپ ئەگەر گووگڵ بار نەبوو */
 @font-face {
@@ -64,8 +64,30 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .city-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:30px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);font-size:18px;font-weight:700;color:#fff;cursor:pointer;text-shadow:0 1px 4px rgba(0,0,0,.5);flex-shrink:0}
 .city-pill:active{background:rgba(255,255,255,.3)}
 
-/* کاتژمێری شوشەیی */
-.glass-clock{
+/* TOP WIDGET */
+.top-widget{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:8px 12px;
+  margin:6px 10px 0;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:22px;
+  backdrop-filter:blur(12px);
+}
+.tw-clock-block{
+  display:flex;align-items:baseline;gap:2px;
+}
+.tw-time{
+  font-size:32px;font-weight:900;color:#fff;
+  letter-spacing:1px;font-variant-numeric:tabular-nums;
+  text-shadow:0 0 20px rgba(46,204,113,.3);
+}
+.tw-sec{
+  font-size:14px;font-weight:600;color:rgba(255,255,255,.45);
+  font-variant-numeric:tabular-nums;
+}
   flex:1;
   background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.06) 100%);
   border:1px solid rgba(255,255,255,.35);
@@ -106,8 +128,21 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .cd-fill{height:100%;background:linear-gradient(90deg,var(--green-dark),var(--green-light));border-radius:2px;transition:width 1s linear}
 .cd-timer{font-size:13px;font-weight:700;color:var(--green-light);background:rgba(0,0,0,.32);padding:3px 10px;border-radius:20px;backdrop-filter:blur(6px);flex-shrink:0;font-variant-numeric:tabular-nums}
 
-/* PRAYER ROWS */
-.plist-wrap{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 12px 2px}
+/* PRAYER LIST TOGGLE */
+.plist-toggle{
+  display:flex;align-items:center;justify-content:center;
+  padding:6px 12px;cursor:pointer;
+  background:rgba(46,204,113,.08);
+  border-top:1px solid rgba(46,204,113,.15);
+  border-bottom:1px solid rgba(46,204,113,.15);
+  gap:8px;
+  flex-shrink:0;
+}
+.plist-toggle-txt{font-size:13px;color:var(--green-light);font-family:'Cairo',sans-serif;font-weight:700}
+.plist-toggle-arrow{font-size:12px;color:var(--green-light);transition:transform .3s}
+.plist-toggle-arrow.open{transform:rotate(180deg)}
+.plist-wrap{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 12px 2px;overflow:hidden;transition:max-height .4s ease;max-height:600px}
+.plist-wrap.collapsed{max-height:0;padding:0}
 .prow{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 10px 14px;border-radius:40px;margin-bottom:5px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(6px);transition:all .2s}
 .prow.is-active{background:rgba(30,155,80,.92);border-color:var(--green-light);box-shadow:0 4px 20px rgba(46,204,113,.35)}
 .prow.is-passed{opacity:.45}
@@ -150,8 +185,9 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .aw-p.active .aw-p-name{color:var(--green-light)}
 .aw-p.active .aw-p-time{color:var(--green-light);font-size:15px}
 /* BOTTOM BAR */
-.bbar-txt{font-size:12px;color:var(--white-dim)}
-.bbar-txt span{color:var(--green-light);font-weight:700}
+.bottom-bar{background:rgba(10,30,18,.95);border-top:1px solid rgba(46,204,113,.2);padding:8px 16px;text-align:center;flex-shrink:0}
+.bbar-txt{font-size:14px;font-weight:600;color:rgba(255,255,255,.8);letter-spacing:.5px}
+.bbar-txt span{color:var(--green-light);font-weight:800;font-size:15px}
 
 /* BOTTOM NAV */
 .bnav{background:rgba(8,22,13,.96);border-top:1px solid rgba(255,255,255,.08);padding:7px 0 18px;display:flex;justify-content:space-around;flex-shrink:0}
@@ -162,6 +198,7 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 
 /* PAGES */
 .pg{display:none;flex:1;overflow-y:auto;padding-bottom:10px}
+.pg.fullscreen{position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;background:linear-gradient(180deg,#041408 0%,#020a04 100%);display:flex;flex-direction:column;padding-bottom:0}
 .pg.active{display:flex;flex-direction:column}
 ::-webkit-scrollbar{width:0}
 
@@ -271,6 +308,209 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .qrow{display:flex;justify-content:space-between;font-size:13px}
 .qrow-lbl{color:var(--white-faint)}
 .qrow-val{color:var(--green-light);font-weight:700}
+
+/* قیبلەنمای نوێ */
+.nq-compass{
+  position:relative;
+  width:260px;height:260px;
+  border-radius:50%;
+  background:radial-gradient(circle, #5a2d4a 0%, #3d1f35 50%, #2a1525 100%);
+  box-shadow:0 8px 32px rgba(0,0,0,.5), inset 0 0 40px rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.nq-ring{
+  position:absolute;
+  width:100%;height:100%;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.1);
+  transition:transform .1s linear;
+}
+.nq-dir{
+  position:absolute;
+  font-size:13px;font-weight:700;
+  color:rgba(255,255,255,.5);
+}
+.nq-kaaba-wrap{
+  position:absolute;
+  width:4px;
+  height:120px;
+  top:10px;left:50%;
+  transform:translateX(-50%);
+  transform-origin:bottom center;
+  display:flex;flex-direction:column;align-items:center;
+  transition:transform .3s ease;
+  z-index:10;
+}
+.nq-kaaba{font-size:28px;line-height:1}
+.nq-needle-line{
+  flex:1;width:3px;
+  background:linear-gradient(180deg,rgba(255,255,255,.6),transparent);
+  border-radius:2px;
+}
+.nq-diamond{
+  position:absolute;
+  width:80px;height:80px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:5;
+}
+.nq-d-top{
+  width:0;height:0;
+  border-left:35px solid transparent;
+  border-right:35px solid transparent;
+  border-bottom:50px solid #e05555;
+  filter:drop-shadow(0 2px 8px rgba(220,80,80,.4));
+}
+.nq-d-bottom{
+  width:0;height:0;
+  border-left:35px solid transparent;
+  border-right:35px solid transparent;
+  border-top:30px solid #c04040;
+}
+.nq-d-dot{
+  position:absolute;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:#7ec8f0;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 8px rgba(126,200,240,.6);
+}
+/* WIDGET HEADER */
+.widget-hdr{
+  background:linear-gradient(180deg,rgba(10,35,18,.97) 0%,rgba(5,20,10,.95) 100%);
+  border-bottom:1px solid rgba(46,204,113,.15);
+  padding:10px 14px 8px;
+  flex-shrink:0;
+}
+.wh-top{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:6px;
+}
+.wh-label{display:flex;align-items:center;gap:6px}
+.wh-refresh{
+  font-size:16px;color:var(--green-light);cursor:pointer;
+  font-style:normal;
+}
+.wh-next-name{
+  font-size:16px;font-weight:700;color:var(--green-light);
+}
+.wh-next-info{
+  font-size:13px;color:rgba(255,255,255,.6);direction:rtl;
+}
+.wh-mid{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;
+}
+.wh-clock{
+  font-size:56px;font-weight:900;color:#fff;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:2px;
+  text-shadow:0 0 30px rgba(46,204,113,.2);
+  line-height:1;
+}
+.wh-dates{
+  text-align:right;display:flex;flex-direction:column;gap:3px;
+}
+.wh-prayers{
+  display:flex;justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,.08);
+  padding-top:8px;
+}
+.wh-p{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  flex:1;
+}
+.wh-p-name{font-size:12px;color:rgba(255,255,255,.5)}
+.wh-p-time{font-size:16px;font-weight:700;color:rgba(255,255,255,.85);font-variant-numeric:tabular-nums}
+.wh-p.active .wh-p-name{color:var(--green-light)}
+.wh-p.active .wh-p-time{color:var(--green-light);font-size:18px}
+
+/* قورئان پەڕە */
+.quran-page-wrap{display:flex;flex-direction:column;height:100%}
+.quran-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(0,0,0,.3);border-bottom:1px solid rgba(46,204,113,.2);flex-shrink:0}
+.quran-hdr-title{font-size:17px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif}
+.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.quran-flow{
+  font-family:'Amiri Quran','Amiri',serif;
+  font-size:22px;
+  line-height:2.2;
+  color:#f5f0e8;
+  text-align:justify;
+  direction:rtl;
+  word-spacing:3px;
+  letter-spacing:0.5px;
+}
+.quran-flow ﴿,
+.quran-flow .ayah-marker{
+  color:var(--green-light);
+  font-size:18px;
+}
+.bismillah{
+  font-family:'Amiri Quran','Amiri',serif;
+  font-size:26px;
+  color:var(--green-light);
+  text-align:center;
+  direction:rtl;
+  margin-bottom:20px;
+  letter-spacing:1px;
+  padding:10px;
+  border-bottom:1px solid rgba(46,204,113,.2);
+}
+.sura-text-wrap{
+  font-family:'Amiri Quran','Amiri',serif;
+  font-size:22px;
+  line-height:2.2;
+  color:#f5f0e8;
+  text-align:right;
+  direction:rtl;
+}
+
+/* قورئان کارد */
+.quran-card{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.15);
+  border-radius:14px;padding:14px;cursor:pointer;transition:all .2s;
+}
+.quran-card:active{background:rgba(46,204,113,.15);}
+.quran-num{font-size:13px;font-weight:700;color:var(--green-light);width:36px;text-align:center;font-family:'Amiri',serif}
+.quran-info{flex:1}
+.quran-name{font-size:15px;font-weight:700;color:#fff;font-family:'Amiri',serif}
+.quran-sub{font-size:11px;color:rgba(255,255,255,.45)}
+.quran-arrow{color:rgba(255,255,255,.3);font-size:14px}
+
+/* زیکر کارد */
+.zikr-card{
+  background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.15);
+  border-radius:14px;padding:16px;
+}
+.zikr-arabic{font-family:'Amiri',serif;font-size:20px;color:#fff;text-align:right;direction:rtl;line-height:1.8;margin-bottom:8px}
+.zikr-kurdish{font-size:12px;color:rgba(255,255,255,.55);text-align:right;direction:rtl;margin-bottom:8px}
+.zikr-count{font-size:11px;color:var(--green-light);font-weight:700}
+.hisn-item{background:rgba(255,255,255,.06);border:1px solid rgba(46,204,113,.12);border-radius:14px;padding:16px;direction:rtl}
+.hisn-ar{font-family:'Amiri Quran','Amiri',serif;font-size:20px;color:#f5f0e8;line-height:2;margin-bottom:8px;text-align:justify}
+.hisn-ku{font-size:12px;color:rgba(255,255,255,.55);line-height:1.8;margin-bottom:6px}
+.hisn-count{font-size:11px;color:var(--green-light);font-weight:700}
+
+/* قورئان و زیکر */
+.qz-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;padding:10px 12px;
+}
+.qz-card{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(46,204,113,.2);
+  border-radius:18px;
+  padding:18px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  cursor:pointer;
+  transition:all .2s;
+  text-align:center;
+}
+.qz-card:active{transform:scale(.97);background:rgba(46,204,113,.15);}
+.qz-icon{font-size:34px;line-height:1}
+.qz-title{font-size:15px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif}
+.qz-sub{font-size:11px;color:rgba(255,255,255,.45);font-family:'Cairo',sans-serif}
 
 /* TOAST */
 .toast{position:fixed;top:-110px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--green-dark),var(--green));border:1px solid rgba(46,204,113,.4);border-radius:16px;padding:11px 18px;display:flex;align-items:center;gap:10px;z-index:400;transition:top .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 24px rgba(27,138,78,.5);min-width:230px}
@@ -409,53 +649,88 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 <div class="city-modal" id="cityModal" onclick="closeCityModal(event)">
   <div class="city-sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title">هەڵبژاردنی شار</div>
+    <div class="sheet-title">🏙️ هەڵبژاردنی شار</div>
+    <!-- سێرچ -->
+    <div style="position:relative;margin-bottom:12px">
+      <input id="citySearch" type="text" placeholder="🔍  ناوی شار بنووسە..." oninput="filterCities(this.value)"
+        style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.08);border:1px solid rgba(46,204,113,.25);border-radius:14px;padding:11px 14px;color:#fff;font-family:'Cairo',sans-serif;font-size:15px;outline:none;direction:rtl">
+    </div>
     <div class="cities-grid" id="citiesGrid"></div>
+  </div>
+</div>
+
+<!-- Modal ی ٧ ڕۆژ -->
+<div id="weekModal" onclick="closeWeekModal(event)" style="display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.8);backdrop-filter:blur(8px)">
+  <div id="weekModalSheet" style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:linear-gradient(180deg,#0c2418,#060f0a);border-radius:24px 24px 0 0;border-top:1px solid rgba(46,204,113,.25);padding:14px 12px 36px;max-height:88vh;overflow-y:auto">
+    <div style="width:38px;height:4px;background:rgba(255,255,255,.18);border-radius:2px;margin:0 auto 10px"></div>
+    <!-- دوگمەی داخستن -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <button onclick="event.stopPropagation();document.getElementById('weekModal').style.display='none'" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+      <div id="weekModalTitle" style="font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;color:var(--green-light);text-align:center;flex:1">—</div>
+      <div style="width:34px"></div>
+    </div>
+    <div id="weekModalBody"></div>
   </div>
 </div>
 
 <div class="app">
 
-  <div class="hdr">
-    <button class="hdr-btn" id="locBtn" onclick="detectLocation()" title="دیاریکردنی شار بە لۆکەیشن">📍</button>
-    <div class="hdr-date">
-      <div class="hdr-day" id="dayName">—</div>
-      <div class="hdr-hijri" id="hijriDate">—</div>
+  <!-- هیدەری نوێ — وەک ویجێت -->
+  <div class="widget-hdr">
+    <!-- لۆکەیشن + ناوەکانی خوا -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <button onclick="openCityModal()" style="background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.25);border-radius:24px;padding:7px 18px;cursor:pointer;display:flex;align-items:center;gap:7px">
+        <span style="font-size:18px">📍</span>
+        <span id="whCity" style="font-size:16px;font-weight:800;color:var(--green-light);font-family:'Cairo',sans-serif">هەولێر</span>
+      </button>
+      <div id="allahName" style="font-family:'Amiri Quran','Amiri',serif;font-size:20px;color:rgba(255,215,100,.9);text-align:center;min-width:120px;transition:opacity 0.8s"></div>
     </div>
-    <div style="width:36px"></div>
+
+    <!-- ڕیزی سەرەوە: نوێکردنەوە + ناوی نوێژ | ناوی شار -->
+    <!-- کاتژمێر چەپ + هەموو بەرواری ٤ ساڵنامە ڕاست -->
+    <div class="wh-mid">
+      <div style="display:flex;align-items:baseline;gap:4px">
+        <div class="wh-clock" id="gcTime">—:——</div>
+        <div id="gcSec" style="font-size:22px;font-weight:600;color:rgba(255,255,255,.45);font-variant-numeric:tabular-nums;line-height:1;margin-bottom:4px">:00</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div id="dayName" style="font-size:14px;font-weight:800;color:#fff;text-align:right">—</div>
+        <div id="miladi2" style="font-size:11px;color:rgba(255,255,255,.55);text-align:right">—</div>
+        <div id="hijriDate" style="font-size:11px;color:var(--green-light);text-align:right">—</div>
+        <div id="kurdishDate" style="font-size:11px;color:rgba(255,200,100,.8);text-align:right">—</div>
+        <div id="hetawiDate" style="font-size:11px;color:rgba(150,200,255,.8);text-align:right">—</div>
+      </div>
+    </div>
+
+    <!-- progress bar -->
+    <div class="cd-bar" style="margin-bottom:8px"><div class="cd-fill" id="cdFill" style="width:50%"></div></div>
+
+    <!-- ڕیزی خوارەوە: هەموو ٦ نوێژ -->
+    <div class="wh-prayers" id="wPrayers"></div>
   </div>
 
   <!-- HOME -->
   <div class="pg active" id="pg-home">
 
-    <!-- ڕیزی سەرەوە: شار ڕاست + کاتژمێری شوشەیی چەپ -->
-    <div class="top-row">
-      <div class="glass-clock">
-        <div style="display:flex;align-items:baseline;gap:4px">
-          <div class="gc-time" id="gcTime">—:——</div>
-          <div class="gc-seconds" id="gcSec">:00</div>
-        </div>
-      </div>
-      <div class="city-pill" onclick="openCityModal()">
-        <div class="cdot"></div>
-        <span id="hdrCity">هەولێر</span>
-      </div>
-    </div>
-
-    <!-- ماوەی ماوە + ناوی نوێژی داهاتوو -->
-    <div class="cd-wrap">
-      <div class="cd-timer" id="cdTimer">—:——:——</div>
-      <div class="cd-bar"><div class="cd-fill" id="cdFill" style="width:50%"></div></div>
-      <div class="cd-tag">
-        <span id="nextName" style="color:var(--green-light);font-weight:700">—</span>
-        <span style="margin-right:4px" id="nextTime">—:——</span>
-      </div>
-    </div>
-
     <div class="plist-wrap" id="plist"></div>
 
-    <div class="bottom-bar">
-      <div class="bbar-txt" id="bottomBar">ئیمساک <span>—</span> — ئیفتار <span>—</span></div>
+    <!-- قورئان و زیکر -->
+    <div class="qz-grid">
+      <div class="qz-card" onclick="switchPage('quran')">
+        <div class="qz-icon">📖</div>
+        <div class="qz-title">قورئانی پیرۆز</div>
+        <div class="qz-sub">خوێندنەوەی ئایەتەکان</div>
+      </div>
+      <div class="qz-card" onclick="switchPage('zikr')">
+        <div class="qz-icon">📿</div>
+        <div class="qz-title">زیکر و دوعا</div>
+        <div class="qz-sub">زیکرەکانی ڕۆژانە</div>
+      </div>
+      <div class="qz-card" onclick="switchPage('hisn')" style="grid-column:1/-1">
+        <div class="qz-icon">🏰</div>
+        <div class="qz-title">قەڵای موسڵمان</div>
+        <div class="qz-sub">نزا و ویردەکانی ڕۆژانە — ١٢١ بەش</div>
+      </div>
     </div>
 
   </div>
@@ -493,54 +768,99 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 
   <!-- QIBLA -->
   <div class="pg" id="pg-qibla">
-    <div class="qwrap">
-      <div class="sec-lbl" style="text-align:center;margin-bottom:6px">🧭 قیبلەنما</div>
+    <div style="display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:14px">
 
-      <!-- کۆمپاس -->
-      <div class="compass-wrap">
-        <!-- ئەو دایرەیە کە بچوڵێ بە کۆمپاس -->
-        <div class="compass-ring" id="compassRing">
-          <!-- نیشانەی ئاراستەکان -->
-          <div class="cdir" style="top:8px;left:50%;transform:translateX(-50%)">ب</div>
-          <div class="cdir" style="bottom:8px;left:50%;transform:translateX(-50%)">ج</div>
-          <div class="cdir" style="right:8px;top:50%;transform:translateY(-50%)">ڕ</div>
-          <div class="cdir" style="left:8px;top:50%;transform:translateY(-50%)">ئ</div>
-          <!-- خاڵەکانی کەمەر -->
-          <div class="ctick n"></div>
-          <div class="ctick ne"></div>
-          <div class="ctick e"></div>
-          <div class="ctick se"></div>
-          <div class="ctick s"></div>
-          <div class="ctick sw"></div>
-          <div class="ctick w"></div>
-          <div class="ctick nw"></div>
+      <!-- سەردێڕ -->
+      <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:1px">ئاراستەی قیبلە : <span id="qAngle" style="color:var(--green-light)">—°</span></div>
+
+      <!-- کۆمپاسی گەورە -->
+      <div class="nq-compass">
+        <div class="nq-ring" id="compassRing">
+          <div class="nq-dir" style="top:12px;left:50%;transform:translateX(-50%)">N</div>
+          <div class="nq-dir" style="bottom:12px;left:50%;transform:translateX(-50%)">S</div>
+          <div class="nq-dir" style="right:12px;top:50%;transform:translateY(-50%)">E</div>
+          <div class="nq-dir" style="left:12px;top:50%;transform:translateY(-50%)">W</div>
         </div>
-
-        <!-- گێچی قیبلە — هەمیشە بەرەو کەعبە دەگەڕێتەوە -->
-        <div class="qibla-needle-wrap" id="qiblaNeedle">
-          <div class="qn-top">🕋</div>
-          <div class="qn-line"></div>
-          <div class="qn-bottom"></div>
+        <div class="nq-kaaba-wrap" id="qiblaNeedle">
+          <div class="nq-kaaba">🕋</div>
+          <div class="nq-needle-line"></div>
         </div>
-
-        <!-- ناوەند -->
-        <div class="compass-center"></div>
+        <div class="nq-diamond">
+          <div class="nq-d-top"></div>
+          <div class="nq-d-bottom"></div>
+          <div class="nq-d-dot"></div>
+        </div>
       </div>
 
-      <!-- زانیاری -->
-      <div class="qinfo-box" style="margin-top:12px">
-        <div class="qrow"><span class="qrow-lbl">ئاراستەی قیبلە</span><span class="qrow-val" id="qAngle">—°</span></div>
-        <div style="height:1px;background:rgba(255,255,255,.07)"></div>
-        <div class="qrow"><span class="qrow-lbl">دووری بۆ مەکە</span><span class="qrow-val" id="qDist">—</span></div>
-        <div style="height:1px;background:rgba(255,255,255,.07)"></div>
-        <div class="qrow"><span class="qrow-lbl" id="qSub" style="font-size:12px">— → مەکەی مکەررەمە</span></div>
-        <div style="height:1px;background:rgba(255,255,255,.07)"></div>
-        <div class="qrow"><span class="qrow-lbl">دۆخی کۆمپاس</span><span class="qrow-val" id="compassStatus" style="font-size:11px">چاوەڕێ...</span></div>
-      </div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5)">ناوچەکەی تۆ : <span id="qSub" style="color:rgba(255,255,255,.7)">—</span></div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5)">دووری بۆ مەکە : <span id="qDist" style="color:var(--green-light);font-weight:700">—</span></div>
+      <div id="compassStatus" style="font-size:12px;color:rgba(255,255,255,.4);text-align:center">چاوەڕێی چالاككردن...</div>
 
-      <button onclick="startCompass()" style="margin-top:10px;width:100%;padding:10px;border-radius:14px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.4);color:var(--green-light);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer">
-        📍 چالاککردنی کۆمپاس
+      <button onclick="startCompass()" style="width:100%;padding:12px;border-radius:14px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.4);color:var(--green-light);font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;cursor:pointer">
+        📍 چالاككردنی کۆمپاس
       </button>
+    </div>
+  </div>
+
+  <!-- QURAN PAGE -->
+  <div class="pg" id="pg-quran">
+    <div class="quran-page-wrap">
+      <div class="quran-hdr">
+        <button onclick="switchPage('home')" class="back-btn">←</button>
+        <div class="quran-hdr-title">📖 قورئانی پیرۆز</div>
+        <div style="width:36px"></div>
+      </div>
+      <div style="padding:0 12px 12px;overflow-y:auto;flex:1" id="suraList"></div>
+    </div>
+  </div>
+
+  <!-- SURA DETAIL PAGE -->
+  <div class="pg" id="pg-sura">
+    <div class="quran-page-wrap">
+      <div class="quran-hdr">
+        <button onclick="switchPage('quran')" class="back-btn">←</button>
+        <div id="suraTitle" class="quran-hdr-title">—</div>
+        <div style="width:36px"></div>
+      </div>
+      <div style="padding:16px;overflow-y:auto;flex:1">
+        <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        <div id="suraText" class="sura-text-wrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZIKR PAGE -->
+  <div class="pg" id="pg-zikr">
+    <div style="padding:16px 12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
+        <div style="font-size:17px;font-weight:800;color:#fff">📿 زیکر و دوعا</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="zikrList"></div>
+    </div>
+  </div>
+
+  <!-- HISN PAGE — قەڵای موسڵمان -->
+  <div class="pg fullscreen" id="pg-hisn">
+    <div style="padding:16px 12px 30px">
+      <!-- هیدەر -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
+        <div style="font-size:17px;font-weight:800;color:#fff">🏰 قەڵای موسڵمان</div>
+      </div>
+      <!-- بەشەکان -->
+      <div id="hisnList" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+  </div>
+
+  <!-- HISN DETAIL PAGE -->
+  <div class="pg fullscreen" id="pg-hisn-detail">
+    <div style="padding:16px 12px 30px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <button onclick="switchPage('hisn')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
+        <div id="hisnDetailTitle" style="font-size:15px;font-weight:800;color:var(--green-light);flex:1"></div>
+      </div>
+      <div id="hisnDetailBody" style="font-family:'Amiri Quran','Amiri',serif;font-size:18px;color:#f5f0e8;line-height:2;direction:rtl;text-align:justify"></div>
     </div>
   </div>
 
@@ -575,7 +895,10 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
   <!-- WIDGETS -->
   <div class="pg" id="pg-widgets">
     <div style="padding:16px 12px">
-      <div class="sec-lbl" style="margin-bottom:14px">📱 ویجێت</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
+        <div class="sec-lbl">📱 ویجێت</div>
+      </div>
 
       <!-- ویجێتی ئەندرۆیدی -->
       <div class="android-widget">
@@ -614,7 +937,6 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 
   <div class="bnav">
     <button class="nbtn active" id="nav-home" onclick="switchPage('home')"><span class="nicon">🕌</span><span class="nlabel">ماڵەوە</span></button>
-    <button class="nbtn" id="nav-widgets" onclick="switchPage('widgets')"><span class="nicon">📱</span><span class="nlabel">ویجێت</span></button>
     <button class="nbtn" id="nav-calendar" onclick="switchPage('calendar')"><span class="nicon">📅</span><span class="nlabel">ڕۆژژمێر</span></button>
     <button class="nbtn" id="nav-qibla" onclick="switchPage('qibla')"><span class="nicon">🧭</span><span class="nlabel">قیبلە</span></button>
     <button class="nbtn" id="nav-settings" onclick="switchPage('settings')"><span class="nicon">⚙️</span><span class="nlabel">ڕێکخستن</span></button>
@@ -624,23 +946,23 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 
 <script>
 const CITIES={
-  sulaymaniyah:{name:'سلێمانی',  qibla:228,dist:'٢٬٤٦١',t:[{h:4,m:58},{h:6,m:20},{h:12,m:15},{h:3,m:28},{h:6,m:7},{h:7,m:23}]},
-  hawler:      {name:'هەولێر',   qibla:231,dist:'٢٬٤٣٨',t:[{h:5,m:3},{h:6,m:31},{h:12,m:23},{h:3,m:34},{h:6,m:7},{h:7,m:22}]},
-  karkuk:      {name:'کەرکوک',   qibla:229,dist:'٢٬٤٤٥',t:[{h:5,m:0},{h:6,m:21},{h:12,m:18},{h:3,m:35},{h:6,m:8},{h:7,m:23}]},
-  halebja:     {name:'هەلەبجە',  qibla:227,dist:'٢٬٤٧٠',t:[{h:4,m:54},{h:6,m:26},{h:12,m:13},{h:3,m:29},{h:6,m:2},{h:7,m:15}]},
-  duhok:       {name:'دهۆک',     qibla:234,dist:'٢٬٣٩٨',t:[{h:5,m:5},{h:6,m:35},{h:12,m:27},{h:3,m:43},{h:6,m:13},{h:7,m:36}]},
-  kalar:       {name:'کەلار',    qibla:227,dist:'٢٬٤٦٠',t:[{h:4,m:59},{h:6,m:26},{h:12,m:15},{h:3,m:31},{h:6,m:2},{h:7,m:17}]},
-  chamchamal:  {name:'چەمچەماڵ', qibla:229,dist:'٢٬٤٥٠',t:[{h:5,m:7},{h:6,m:26},{h:12,m:17},{h:3,m:30},{h:6,m:8},{h:7,m:28}]},
-  akre:        {name:'ئاکرێ',    qibla:232,dist:'٢٬٤١٠',t:[{h:5,m:7},{h:6,m:33},{h:12,m:22},{h:3,m:40},{h:6,m:11},{h:7,m:26}]},
-  darbandikhan:{name:'دەربەندیخان',qibla:228,dist:'٢٬٤٥٥',t:[{h:4,m:57},{h:6,m:19},{h:12,m:14},{h:3,m:27},{h:6,m:6},{h:7,m:22}]},
-  zakho:       {name:'زاخۆ',     qibla:235,dist:'٢٬٣٧٨',t:[{h:5,m:6},{h:6,m:36},{h:12,m:28},{h:3,m:44},{h:6,m:14},{h:7,m:37}]},
-  ranya:       {name:'ڕانیە',    qibla:230,dist:'٢٬٤٤٩',t:[{h:5,m:1},{h:6,m:23},{h:12,m:18},{h:3,m:31},{h:6,m:10},{h:7,m:26}]},
-  qaladze:     {name:'قەڵادزێ',  qibla:229,dist:'٢٬٤٤٢',t:[{h:4,m:59},{h:6,m:21},{h:12,m:16},{h:3,m:29},{h:6,m:8},{h:7,m:24}]},
-  koye:        {name:'کۆیە',     qibla:229,dist:'٢٬٤٤٧',t:[{h:5,m:1},{h:6,m:29},{h:12,m:21},{h:3,m:32},{h:6,m:5},{h:7,m:20}]},
-  kifri:       {name:'کفری',     qibla:227,dist:'٢٬٤٩٢',t:[{h:5,m:1},{h:6,m:28},{h:12,m:17},{h:3,m:33},{h:6,m:4},{h:7,m:19}]},
-  bardarash:   {name:'بەردەرەش', qibla:232,dist:'٢٬٤٢٠',t:[{h:5,m:7},{h:6,m:33},{h:12,m:22},{h:3,m:40},{h:6,m:11},{h:7,m:26}]},
-  mosul:       {name:'موسڵ',     qibla:233,dist:'٢٬٣٩٠',t:[{h:5,m:4},{h:6,m:27},{h:12,m:23},{h:3,m:40},{h:6,m:12},{h:7,m:28}]},
-  penjwen:     {name:'پێنجوێن',  qibla:228,dist:'٢٬٤٦٥',t:[{h:4,m:56},{h:6,m:18},{h:12,m:13},{h:3,m:26},{h:6,m:5},{h:7,m:21}]},
+  sulaymaniyah:{name:'سلێمانی',  qibla:228,dist:'٢٬٤٦١',t:[{h:4,m:58},{h:6,m:20},{h:12,m:15},{h:15,m:28},{h:18,m:7},{h:19,m:23}]},
+  hawler:      {name:'هەولێر',   qibla:231,dist:'٢٬٤٣٨',t:[{h:5,m:3},{h:6,m:31},{h:12,m:23},{h:15,m:34},{h:18,m:7},{h:19,m:22}]},
+  karkuk:      {name:'کەرکوک',   qibla:229,dist:'٢٬٤٤٥',t:[{h:5,m:0},{h:6,m:21},{h:12,m:18},{h:15,m:35},{h:18,m:8},{h:19,m:23}]},
+  halebja:     {name:'هەلەبجە',  qibla:227,dist:'٢٬٤٧٠',t:[{h:4,m:54},{h:6,m:26},{h:12,m:13},{h:15,m:29},{h:18,m:2},{h:19,m:15}]},
+  duhok:       {name:'دهۆک',     qibla:234,dist:'٢٬٣٩٨',t:[{h:5,m:5},{h:6,m:35},{h:12,m:27},{h:15,m:43},{h:18,m:13},{h:19,m:36}]},
+  kalar:       {name:'کەلار',    qibla:227,dist:'٢٬٤٦٠',t:[{h:4,m:59},{h:6,m:26},{h:12,m:15},{h:15,m:31},{h:18,m:2},{h:19,m:17}]},
+  chamchamal:  {name:'چەمچەماڵ', qibla:229,dist:'٢٬٤٥٠',t:[{h:5,m:7},{h:6,m:26},{h:12,m:17},{h:15,m:30},{h:18,m:8},{h:19,m:28}]},
+  akre:        {name:'ئاکرێ',    qibla:232,dist:'٢٬٤١٠',t:[{h:5,m:7},{h:6,m:33},{h:12,m:22},{h:15,m:40},{h:18,m:11},{h:19,m:26}]},
+  darbandikhan:{name:'دەربەندیخان',qibla:228,dist:'٢٬٤٥٥',t:[{h:4,m:57},{h:6,m:19},{h:12,m:14},{h:15,m:27},{h:18,m:6},{h:19,m:22}]},
+  zakho:       {name:'زاخۆ',     qibla:235,dist:'٢٬٣٧٨',t:[{h:5,m:6},{h:6,m:36},{h:12,m:28},{h:15,m:44},{h:18,m:14},{h:19,m:37}]},
+  ranya:       {name:'ڕانیە',    qibla:230,dist:'٢٬٤٤٩',t:[{h:5,m:1},{h:6,m:23},{h:12,m:18},{h:15,m:31},{h:18,m:10},{h:19,m:26}]},
+  qaladze:     {name:'قەڵادزێ',  qibla:229,dist:'٢٬٤٤٢',t:[{h:4,m:59},{h:6,m:21},{h:12,m:16},{h:15,m:29},{h:18,m:8},{h:19,m:24}]},
+  koye:        {name:'کۆیە',     qibla:229,dist:'٢٬٤٤٧',t:[{h:5,m:1},{h:6,m:29},{h:12,m:21},{h:15,m:32},{h:18,m:5},{h:19,m:20}]},
+  kifri:       {name:'کفری',     qibla:227,dist:'٢٬٤٩٢',t:[{h:5,m:1},{h:6,m:28},{h:12,m:17},{h:15,m:33},{h:18,m:4},{h:19,m:19}]},
+  bardarash:   {name:'بەردەرەش', qibla:232,dist:'٢٬٤٢٠',t:[{h:5,m:7},{h:6,m:33},{h:12,m:22},{h:15,m:40},{h:18,m:11},{h:19,m:26}]},
+  mosul:       {name:'موسڵ',     qibla:233,dist:'٢٬٣٩٠',t:[{h:5,m:4},{h:6,m:27},{h:12,m:23},{h:15,m:40},{h:18,m:12},{h:19,m:28}]},
+  penjwen:     {name:'پێنجوێن',  qibla:228,dist:'٢٬٤٦٥',t:[{h:4,m:55},{h:6,m:17},{h:12,m:13},{h:15,m:27},{h:18,m:6},{h:19,m:22}]},
 };
 const PM=[
   {ku:'بەیانی',emoji:'🌙'},{ku:'گزنگ',emoji:'🌅',sr:true,nobell:true},
@@ -660,7 +982,17 @@ function fmt(h,m){
 function fmtAR(h,m){
   return AR(String(h).padStart(2,'0'))+':'+AR(String(m).padStart(2,'0'));
 }
-function findNext(t){const now=new Date(),nm=now.getHours()*60+now.getMinutes();for(let i=0;i<t.length;i++){if(i===1)continue;if(t[i].h*60+t[i].m>nm)return i;}return 0;}
+function findNext(t){
+  const now=new Date();
+  const nm=now.getHours()*60+now.getMinutes();
+  for(let i=0;i<t.length;i++){
+    if(i===1) continue; // گزنگ بەتەنها پیشان دەدرێت
+    const pm=t[i].h*60+t[i].m;
+    if(pm > nm) return i;
+  }
+  // هەموو نوێژەکانی ئەمڕۆ تێپەڕین — بەیانی بەیانی دەبێت
+  return 0;
+}
 function toHijri(date){
   // ئەلگۆریزمی ڕاست بۆ مێژووی هیجری
   const D=date.getDate(), M=date.getMonth()+1, Y=date.getFullYear();
@@ -689,26 +1021,71 @@ function toggleMute(i, e){
 let azanAudio = null;
 let customAzanURL = null;
 
-// بەکارهێنەر فایلی ئەزانی خۆی آپلۆد بکات
+// بارکردنی فایلی خەزنکراو لە localStorage
+function loadSavedAzan(){
+  const saved = localStorage.getItem('azanBase64');
+  const mime = localStorage.getItem('azanMime') || 'audio/mpeg';
+  if(saved){
+    const blob = base64ToBlob(saved, mime);
+    customAzanURL = URL.createObjectURL(blob);
+    azanAudio = new Audio(customAzanURL);
+    azanAudio.volume = 1.0;
+    const nameEl = document.getElementById('azanFileName');
+    const savedName = localStorage.getItem('azanName') || 'فایلی خەزنکراو';
+    if(nameEl) nameEl.textContent = '✅ '+savedName;
+  }
+}
+
+function base64ToBlob(base64, mime){
+  const bin = atob(base64);
+  const arr = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+  return new Blob([arr], {type: mime});
+}
+
 function loadAzanFile(input){
   const file = input.files[0];
   if(!file) return;
-  if(azanAudio){ azanAudio.pause(); azanAudio=null; }
-  customAzanURL = URL.createObjectURL(file);
-  azanAudio = new Audio(customAzanURL);
-  azanAudio.volume = 1.0;
-  showToast('✅ فایلی بانگ بارکرا: '+file.name);
+
+  const nameEl = document.getElementById('azanFileName');
+  if(nameEl) nameEl.textContent = '⏳ بارکردن...';
+
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const base64 = e.target.result.split(',')[1];
+    const mime = file.type || 'audio/mpeg';
+
+    // خەزن کردن لە localStorage
+    try{
+      localStorage.setItem('azanBase64', base64);
+      localStorage.setItem('azanMime', mime);
+      localStorage.setItem('azanName', file.name);
+    }catch(err){
+      // ئەگەر گەورەتر بوو لە حەد
+      if(nameEl) nameEl.textContent = '⚠️ فایلەکە زۆر گەورەیە';
+      return;
+    }
+
+    // دروست کردنی Audio
+    if(azanAudio){ azanAudio.pause(); azanAudio=null; }
+    const blob = base64ToBlob(base64, mime);
+    customAzanURL = URL.createObjectURL(blob);
+    azanAudio = new Audio(customAzanURL);
+    azanAudio.volume = 1.0;
+
+    if(nameEl) nameEl.textContent = '✅ '+file.name;
+    showToast('✅ فایلی بانگ خەزنکرا — هەر کاتێک کردیتەوە ئۆتۆماتیک بار دەبێت');
+  };
+  reader.readAsDataURL(file);
 }
 
 function playAzan(){
-  try{
-    if(azanAudio){
-      azanAudio.currentTime = 0;
-      azanAudio.play().catch(e=>{ showToast('⚠️ فایلی بانگت آپلۆد بکە'); });
-      return;
-    }
-    showToast('⚠️ فایلی بانگت آپلۆد بکە لە ڕێکخستن');
-  }catch(err){}
+  if(azanAudio){
+    azanAudio.currentTime = 0;
+    azanAudio.play().catch(()=>{ showToast('⚠️ فایلی بانگت ئەپلۆد بکە لە ڕێکخستن'); });
+    return;
+  }
+  showToast('⚠️ فایلی بانگت ئەپلۆد بکە لە ڕێکخستن');
 }
 
 function stopAzan(){
@@ -717,9 +1094,12 @@ function stopAzan(){
 
 function renderPrayers(){
   const c=CITIES[CUR],times=c.t,now=new Date(),ni=findNext(times),nm=now.getHours()*60+now.getMinutes();
-  const list=document.getElementById('plist');list.innerHTML='';
+  const list=document.getElementById('plist');if(list)list.innerHTML='';
   times.forEach((t,i)=>{
-    const meta=PM[i],passed=t.h*60+t.m<nm&&i!==ni,isNext=i===ni;
+    const meta=PM[i];
+    const tMin=t.h*60+t.m;
+    const isNext=i===ni;
+    const passed = isNext ? false : (ni===0 ? tMin < nm && i!==0 : tMin < nm);
     const muted=!!mutedPrayers[i];
     const row=document.createElement('div');
     row.className='prow'+(isNext?' is-active':'')+(passed?' is-passed':'');
@@ -731,16 +1111,21 @@ function renderPrayers(){
       </div>
       ${bellBtn}
       <div class="p-time">${fmt(t.h,t.m)}</div>`;
-    list.appendChild(row);
+    if(list)list.appendChild(row);
   });
-  document.getElementById('nextName').textContent=PM[ni].ku;
-  document.getElementById('nextTime').textContent=fmt(times[ni].h,times[ni].m);
+  // widget header نوێژی داهاتوو
+  const wnn=document.getElementById('wNextName');
+  const wnt=document.getElementById('wNextTime');
+  if(wnn) wnn.textContent=PM[ni].ku;
+  if(wnt) wnt.textContent=fmt(times[ni].h,times[ni].m);
+  // bottom bar
   ['cImsak','cIftar','cSunrise','cSunset'].forEach((id,i)=>{
     const map=[times[0],times[4],times[1],times[4]],el=document.getElementById(id);
     if(el)el.textContent=fmtAR(map[i].h,map[i].m);
   });
   const bt=document.getElementById('bottomBar');
   if(bt)bt.innerHTML=`ئیمساک <span>${fmt(times[0].h,times[0].m)}</span> &nbsp;—&nbsp; ئیفتار <span>${fmt(times[4].h,times[4].m)}</span>`;
+  renderWidgetPrayers();
 }
 
 let lastAzanMinute = -1;
@@ -755,24 +1140,25 @@ function tick(){
   if(gcT) gcT.textContent=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
   if(gcS) gcS.textContent=':'+String(ss).padStart(2,'0');
 
+  // widget header — نوێژی داهاتوو
+  const wnn=document.getElementById('wNextName');
+  const wnt=document.getElementById('wNextTime');
+  if(wnn) wnn.textContent=PM[ni].ku;
+  if(wnt) wnt.textContent=fmt(nxt.h,nxt.m);
+
   // countdown
   const pd=new Date();pd.setHours(nxt.h,nxt.m,0,0);if(pd<=now)pd.setDate(pd.getDate()+1);
   const diff=Math.max(0,Math.floor((pd-now)/1e3));
   const dh=Math.floor(diff/3600),dm=Math.floor((diff%3600)/60),ds=diff%60;
-  const cdTxt=dh+':'+String(dm).padStart(2,'0')+':'+String(ds).padStart(2,'0');
-  document.getElementById('cdTimer').textContent=cdTxt;
-  // ویجێت countdown
-  const wgCd=document.getElementById('wg-cd');
-  if(wgCd) wgCd.textContent='⏱ '+cdTxt;
-  const wgT=document.getElementById('wg-time');
-  if(wgT) wgT.textContent=fmt(nxt.h,nxt.m);
-  const wgN=document.getElementById('wg-name');
-  if(wgN) wgN.textContent=PM[ni].ku;
+
+  // progress bar
   let pi=ni-1;if(pi<0)pi=5;if(pi===1)pi=0;
   const prev=times[pi],pm2=prev.h*60+prev.m,nm2=nxt.h*60+nxt.m;
   const nowMin=hh*60+mm+ss/60;
   const total=(nm2-pm2+1440)%1440||180,elapsed=(nowMin-pm2+1440)%1440;
-  document.getElementById('cdFill').style.width=Math.max(3,Math.min(97,(elapsed/total)*100))+'%';
+  const pct=Math.max(3,Math.min(97,(elapsed/total)*100));
+  const fill=document.getElementById('cdFill');
+  if(fill) fill.style.width=pct+'%';
 
   // دەنگی ئەزان
   const curMin=hh*60+mm;
@@ -782,6 +1168,7 @@ function tick(){
         lastAzanMinute=curMin;
         playAzan();
         showToast('🕌 کاتی بانگی '+PM[i].ku+'ە');
+        showPlist();
         renderPrayers();
       }
     });
@@ -789,10 +1176,656 @@ function tick(){
 }
 
 function renderDate(){
-  const now=new Date(),h=toHijri(now);
-  document.getElementById('hijriDate').textContent=AR(h.d)+' '+HM[h.m-1]+' '+AR(h.y);
-  document.getElementById('dayName').textContent=DK[now.getDay()]+' '+now.getDate()+' '+KM[now.getMonth()]+' '+now.getFullYear();
+  const now=new Date();
+  // میلادی
+  const miladi = now.getDate()+' '+KM[now.getMonth()]+' '+now.getFullYear();
+  const day = DK[now.getDay()];
+  // هیجری
+  const h=toHijri(now);
+  const hijri = AR(h.d)+' '+HM[h.m-1]+' '+AR(h.y);
+  // کوردی (ساڵنامەی کوردی — ساڵی کوردی = میلادی + 700 بەراورد)
+  const kurdishYear = now.getFullYear() + 700;
+  const kurdishMonths=['خاکەلێوە','گوڵان','جۆزەردان','پووشپەڕ','گەلاوێژ','خەرمانان','ڕەزبەر','گەڵاڕێزان','سەرماوەز','بەفرانبار','ڕێبەندان','نەورۆز'];
+  const kurdish = now.getDate()+' '+kurdishMonths[now.getMonth()]+' '+AR(kurdishYear);
+  // هەتاوی (ساڵی ئیرانی — نزیک)
+  const hetawiYear = now.getFullYear() - 621;
+  const hetawiMonths=['خاکەلێوە','گوڵان','جۆزەردان','تیر','مرداد','شەهریوەر','مەهر','ئابان','ئازەر','دی','بەهمەن','ئەسفەند'];
+  // محاسبەی مانگی هەتاوی
+  const jd = Math.floor(now.getTime()/86400000) + 2440588;
+  const dep = jd - 2121446;
+  const hm = Math.floor((dep % 365.25) / 30.44);
+  const hd = now.getDate();
+  const hetawi = hd+' '+hetawiMonths[Math.min(hm,11)]+' '+AR(hetawiYear);
+
+  document.getElementById('dayName').textContent = day;
+  document.getElementById('miladi2').textContent = miladi;
+  document.getElementById('hijriDate').textContent = '☪️ '+hijri;
+  const kd=document.getElementById('kurdishDate');
+  if(kd) kd.textContent = '🌿 '+kurdish;
+  const htd=document.getElementById('hetawiDate');
+  if(htd) htd.textContent = '☀️ '+hetawi;
 }
+
+let plistOpen = false;
+function togglePlist(){
+  plistOpen = !plistOpen;
+  const wrap = document.getElementById('plist');
+  const arr1 = document.getElementById('plistArrow');
+  const arr2 = document.getElementById('plistArrow2');
+  const txt = document.getElementById('plistToggleTxt');
+  if(plistOpen){
+    wrap.classList.remove('collapsed');
+    arr1.classList.add('open'); arr2.classList.add('open');
+    txt.textContent = 'داخستنی کاتەکانی نوێژ';
+  } else {
+    wrap.classList.add('collapsed');
+    arr1.classList.remove('open'); arr2.classList.remove('open');
+    txt.textContent = 'کاتەکانی نوێژ';
+  }
+}
+
+function showPlist(){
+  if(!plistOpen){ togglePlist(); }
+}
+
+function renderWidgetPrayers(){
+  const c=CITIES[CUR],times=c.t,ni=findNext(times);
+  const wrap=document.getElementById('wPrayers');
+  if(!wrap) return;
+  wrap.innerHTML='';
+  times.forEach((t,i)=>{
+    if(i===1) return;
+    const isActive=i===ni;
+    const div=document.createElement('div');
+    div.className='wh-p'+(isActive?' active':'');
+    div.innerHTML=`<div class="wh-p-name">${PM[i].ku}</div><div class="wh-p-time">${fmt(t.h,t.m)}</div>`;
+    wrap.appendChild(div);
+  });
+}
+
+const DAY_KU=['یەکشەممە','دووشەممە','سێشەممە','چوارشەممە','پێنجشەممە','هەینی','شەممە'];
+
+function showWeek7(prayerIdx){
+  const c=CITIES[CUR];
+  const pName=PM[prayerIdx].ku;
+  const coord=COORDS[CUR]||{lat:36.19,lng:44.01};
+
+  document.getElementById('weekModalTitle').textContent='🕌 '+pName+' — ٧ ڕۆژی داهاتوو';
+  document.getElementById('weekModal').style.display='block';
+
+  // حیسابی ئاستەرۆنۆمی بەبێ API
+  const pNames=['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+  let html='<div style="display:flex;flex-direction:column;gap:8px">';
+  for(let d=0;d<7;d++){
+    const date=new Date(); date.setDate(date.getDate()+d);
+    const isToday=d===0;
+    const dayName=DAY_KU[date.getDay()];
+    const miladi=date.getDate()+' '+KM[date.getMonth()];
+    const hj=toHijri(date);
+    const hijri=AR(hj.d)+' '+HM[hj.m-1];
+    const times=calcPrayerTimes(date, coord.lat, coord.lng);
+    const pTime=times[pNames[prayerIdx]]||fmt(c.t[prayerIdx].h,c.t[prayerIdx].m);
+    html+=`<div style="background:${isToday?'rgba(46,204,113,.15)':'rgba(255,255,255,.05)'};border:1px solid ${isToday?'rgba(46,204,113,.4)':'rgba(255,255,255,.08)'};border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:${isToday?'800':'600'};color:${isToday?'var(--green-light)':'#fff'}">${isToday?'ئەمڕۆ — ':''} ${dayName}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">🗓 ${miladi} &nbsp;☪️ ${hijri}</div>
+      </div>
+      <div style="font-family:'Cairo',sans-serif;font-size:22px;font-weight:800;color:${isToday?'var(--green-light)':'#fff'}">${pTime}</div>
+    </div>`;
+  }
+  html+='</div>';
+  document.getElementById('weekModalBody').innerHTML=html;
+}
+
+// ── فۆرموڵای حیسابی کاتی نوێژ ──────────────────
+function calcPrayerTimes(date, lat, lng){
+  const JD=julianDay(date);
+  const D=JD-2451545.0;
+  const g=(357.529+0.98560028*D)%360;
+  const q=(280.459+0.98564736*D)%360;
+  const L=(q+1.915*sin(g)+0.020*sin(2*g))%360;
+  const e=23.439-0.00000036*D;
+  const RA=atan2(cos(e)*sin(L),cos(L))/15;
+  const d=asin(sin(e)*sin(L));
+  const EqT=q/15-RA;
+  // وقت نیوەڕۆ
+  const Tnoon=12+EqT-lng/15;
+  // بەرزیی خورشێد
+  function HA(elev){ return acos((sin(elev)-sin(lat)*sin(d))/(cos(lat)*cos(d))); }
+  const Tfajr   = Tnoon - HA(-18)/15;
+  const Tsunrise= Tnoon - HA(-0.8333)/15;
+  const Tdhuhr  = Tnoon + 0.033;
+  const shadow  = 1; // شافیعی
+  const Tasr    = Tnoon + acos((sin(atan(1/(shadow+tan(Math.abs(lat-d)*Math.PI/180))))-sin(lat)*sin(d))/(cos(lat)*cos(d)))/15;
+  const Tsunset = Tnoon + HA(-0.8333)/15;
+  const Tmaghrib= Tsunset + 2/60;
+  const Tisha   = Tnoon + HA(-17)/15;
+
+  // GMT+3 هەرێمی کوردستان
+  const tz=3;
+  function toStr(t){ const h=Math.floor(t+tz)%24,m=Math.round((t+tz-Math.floor(t+tz))*60); return fmt(h<0?h+24:h,m<0?m+60:m); }
+  return {Fajr:toStr(Tfajr),Sunrise:toStr(Tsunrise),Dhuhr:toStr(Tdhuhr),Asr:toStr(Tasr),Maghrib:toStr(Tmaghrib),Isha:toStr(Tisha)};
+}
+
+function julianDay(date){
+  const y=date.getFullYear(),m=date.getMonth()+1,d=date.getDate();
+  const A=Math.floor(y/100),B=2-A+Math.floor(A/4);
+  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5;
+}
+function sin(d){return Math.sin(d*Math.PI/180)}
+function cos(d){return Math.cos(d*Math.PI/180)}
+function tan(d){return Math.tan(d*Math.PI/180)}
+function asin(x){return Math.asin(x)*180/Math.PI}
+function acos(x){return isNaN(x)?0:Math.acos(Math.max(-1,Math.min(1,x)))*180/Math.PI}
+function atan2(y,x){return Math.atan2(y,x)*180/Math.PI}
+
+function _showWeek7Static(prayerIdx){
+  showWeek7(prayerIdx);
+}
+
+function closeWeekModal(e){
+  const sheet=document.getElementById('weekModalSheet');
+  if(sheet && !sheet.contains(e.target))
+    document.getElementById('weekModal').style.display='none';
+}
+
+// ── قەڵای موسڵمان ───────────────────────────────
+const HISN_CHAPTERS = [
+  {id:1,  t:'فەزڵ و گەورەی زیکر'},
+  {id:2,  t:'ویردەکانی لە خەو هەستان'},
+  {id:3,  t:'لەبەرکردنی پۆشاک'},
+  {id:4,  t:'لەبەرکردنی پۆشاکی نوێ'},
+  {id:5,  t:'ئەگەر کەسێک پۆشاکی نوێی پۆشی'},
+  {id:6,  t:'لەکاتی دانانی پۆشاکەکەتدا'},
+  {id:7,  t:'نزای چوونە سەرئاو'},
+  {id:8,  t:'نزای هاتنەدەرەوە لە سەرئاو'},
+  {id:9,  t:'زیکری پێش دەست نوێژ'},
+  {id:10, t:'زیکری دوای دەست نوێژ'},
+  {id:11, t:'زیکری چوونەدەرەوە لەماڵ'},
+  {id:12, t:'زیکری گەڕانەوە بۆ ماڵەوە'},
+  {id:13, t:'نزای ڕۆشتن بۆ مزگەوت'},
+  {id:14, t:'نزای چوونەناو مزگەوت'},
+  {id:15, t:'نزای هاتنەدەرەوە لەمزگەوت'},
+  {id:16, t:'زیکرەکانی بانگ'},
+  {id:17, t:'نزای دەستپێکردنی دەست نوێژ'},
+  {id:18, t:'نزای چەمینەوە (ڕوکوع)'},
+  {id:19, t:'نزای ڕاست بوونەوە'},
+  {id:20, t:'نزای کڕنوش بردن'},
+  {id:21, t:'نزای دانیشتنی نێوانی کڕنوشەکان'},
+  {id:22, t:'دوعای کڕنوشی قورئان خوێندن'},
+  {id:23, t:'تەحیات'},
+  {id:24, t:'سەڵاواتدان لە دوای تەحیات'},
+  {id:25, t:'نزای دوای تەحیاتی کۆتایی پێش سڵاودانەوە'},
+  {id:26, t:'ویردەکانی دوای نوێژ'},
+  {id:27, t:'نزای نوێژی ئیستیخارە'},
+  {id:28, t:'ویردەکانی بەیانیان'},
+  {id:29, t:'ویردەکانی ئێواران'},
+  {id:30, t:'ویردەکانی خەوتن'},
+  {id:31, t:'نزاکردن لەکاتی وەرگێڕان لە شەودا'},
+  {id:32, t:'ئەگەر لەخەودا داچڵەکیت'},
+  {id:33, t:'ئەگەر خەونی ناخۆشت بینی'},
+  {id:34, t:'نزای قونوتی نوێژی تاک'},
+  {id:35, t:'نزاکردن لە دوژمن'},
+  {id:36, t:'ویردی دوای سڵاودانەوە لە نوێژی ویتر'},
+  {id:37, t:'نزای خەفەت و دڵتەنگی'},
+  {id:38, t:'نزای تەنگانە و ناڕەحەتی'},
+  {id:39, t:'بەرەنگاربوونەوەی دوژمن و خاوەن دەسەڵات'},
+  {id:40, t:'ئەگەر ترسایت لە ستەمی دەسەڵات دارێک'},
+  {id:41, t:'ئەگەر لە کۆمەڵەیەک ترسایت'},
+  {id:42, t:'ئەگەر توشی گومان بویت لە ئیمان'},
+  {id:43, t:'نزای دانەوەی قەرز'},
+  {id:44, t:'ئەگەر تاوانێکت ئەنجامدا'},
+  {id:45, t:'دەرکردنی شەیتان و وەسوەسەکانی'},
+  {id:46, t:'ئەگەر کارێکت بەسەردا چەسپێنرا'},
+  {id:47, t:'پیرۆزبایی کردن لە منداڵبوون'},
+  {id:48, t:'بەچی منداڵ پەنا دەدرێت'},
+  {id:49, t:'نزا بۆ نەخۆش لەکاتی سەردانکردندا'},
+  {id:50, t:'فەزڵ و گەورەیی سەردان کردنی نەخۆش'},
+  {id:51, t:'نزای ئەو نەخۆشەی کە بێئومێد بووە'},
+  {id:52, t:'ئامۆژگاری کردنی کەسێک کە لە سەرە مەرگدایە'},
+  {id:53, t:'ئەگەر تووشی ناڕەحەتی و موسیبەتێک بیت'},
+  {id:54, t:'نزاکردن لە کاتی چاو داخستنی مردوودا'},
+  {id:55, t:'نزاکردن بۆ مردوو لە نوێژی مردوودا'},
+  {id:56, t:'نزاکردن بۆ منداڵ لە نوێژی مردوودا'},
+  {id:57, t:'نزای سەرە خۆشی لە خاوەن مردوو'},
+  {id:58, t:'نزاکردن لەکاتی مردوو کردنە ناو گۆڕ'},
+  {id:59, t:'نزاکردن لە دوای ناشتنی مردوو'},
+  {id:60, t:'نزای سەردانکردنی گۆرستان'},
+  {id:61, t:'نزا و پاڕانەوەی با'},
+  {id:62, t:'نزاکردن لەکاتی هەورە بروسکەدا'},
+  {id:63, t:'لە نزاکانی باران بارین'},
+  {id:64, t:'نزاکردن لەکاتی باران باریندا'},
+  {id:65, t:'ویردی دوای باران بارین'},
+  {id:66, t:'لە نزاکانی نەمانی باران'},
+  {id:67, t:'نزای بینینی مانگی یەک شەوە'},
+  {id:68, t:'نزای ڕۆژوو شکاندن'},
+  {id:69, t:'نزای پێش خواردن'},
+  {id:70, t:'نزاکردن لەکاتی تەواوبوونی خواردندا'},
+  {id:71, t:'نزای میوان بۆ خاوەن خواردن'},
+  {id:72, t:'نزاکردن بۆ ئەوەی کە ئاو یان خواردنێکت بۆ دێنێت'},
+  {id:73, t:'نزاکردن ئەگەر لە لای خێزانی ماڵێک بەر بانگی کردەوە'},
+  {id:74, t:'ئەگەر خواردن ئامادە بوو ڕۆژووی نەشکاند'},
+  {id:75, t:'ڕۆژووەوان چی دەڵێت ئەگەر جوێنی پێدا'},
+  {id:76, t:'نزاکردن لەکاتی بینینی نۆبەرەی خۆراک و میوە'},
+  {id:77, t:'نزای پشمین'},
+  {id:78, t:'ئەگەر بێ باوەڕێک پژمی و وتی الحمدلله'},
+  {id:79, t:'نزاکردن بۆ ژن و مێردی تازە'},
+  {id:80, t:'نزای گواستنەوەی ژن'},
+  {id:81, t:'نزاکردن پێش سەرجێیی ژن و مێرد'},
+  {id:82, t:'نزاکردن لەکاتی توڕەییدا'},
+  {id:83, t:'ئەگەر کەسێکی توش بوو بە بەڵایەک'},
+  {id:84, t:'چی دەگوترێت لە کۆڕ و مەجلیسدا'},
+  {id:85, t:'کەفارەتی کۆڕ و مەجلیس'},
+  {id:86, t:'نزاکردن ئەگەر کەسێک پێی گوتیت خودا لێت خۆشببێت'},
+  {id:87, t:'ئەگەر چاکەیان بەرامبەر کردیت'},
+  {id:88, t:'خۆپاراستن لە فیتنەی دەجال'},
+  {id:89, t:'ئەگەر کەسێک پێی وتی لەبەر خودا خۆشم دەوێیت'},
+  {id:90, t:'ئەگەر کەسێک سامانەکەی خستە ڕووت'},
+  {id:91, t:'ئەگەر قەرزت گەڕاندەوە بۆ خاوەن قەرز'},
+  {id:92, t:'ترسان لە کەوتنە ناو هاوەڵدانان بۆ خودا'},
+  {id:93, t:'ئەگەر پێیان وتی خودا بەپیت و بەرەکەتت بکات'},
+  {id:94, t:'نزای نادروستی شومێتی دانە پاڵ شتێک'},
+  {id:95, t:'نزای سواری (ئاژەڵ، سەیارە)'},
+  {id:96, t:'نزای گەشت (سەفەر)'},
+  {id:97, t:'نزای چوونەناو گوند و شار'},
+  {id:98, t:'نزای چوونە بازاڕ'},
+  {id:99, t:'نزای پێ هەڵکەوتنی ئاژەڵ لەکاتی سواریدا'},
+  {id:100,t:'نزای گەشتیار بۆ نیشتەجێ'},
+  {id:101,t:'نزای نیشتەجێ بۆ گەشتیار'},
+  {id:102,t:'الله أكبر و سبحان الله کردن لەکاتی گەشتدا'},
+  {id:103,t:'ئەگەر گەشتیار پارشێوی بەسەردا هات'},
+  {id:104,t:'کاتێک لەگەشتەکەی دا دەبەزیت'},
+  {id:105,t:'ویردی گەڕانەوە لە گەشت'},
+  {id:106,t:'لەکات هاتنی خۆشیەک یان ناخۆشیەک'},
+  {id:107,t:'سەڵاوات دان لەسەر پێغەمبەر ﷺ'},
+  {id:108,t:'بڵاو کردنەوەی سڵاو'},
+  {id:109,t:'چۆن وەڵامی بێ باوەڕ دەدەیتەوە'},
+  {id:110,t:'لەکاتی بیستنی دەنگی کەڵەشێر'},
+  {id:111,t:'لەکاتی بیستنی وەڕەی سەگ لە شەودا'},
+  {id:112,t:'ئەگەر جوێنت بەکەسێک دا'},
+  {id:113,t:'لەکاتی پیاهەڵدان و مەدح کردنی موسوڵمانێکدا'},
+  {id:114,t:'کاتێک مەدح و ستایش کرایت'},
+  {id:115,t:'چۆن تەلبیە دەکرێت لەکاتی حەج یان عومرەدا'},
+  {id:116,t:'الله أكبر کردن لەکاتی گەیشتن بە بەردە ڕەشەکە'},
+  {id:117,t:'نزای نێوان گۆشەی یەمانی و بەردە رەشەکە'},
+  {id:118,t:'نزای وەستان لەسەر صەفا و مەروە'},
+  {id:119,t:'نزای ڕۆژی عەرەفە'},
+  {id:120,t:'ویردی لای المزدلفة'},
+  {id:121,t:'نزای فیدیەی ڕومالی سەر'},
+];
+
+function renderHisn(){
+  const list = document.getElementById('hisnList');
+  if(!list) return;
+  list.innerHTML = HISN_CHAPTERS.map(c=>`
+    <div onclick="showHisnChapter(${c.id})"
+      style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all .2s"
+      onmousedown="this.style.background='rgba(46,204,113,.15)'" onmouseup="this.style.background='rgba(255,255,255,.06)'">
+      <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:600;color:#fff;direction:rtl">${c.id}— ${c.t}</div>
+      <span style="color:rgba(46,204,113,.7);font-size:13px">❯</span>
+    </div>`).join('');
+}
+
+// ── ناوەڕۆکی قەڵای موسڵمان — ناوخۆیی ──────────
+const HISN_DATA = {
+1: `<div class="hisn-item"><div class="hisn-ar">قَالَ رَسُولُ اللَّهِ ﷺ: أَلَا أُنَبِّئُكُمْ بِخَيْرِ أَعْمَالِكُمْ وَأَزْكَاهَا عِنْدَ مَلِيكِكُمْ وَأَرْفَعِهَا فِي دَرَجَاتِكُمْ وَخَيْرٌ لَكُمْ مِنْ إِنْفَاقِ الذَّهَبِ وَالْوَرِقِ وَخَيْرٌ لَكُمْ مِنْ أَنْ تَلْقَوْا عَدُوَّكُمْ فَتَضْرِبُوا أَعْنَاقَهُمْ وَيَضْرِبُوا أَعْنَاقَكُمْ؟ قَالُوا: بَلَى، قَالَ: ذِكْرُ اللَّهِ تَعَالَى</div><div class="hisn-ku">پێغەمبەر ﷺ فەرموی: ئایا ئاگاتان بکەم لەو کردەوەیەی کە لە هەموو کردەوەکانتان باشترە و پاکیزەترە لەلای پەروەردگارتان؟ ئەویش زیکری خوای گەورەیە</div></div>`,
+
+2: `<div class="hisn-item"><div class="hisn-ar">الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ</div><div class="hisn-ku">ستایش بۆ خوایە کە پاش میراندنمان زیندوومان کردەوە و گەڕانەوەش بۆ ئەویە</div><div class="hisn-count">١ جار</div></div>`,
+
+3: `<div class="hisn-item"><div class="hisn-ar">بِسْمِ اللَّهِ</div><div class="hisn-ku">بە ناوی خوا</div><div class="hisn-count">لەکاتی لەبەرکردندا</div></div>
+<div class="hisn-item"><div class="hisn-ar">اَلْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ</div><div class="hisn-ku">ستایش بۆ خوایە کە ئەم جلەی پۆشاندم و ڕووزیم دایە بەبێ هیچ هێز و توانایەکی لە لام</div></div>`,
+
+4: `<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ، أَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَا صُنِعَ لَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّهِ وَشَرِّ مَا صُنِعَ لَهُ</div><div class="hisn-ku">خوایە ستایش بۆتە، تۆ پۆشاندتم، داوای باشی دەکەم و پەناهم دەبەم لە خراپەکەیەتی</div></div>`,
+
+7: `<div class="hisn-item"><div class="hisn-ar">بِسْمِ اللَّهِ، اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ</div><div class="hisn-ku">بە ناوی خوا، خوایە پەناهت دەبەم لە جنی نێر و مێ</div></div>`,
+
+8: `<div class="hisn-item"><div class="hisn-ar">غُفْرَانَكَ</div><div class="hisn-ku">لێبوردنت داوا دەکەم</div></div>`,
+
+9: `<div class="hisn-item"><div class="hisn-ar">بِسْمِ اللَّهِ</div><div class="hisn-ku">بە ناوی خوا</div></div>`,
+
+10: `<div class="hisn-item"><div class="hisn-ar">أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّداً عَبْدُهُ وَرَسُولُهُ</div><div class="hisn-ku">گواهی دەدەم کە هیچ خودایەک نییە جگە لە اللە، تەنیا بێ هاوبەش، و گواهی دەدەم کە محەمەد بەندە و نێردراوی ئەویە</div></div>
+<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ اجْعَلْنِي مِنَ التَّوَّابِينَ، وَاجْعَلْنِي مِنَ الْمُتَطَهِّرِينَ</div><div class="hisn-ku">خوایە منیش لەو کەسانەم بکە کە زۆر تەوبە دەکەن و پاکیزەن</div></div>`,
+
+11: `<div class="hisn-item"><div class="hisn-ar">بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ</div><div class="hisn-ku">بە ناوی خوا، پشتم بە خوادا بەستووە، هیچ هێز و توانایەک نییە جگە بە خوا</div></div>`,
+
+12: `<div class="hisn-item"><div class="hisn-ar">آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ</div><div class="hisn-ku">گەڕاینەوە، تەوبەکارین، عیبادەتکاری پەروەردگارمانین، ستایشی دەکەین</div></div>`,
+
+16: `<div class="hisn-item"><div class="hisn-ar">وَمِثْلَ مَا يَقُولُ الْمُؤَذِّنُ</div><div class="hisn-ku">وەک ئەوەی بانگدەر دەڵێت دووباره بکەرەوە</div></div>
+<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ آتِ مُحَمَّداً الْوَسِيلَةَ وَالْفَضِيلَةَ</div><div class="hisn-ku">خوایە، پەروەردگاری ئەم بانگی تەواو و نوێژی دادەنراو، محەمەدت بدەرێ بە وەسیلە و فەزیلەت</div></div>`,
+
+26: `<div class="hisn-item"><div class="hisn-ar">أَسْتَغْفِرُ اللَّهَ (٣)</div><div class="hisn-ku">داوای لێبوردن دەکەم لە خوا</div><div class="hisn-count">٣ جار</div></div>
+<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ</div><div class="hisn-ku">خوایە تۆ سەلامی و سەلامیش لەتەوەیە، بەرەکەتداری ئەی خاوەن شکۆ و ئیکرام</div></div>
+<div class="hisn-item"><div class="hisn-ar">لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ</div><div class="hisn-ku">هیچ خودایەک نییە جگە لە اللە، تەنیا بێ هاوبەش، مولکەکەی بۆیە و ستایشەکەی بۆیە</div><div class="hisn-count">٣ جار</div></div>
+<div class="hisn-item"><div class="hisn-ar">سُبْحَانَ اللَّهِ (٣٣) — الْحَمْدُ لِلَّهِ (٣٣) — اللَّهُ أَكْبَرُ (٣٤)</div><div class="hisn-ku">پاکی خوا (٣٣) — ستایش بۆ خوا (٣٣) — خوا گەورەترە (٣٤)</div></div>`,
+
+28: `<div class="hisn-item"><div class="hisn-ar">أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ</div><div class="hisn-ku">سبەح کردین و مولکەکەش بۆ خوایە، ستایش بۆ خوا، هیچ خودایەک نییە جگە لە اللە تەنیا</div><div class="hisn-count">١ جار</div></div>
+<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ</div><div class="hisn-ku">خوایە بە تۆ سبەح کردین و بە تۆ ئێواره کردین و بە تۆ دەژین و دەمرین و گەڕانەوەش بۆ تۆیە</div></div>
+<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ</div><div class="hisn-ku">خوایە تۆ پەروەردگاری منی، هیچ خودایەک نییە جگە لەتۆ، تۆ دروستت کردوومە و من بەندەتەم</div></div>
+<div class="hisn-item"><div class="hisn-ar">بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ</div><div class="hisn-ku">بە ناوی خوا کە هیچ شت زیانی پێ نادات لە زەوی و ئاسماندا و ئەویش بیستەر و زانایە</div><div class="hisn-count">٣ جار</div></div>`,
+
+29: `<div class="hisn-item"><div class="hisn-ar">أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ</div><div class="hisn-ku">ئێواره کردین و مولکەکەش بۆ خوایە، ستایش بۆ خوا، هیچ خودایەک نییە جگە لە اللە</div><div class="hisn-count">١ جار</div></div>
+<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ</div><div class="hisn-ku">خوایە بە تۆ ئێواره کردین و بە تۆ سبەح دەکەین و بە تۆ دەژین و دەمرین و گەڕانەوەش بۆ تۆیە</div></div>`,
+
+30: `<div class="hisn-item"><div class="hisn-ar">بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا</div><div class="hisn-ku">بە ناوت خوایە دەمرم و زیندوو دەبمەوە</div></div>
+<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ</div><div class="hisn-ku">خوایە پاراستنم بکە لە عەزابەکەت لەو ڕۆژەی بەندەکانت دەهەڵگریتەوە</div><div class="hisn-count">٣ جار</div></div>
+<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ وَفَوَّضْتُ أَمْرِي إِلَيْكَ</div><div class="hisn-ku">خوایە خۆم سپاردوومتە و کارەکەم گواستمەوە بۆتە</div></div>`,
+
+37: `<div class="hisn-item"><div class="hisn-ar">اللَّهُمَّ إِنِّي عَبْدُكَ، ابْنُ عَبْدِكَ، ابْنُ أَمَتِكَ، نَاصِيَتِي بِيَدِكَ، مَاضٍ فِيَّ حُكْمُكَ، عَدْلٌ فِيَّ قَضَاؤُكَ، أَسْأَلُكَ بِكُلِّ اسْمٍ هُوَ لَكَ</div><div class="hisn-ku">خوایە من بەندەتم، کوڕی بەندەتم، کوڕی کەنیزەتم، پێشانیم لە دەستتدایە، حوکمت لەسەری تێپەردووە</div></div>`,
+
+53: `<div class="hisn-item"><div class="hisn-ar">إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ، اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْراً مِنْهَا</div><div class="hisn-ku">ئێمە بۆ خواین و بۆ ئەویش دەگەڕێینەوە، خوایە منیش پاداشتم بدە لە موسیبەتەکەمدا و چیزی باشتری جێیەم بگرەوە</div></div>`,
+
+68: `<div class="hisn-item"><div class="hisn-ar">ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ</div><div class="hisn-ku">تینوو چوو، دەمارەکانیش شل بوون و پاداشتەکەش مایەوە ئەگەر خوا بیەوێت</div></div>`,
+
+69: `<div class="hisn-item"><div class="hisn-ar">بِسْمِ اللَّهِ</div><div class="hisn-ku">بە ناوی خوا</div></div>`,
+
+70: `<div class="hisn-item"><div class="hisn-ar">الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ</div><div class="hisn-ku">ستایش بۆ خوایە کە ئەم خواردنەی خواردنمدا و ڕووزیم دایە بەبێ هیچ هێز و توانایەکی لە لام</div></div>`,
+
+96: `<div class="hisn-item"><div class="hisn-ar">اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ</div><div class="hisn-ku">خوا گەورەترە (٣) — پاکی ئەوەی ئەمەی بۆمان ئاسانکردووە و ئێمە تواناماندا نەبوو و ئێمە بۆ پەروەردگارمانەوە دەگەڕێینەوە</div></div>`,
+};
+
+function showHisnChapter(id){
+  const ch = HISN_CHAPTERS.find(c=>c.id===id);
+  const title = ch ? ch.t : '';
+  document.getElementById('hisnDetailTitle').textContent = title;
+  switchPage('hisn-detail');
+
+  if(HISN_DATA[id]){
+    document.getElementById('hisnDetailBody').innerHTML =
+      `<div style="display:flex;flex-direction:column;gap:12px">${HISN_DATA[id]}</div>`;
+  } else {
+    document.getElementById('hisnDetailBody').innerHTML = hisnOpenLink(id);
+  }
+}
+
+function hisnOpenLink(id){
+  return `<div style="text-align:center;padding:30px">
+    <div style="font-size:32px;margin-bottom:10px">🔗</div>
+    <div style="font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,255,255,.5);margin-bottom:14px">بۆ خوێندنی تەواو بچۆ سایتی بەهەشت</div>
+    <a href="https://ba8.org/Qalaymwslman/${id}" target="_blank"
+      style="display:inline-block;padding:12px 24px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.4);border-radius:12px;color:var(--green-light);font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;text-decoration:none">
+      🌐 ba8.org کردنەوە
+    </a>
+  </div>`;
+}
+
+
+
+// هەموو ١١٤ سووڕەت
+const SURA_LIST = [
+  {id:1,  name:'الفاتحة',      ku:'فاتیحە',      ayat:7,  type:'مەکی'},
+  {id:2,  name:'البقرة',       ku:'بەقەرە',      ayat:286,type:'مەدەنی'},
+  {id:3,  name:'آل عمران',     ku:'ئالی عیمران', ayat:200,type:'مەدەنی'},
+  {id:4,  name:'النساء',       ku:'نیساء',       ayat:176,type:'مەدەنی'},
+  {id:5,  name:'المائدة',      ku:'مائیدە',      ayat:120,type:'مەدەنی'},
+  {id:6,  name:'الأنعام',      ku:'ئەنعام',      ayat:165,type:'مەکی'},
+  {id:7,  name:'الأعراف',      ku:'ئەعراف',      ayat:206,type:'مەکی'},
+  {id:8,  name:'الأنفال',      ku:'ئەنفال',      ayat:75, type:'مەدەنی'},
+  {id:9,  name:'التوبة',       ku:'توبە',        ayat:129,type:'مەدەنی'},
+  {id:10, name:'يونس',         ku:'یونس',        ayat:109,type:'مەکی'},
+  {id:11, name:'هود',          ku:'هوود',        ayat:123,type:'مەکی'},
+  {id:12, name:'يوسف',         ku:'یووسف',       ayat:111,type:'مەکی'},
+  {id:13, name:'الرعد',        ku:'رەعد',        ayat:43, type:'مەدەنی'},
+  {id:14, name:'إبراهيم',      ku:'ئیبراهیم',    ayat:52, type:'مەکی'},
+  {id:15, name:'الحجر',        ku:'حیجر',        ayat:99, type:'مەکی'},
+  {id:16, name:'النحل',        ku:'نەحل',        ayat:128,type:'مەکی'},
+  {id:17, name:'الإسراء',      ku:'ئیسراء',      ayat:111,type:'مەکی'},
+  {id:18, name:'الكهف',        ku:'کەهف',        ayat:110,type:'مەکی'},
+  {id:19, name:'مريم',         ku:'مەریەم',      ayat:98, type:'مەکی'},
+  {id:20, name:'طه',           ku:'تاها',        ayat:135,type:'مەکی'},
+  {id:21, name:'الأنبياء',     ku:'ئەنبیاء',     ayat:112,type:'مەکی'},
+  {id:22, name:'الحج',         ku:'حەج',         ayat:78, type:'مەدەنی'},
+  {id:23, name:'المؤمنون',     ku:'مومینون',      ayat:118,type:'مەکی'},
+  {id:24, name:'النور',        ku:'نوور',        ayat:64, type:'مەدەنی'},
+  {id:25, name:'الفرقان',      ku:'فورقان',      ayat:77, type:'مەکی'},
+  {id:26, name:'الشعراء',      ku:'شوعەراء',     ayat:227,type:'مەکی'},
+  {id:27, name:'النمل',        ku:'نەمل',        ayat:93, type:'مەکی'},
+  {id:28, name:'القصص',        ku:'قەسەس',       ayat:88, type:'مەکی'},
+  {id:29, name:'العنكبوت',     ku:'عەنکەبووت',   ayat:69, type:'مەکی'},
+  {id:30, name:'الروم',        ku:'ڕووم',        ayat:60, type:'مەکی'},
+  {id:31, name:'لقمان',        ku:'لوقمان',      ayat:34, type:'مەکی'},
+  {id:32, name:'السجدة',       ku:'سەجدە',       ayat:30, type:'مەکی'},
+  {id:33, name:'الأحزاب',      ku:'ئەحزاب',      ayat:73, type:'مەدەنی'},
+  {id:34, name:'سبأ',          ku:'سەبأ',        ayat:54, type:'مەکی'},
+  {id:35, name:'فاطر',         ku:'فاتیر',       ayat:45, type:'مەکی'},
+  {id:36, name:'يس',           ku:'یاسین',       ayat:83, type:'مەکی'},
+  {id:37, name:'الصافات',      ku:'سافات',       ayat:182,type:'مەکی'},
+  {id:38, name:'ص',            ku:'ساد',         ayat:88, type:'مەکی'},
+  {id:39, name:'الزمر',        ku:'زومەر',       ayat:75, type:'مەکی'},
+  {id:40, name:'غافر',         ku:'غافیر',       ayat:85, type:'مەکی'},
+  {id:41, name:'فصلت',         ku:'فوسیلەت',     ayat:54, type:'مەکی'},
+  {id:42, name:'الشورى',       ku:'شووری',       ayat:53, type:'مەکی'},
+  {id:43, name:'الزخرف',       ku:'زوخروف',      ayat:89, type:'مەکی'},
+  {id:44, name:'الدخان',       ku:'دوخان',       ayat:59, type:'مەکی'},
+  {id:45, name:'الجاثية',      ku:'جاسیە',       ayat:37, type:'مەکی'},
+  {id:46, name:'الأحقاف',      ku:'ئەحقاف',      ayat:35, type:'مەکی'},
+  {id:47, name:'محمد',         ku:'محەمەد',      ayat:38, type:'مەدەنی'},
+  {id:48, name:'الفتح',        ku:'فەتح',        ayat:29, type:'مەدەنی'},
+  {id:49, name:'الحجرات',      ku:'حوجوڕات',     ayat:18, type:'مەدەنی'},
+  {id:50, name:'ق',            ku:'قاف',         ayat:45, type:'مەکی'},
+  {id:51, name:'الذاريات',     ku:'زاریات',      ayat:60, type:'مەکی'},
+  {id:52, name:'الطور',        ku:'تووو',        ayat:49, type:'مەکی'},
+  {id:53, name:'النجم',        ku:'نەجم',        ayat:62, type:'مەکی'},
+  {id:54, name:'القمر',        ku:'قەمەر',       ayat:55, type:'مەکی'},
+  {id:55, name:'الرحمن',       ku:'ڕەحمان',      ayat:78, type:'مەدەنی'},
+  {id:56, name:'الواقعة',      ku:'واقیعە',      ayat:96, type:'مەکی'},
+  {id:57, name:'الحديد',       ku:'حەدید',       ayat:29, type:'مەدەنی'},
+  {id:58, name:'المجادلة',     ku:'موجادیلە',    ayat:22, type:'مەدەنی'},
+  {id:59, name:'الحشر',        ku:'حەشر',        ayat:24, type:'مەدەنی'},
+  {id:60, name:'الممتحنة',     ku:'مومتەحینە',   ayat:13, type:'مەدەنی'},
+  {id:61, name:'الصف',         ku:'سەف',         ayat:14, type:'مەدەنی'},
+  {id:62, name:'الجمعة',       ku:'جومعە',       ayat:11, type:'مەدەنی'},
+  {id:63, name:'المنافقون',    ku:'موناფیقون',   ayat:11, type:'مەدەنی'},
+  {id:64, name:'التغابن',      ku:'تەغابون',     ayat:18, type:'مەدەنی'},
+  {id:65, name:'الطلاق',       ku:'تەلاق',       ayat:12, type:'مەدەنی'},
+  {id:66, name:'التحريم',      ku:'تەحریم',      ayat:12, type:'مەدەنی'},
+  {id:67, name:'الملك',        ku:'مولک',        ayat:30, type:'مەکی'},
+  {id:68, name:'القلم',        ku:'قەلەم',       ayat:52, type:'مەکی'},
+  {id:69, name:'الحاقة',       ku:'حاقە',        ayat:52, type:'مەکی'},
+  {id:70, name:'المعارج',      ku:'مەعاریج',     ayat:44, type:'مەکی'},
+  {id:71, name:'نوح',          ku:'نووح',        ayat:28, type:'مەکی'},
+  {id:72, name:'الجن',         ku:'جین',         ayat:28, type:'مەکی'},
+  {id:73, name:'المزمل',       ku:'مۆزەمیل',     ayat:20, type:'مەکی'},
+  {id:74, name:'المدثر',       ku:'مودەسیر',     ayat:56, type:'مەکی'},
+  {id:75, name:'القيامة',      ku:'قیامەت',      ayat:40, type:'مەکی'},
+  {id:76, name:'الإنسان',      ku:'ئینسان',      ayat:31, type:'مەدەنی'},
+  {id:77, name:'المرسلات',     ku:'موڕسەلات',    ayat:50, type:'مەکی'},
+  {id:78, name:'النبأ',        ku:'نەبأ',        ayat:40, type:'مەکی'},
+  {id:79, name:'النازعات',     ku:'نازیعات',     ayat:46, type:'مەکی'},
+  {id:80, name:'عبس',          ku:'عەبەسە',      ayat:42, type:'مەکی'},
+  {id:81, name:'التكوير',      ku:'تەکوییر',     ayat:29, type:'مەکی'},
+  {id:82, name:'الانفطار',     ku:'ئینفیتار',    ayat:19, type:'مەکی'},
+  {id:83, name:'المطففين',     ku:'مۆتەففین',    ayat:36, type:'مەکی'},
+  {id:84, name:'الانشقاق',     ku:'ئینشیقاق',    ayat:25, type:'مەکی'},
+  {id:85, name:'البروج',       ku:'بوروج',       ayat:22, type:'مەکی'},
+  {id:86, name:'الطارق',       ku:'تاریق',       ayat:17, type:'مەکی'},
+  {id:87, name:'الأعلى',       ku:'ئەعلی',       ayat:19, type:'مەکی'},
+  {id:88, name:'الغاشية',      ku:'غاشیە',       ayat:26, type:'مەکی'},
+  {id:89, name:'الفجر',        ku:'فەجر',        ayat:30, type:'مەکی'},
+  {id:90, name:'البلد',        ku:'بەلەد',       ayat:20, type:'مەکی'},
+  {id:91, name:'الشمس',        ku:'شەمس',        ayat:15, type:'مەکی'},
+  {id:92, name:'الليل',        ku:'لەیل',        ayat:21, type:'مەکی'},
+  {id:93, name:'الضحى',        ku:'ضوحی',        ayat:11, type:'مەکی'},
+  {id:94, name:'الشرح',        ku:'شەرح',        ayat:8,  type:'مەکی'},
+  {id:95, name:'التين',        ku:'تین',         ayat:8,  type:'مەکی'},
+  {id:96, name:'العلق',        ku:'عەلەق',       ayat:19, type:'مەکی'},
+  {id:97, name:'القدر',        ku:'قەدر',        ayat:5,  type:'مەکی'},
+  {id:98, name:'البينة',       ku:'بەییینە',     ayat:8,  type:'مەدەنی'},
+  {id:99, name:'الزلزلة',      ku:'زەلزەلە',     ayat:8,  type:'مەدەنی'},
+  {id:100,name:'العاديات',     ku:'عادیات',      ayat:11, type:'مەکی'},
+  {id:101,name:'القارعة',      ku:'قارعە',       ayat:11, type:'مەکی'},
+  {id:102,name:'التكاثر',      ku:'تەکاسور',     ayat:8,  type:'مەکی'},
+  {id:103,name:'العصر',        ku:'عەسر',        ayat:3,  type:'مەکی'},
+  {id:104,name:'الهمزة',       ku:'هومەزە',      ayat:9,  type:'مەکی'},
+  {id:105,name:'الفيل',        ku:'فیل',         ayat:5,  type:'مەکی'},
+  {id:106,name:'قريش',         ku:'قورەیش',      ayat:4,  type:'مەکی'},
+  {id:107,name:'الماعون',      ku:'ماعون',       ayat:7,  type:'مەکی'},
+  {id:108,name:'الكوثر',       ku:'کەوسەر',      ayat:3,  type:'مەکی'},
+  {id:109,name:'الكافرون',     ku:'کافیرون',     ayat:6,  type:'مەکی'},
+  {id:110,name:'النصر',        ku:'نەسر',        ayat:3,  type:'مەدەنی'},
+  {id:111,name:'المسد',        ku:'مەسەد',       ayat:5,  type:'مەکی'},
+  {id:112,name:'الإخلاص',      ku:'ئیخلاس',      ayat:4,  type:'مەکی'},
+  {id:113,name:'الفلق',        ku:'فەلەق',       ayat:5,  type:'مەکی'},
+  {id:114,name:'الناس',        ku:'ناس',         ayat:6,  type:'مەکی'},
+];
+
+// ئایەتەکانی سووڕەتە بچووکەکان
+const SURAS = {
+  1:  {ayat:['الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ','الرَّحْمَٰنِ الرَّحِيمِ','مَالِكِ يَوْمِ الدِّينِ','إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ','اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ','صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ']},
+  36: {ayat:['يس','وَالْقُرْآنِ الْحَكِيمِ','إِنَّكَ لَمِنَ الْمُرْسَلِينَ','عَلَىٰ صِرَاطٍ مُّسْتَقِيمٍ','تَنزِيلَ الْعَزِيزِ الرَّحِيمِ','لِتُنذِرَ قَوْمًا مَّا أُنذِرَ آبَاؤُهُمْ فَهُمْ غَافِلُونَ','لَقَدْ حَقَّ الْقَوْلُ عَلَىٰ أَكْثَرِهِمْ فَهُمْ لَا يُؤْمِنُونَ','إِنَّا جَعَلْنَا فِي أَعْنَاقِهِمْ أَغْلَالًا فَهِيَ إِلَى الْأَذْقَانِ فَهُم مُّقْمَحُونَ','وَجَعَلْنَا مِن بَيْنِ أَيْدِيهِمْ سَدًّا وَمِنْ خَلْفِهِمْ سَدًّا فَأَغْشَيْنَاهُمْ فَهُمْ لَا يُبْصِرُونَ','وَسَوَاءٌ عَلَيْهِمْ أَأَنذَرْتَهُمْ أَمْ لَمْ تُنذِرْهُمْ لَا يُؤْمِنُونَ']},
+  55: {ayat:['الرَّحْمَٰنُ','عَلَّمَ الْقُرْآنَ','خَلَقَ الْإِنسَانَ','عَلَّمَهُ الْبَيَانَ','الشَّمْسُ وَالْقَمَرُ بِحُسْبَانٍ','وَالنَّجْمُ وَالشَّجَرُ يَسْجُدَانِ','وَالسَّمَاءَ رَفَعَهَا وَوَضَعَ الْمِيزَانَ','أَلَّا تَطْغَوْا فِي الْمِيزَانِ','وَأَقِيمُوا الْوَزْنَ بِالْقِسْطِ وَلَا تُخْسِرُوا الْمِيزَانَ','وَالْأَرْضَ وَضَعَهَا لِلْأَنَامِ']},
+  67: {ayat:['تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ','الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا وَهُوَ الْعَزِيزُ الْغَفُورُ','الَّذِي خَلَقَ سَبْعَ سَمَاوَاتٍ طِبَاقًا مَّا تَرَىٰ فِي خَلْقِ الرَّحْمَٰنِ مِن تَفَاوُتٍ فَارْجِعِ الْبَصَرَ هَلْ تَرَىٰ مِن فُطُورٍ','ثُمَّ ارْجِعِ الْبَصَرَ كَرَّتَيْنِ يَنقَلِبْ إِلَيْكَ الْبَصَرُ خَاسِئًا وَهُوَ حَسِيرٌ','وَلَقَدْ زَيَّنَّا السَّمَاءَ الدُّنْيَا بِمَصَابِيحَ وَجَعَلْنَاهَا رُجُومًا لِّلشَّيَاطِينِ وَأَعْتَدْنَا لَهُمْ عَذَابَ السَّعِيرِ']},
+  78: {ayat:['عَمَّ يَتَسَاءَلُونَ','عَنِ النَّبَإِ الْعَظِيمِ','الَّذِي هُمْ فِيهِ مُخْتَلِفُونَ','كَلَّا سَيَعْلَمُونَ','ثُمَّ كَلَّا سَيَعْلَمُونَ','أَلَمْ نَجْعَلِ الْأَرْضَ مِهَادًا','وَالْجِبَالَ أَوْتَادًا','وَخَلَقْنَاكُمْ أَزْوَاجًا','وَجَعَلْنَا نَوْمَكُمْ سُبَاتًا','وَجَعَلْنَا اللَّيْلَ لِبَاسًا']},
+  97: {ayat:['إِنَّا أَنزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ','وَمَا أَدْرَاكَ مَا لَيْلَةُ الْقَدْرِ','لَيْلَةُ الْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ','تَنَزَّلُ الْمَلَائِكَةُ وَالرُّوحُ فِيهَا بِإِذْنِ رَبِّهِم مِّن كُلِّ أَمْرٍ','سَلَامٌ هِيَ حَتَّىٰ مَطْلَعِ الْفَجْرِ']},
+  99: {ayat:['إِذَا زُلْزِلَتِ الْأَرْضُ زِلْزَالَهَا','وَأَخْرَجَتِ الْأَرْضُ أَثْقَالَهَا','وَقَالَ الْإِنسَانُ مَا لَهَا','يَوْمَئِذٍ تُحَدِّثُ أَخْبَارَهَا','بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا','يَوْمَئِذٍ يَصْدُرُ النَّاسُ أَشْتَاتًا لِّيُرَوْا أَعْمَالَهُمْ','فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُ','وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُ']},
+  103:{ayat:['وَالْعَصْرِ','إِنَّ الْإِنسَانَ لَفِي خُسْرٍ','إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ']},
+  108:{ayat:['إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ','فَصَلِّ لِرَبِّكَ وَانْحَرْ','إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ']},
+  109:{ayat:['قُلْ يَا أَيُّهَا الْكَافِرُونَ','لَا أَعْبُدُ مَا تَعْبُدُونَ','وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ','وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ','وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ','لَكُمْ دِينُكُمْ وَلِيَ دِينِ']},
+  110:{ayat:['إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ','وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا','فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ إِنَّهُ كَانَ تَوَّابًا']},
+  111:{ayat:['تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ','مَا أَغْنَىٰ عَنْهُ مَالُهُ وَمَا كَسَبَ','سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ','وَامْرَأَتُهُ حَمَّالَةَ الْحَطَبِ','فِي جِيدِهَا حَبْلٌ مِّن مَّسَدٍ']},
+  112:{ayat:['قُلْ هُوَ اللَّهُ أَحَدٌ','اللَّهُ الصَّمَدُ','لَمْ يَلِدْ وَلَمْ يُولَدْ','وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ']},
+  113:{ayat:['قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ','مِن شَرِّ مَا خَلَقَ','وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ','وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ','وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ']},
+  114:{ayat:['قُلْ أَعُوذُ بِرَبِّ النَّاسِ','مَلِكِ النَّاسِ','إِلَٰهِ النَّاسِ','مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ','الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ','مِنَ الْجِنَّةِ وَالنَّاسِ']},
+};
+
+function renderSuraList(){
+  const list=document.getElementById('suraList');
+  if(!list) return;
+  list.innerHTML=SURA_LIST.map(s=>`
+    <div class="quran-card" onclick="showSura(${s.id})">
+      <div class="quran-num">${toArabicNum(s.id)}</div>
+      <div class="quran-info">
+        <div class="quran-name">${s.name}</div>
+        <div class="quran-sub">${toArabicNum(s.ayat)} ئایەت · ${s.type}</div>
+      </div>
+      <div class="quran-arrow">❯</div>
+    </div>
+  `).join('');
+}
+
+function showSura(id){
+  const meta = SURA_LIST.find(s=>s.id===id);
+  document.getElementById('suraTitle').textContent = meta.name + ' — ' + meta.ku;
+  document.getElementById('suraText').innerHTML =
+    `<div style="text-align:center;padding:40px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">
+      <div style="font-size:24px;margin-bottom:10px">⏳</div>
+      <div>چاوەڕێ بکە...</div>
+    </div>`;
+  switchPage('sura');
+
+  // بار بکە لە API
+  fetch('https://api.alquran.cloud/v1/surah/'+id+'/ar.alafasy')
+    .then(r=>r.json())
+    .then(data=>{
+      if(data.code===200){
+        const ayat = data.data.ayahs;
+        // وەک کتێبی قورئان — پەیدەرپەی بەبێ هەر ئایەت لە خەتێکی جیاواز
+        const text = ayat.map(a=>
+          `${a.text} ﴿${toArabicNum(a.numberInSurah)}﴾`
+        ).join(' ');
+        document.getElementById('suraText').innerHTML =
+          `<div class="quran-flow">${text}</div>`;
+      }
+    })
+    .catch(()=>{
+      const data = SURAS[id];
+      if(data){
+        const text = data.ayat.map((a,i)=>
+          `${a} ﴿${toArabicNum(i+1)}﴾`
+        ).join(' ');
+        document.getElementById('suraText').innerHTML =
+          `<div class="quran-flow">${text}</div>`;
+      } else {
+        document.getElementById('suraText').innerHTML =
+          `<div style="text-align:center;color:rgba(255,255,255,.4);padding:30px;font-family:'Cairo',sans-serif;font-size:14px">
+            ئینتەرنێت پێویستە بۆ بارکردنی ئەم سووڕەتە
+          </div>`;
+      }
+    });
+}
+
+function toArabicNum(n){
+  return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+// ── زیکر ────────────────────────────────
+const ZIKRS = [
+  // ── زیکری بەیانی ──
+  {cat:'🌅 زیکری بەیانی', ar:'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ', ku:'سبەح کردین و مولکەکەش بۆ خوایە، ستایش بۆ خوا', count:'١ جار'},
+  {cat:'🌅 زیکری بەیانی', ar:'اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ', ku:'خوایە بە تۆ سبەح کردین، بە تۆ ئێواره کردین، بە تۆ دەژین و دەمرین', count:'١ جار'},
+  {cat:'🌅 زیکری بەیانی', ar:'اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَىٰ عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ', ku:'خوایە تۆ پەروەردگاری منی، تۆ مە دروست کردووم و من بەندەتەم', count:'١ جار'},
+  {cat:'🌅 زیکری بەیانی', ar:'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ — اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ', ku:'ئایەتی کورسی — بەیانی', count:'١ جار'},
+  {cat:'🌅 زیکری بەیانی', ar:'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ', ku:'بە ناوی خوا کە هیچ شت زیانی پێ نادات لە زەوی و ئاسمان', count:'٣ جار'},
+  {cat:'🌅 زیکری بەیانی', ar:'اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي', ku:'خوایە تەندروستیم بدەرە لە جەستەم، گوێم، چاوم', count:'٣ جار'},
+  {cat:'🌅 زیکری بەیانی', ar:'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ', ku:'خوایە داوای لێبوردن و تەندروستی دەکەم لە دنیا و ئاخرەتدا', count:'١ جار'},
+  {cat:'🌅 زیکری بەیانی', ar:'رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا', ku:'ڕازی بووم بە خوا وەک پەروەردگار، ئیسلام وەک ئایین، محەمەد وەک پێغەمبەر', count:'٣ جار'},
+
+  // ── زیکری ئێوارە ──
+  {cat:'🌆 زیکری ئێوارە', ar:'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ', ku:'ئێواره کردین و مولکەکەش بۆ خوایە، ستایش بۆ خوا', count:'١ جار'},
+  {cat:'🌆 زیکری ئێوارە', ar:'اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ', ku:'خوایە بە تۆ ئێواره کردین، بە تۆ دەژین و دەمرین و گەڕانەوەش بۆ تۆیە', count:'١ جار'},
+  {cat:'🌆 زیکری ئێوارە', ar:'اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ وَمَلَائِكَتَكَ وَجَمِيعَ خَلْقِكَ أَنَّكَ أَنْتَ اللَّهُ لَا إِلَٰهَ إِلَّا أَنْتَ', ku:'خوایە گواهی دەهێنم بە یەکتایی تۆ', count:'٤ جار'},
+  {cat:'🌆 زیکری ئێوارە', ar:'اللَّهُمَّ مَا أَمْسَى بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَكَ', ku:'خوایە هەر نیعمەتێک کە ئێوارەم بووە لەت بوون تەنها', count:'١ جار'},
+  {cat:'🌆 زیکری ئێوارە', ar:'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ', ku:'خوایە پەناهت دەبەم لە خەم و غەم و سستی', count:'١ جار'},
+  {cat:'🌆 زیکری ئێوارە', ar:'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ', ku:'پەناهم بە کەلیمەی تەوای خوا لە شەڕی ئەوەی دروستی کردووە', count:'٣ جار'},
+  {cat:'🌆 زیکری ئێوارە', ar:'اللَّهُمَّ اغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ وَمَا أَسْرَرْتُ وَمَا أَعْلَنْتُ', ku:'خوایە لێمببورە ئەوەی پێشتر و دواتر و نهێنی و ئاشکرام کردووە', count:'١ جار'},
+
+  // ── زیکری ڕۆژانە ──
+  {cat:'📿 زیکری ڕۆژانە', ar:'سُبْحَانَ اللَّهِ', ku:'پاکی خوا', count:'٣٣ جار'},
+  {cat:'📿 زیکری ڕۆژانە', ar:'الْحَمْدُ لِلَّهِ', ku:'ستایش بۆ خوا', count:'٣٣ جار'},
+  {cat:'📿 زیکری ڕۆژانە', ar:'اللَّهُ أَكْبَرُ', ku:'خوا گەورەترە', count:'٣٤ جار'},
+  {cat:'📿 زیکری ڕۆژانە', ar:'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ', ku:'هیچ خودایەک نییە جگە لە اللە، تەنیا بێ هاوبەش', count:'١٠ جار'},
+  {cat:'📿 زیکری ڕۆژانە', ar:'أَسْتَغْفِرُ اللَّهَ', ku:'داوای لێبوردن دەکەم لە خوا', count:'٣ جار'},
+  {cat:'📿 زیکری ڕۆژانە', ar:'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ', ku:'خوایە درود بنێرە بۆ محەمەد', count:'١٠ جار'},
+];
+
+function renderZikr(){
+  const list=document.getElementById('zikrList');
+  if(!list) return;
+  let html='';
+  let lastCat='';
+  ZIKRS.forEach(z=>{
+    if(z.cat !== lastCat){
+      html+=`<div style="font-size:14px;font-weight:800;color:#fff;padding:10px 4px 4px;border-bottom:1px solid rgba(46,204,113,.2);margin-bottom:4px">${z.cat}</div>`;
+      lastCat=z.cat;
+    }
+    html+=`<div class="zikr-card">
+      <div class="zikr-arabic">${z.ar}</div>
+      <div class="zikr-kurdish">${z.ku}</div>
+      <div class="zikr-count">🔁 ${z.count}</div>
+    </div>`;
+  });
+  list.innerHTML=html;
+}
+
+// ── ٩٩ ناوی خوا ──────────────────────────────
+const ALLAH_NAMES = [
+  'اللَّهُ','الرَّحْمَٰنُ','الرَّحِيمُ','الْمَلِكُ','الْقُدُّوسُ','السَّلَامُ','الْمُؤْمِنُ','الْمُهَيْمِنُ',
+  'الْعَزِيزُ','الْجَبَّارُ','الْمُتَكَبِّرُ','الْخَالِقُ','الْبَارِئُ','الْمُصَوِّرُ','الْغَفَّارُ','الْقَهَّارُ',
+  'الْوَهَّابُ','الرَّزَّاقُ','الْفَتَّاحُ','الْعَلِيمُ','الْقَابِضُ','الْبَاسِطُ','الْخَافِضُ','الرَّافِعُ',
+  'الْمُعِزُّ','الْمُذِلُّ','السَّمِيعُ','الْبَصِيرُ','الْحَكَمُ','الْعَدْلُ','اللَّطِيفُ','الْخَبِيرُ',
+  'الْحَلِيمُ','الْعَظِيمُ','الْغَفُورُ','الشَّكُورُ','الْعَلِيُّ','الْكَبِيرُ','الْحَفِيظُ','الْمُقِيتُ',
+  'الْحَسِيبُ','الْجَلِيلُ','الْكَرِيمُ','الرَّقِيبُ','الْمُجِيبُ','الْوَاسِعُ','الْحَكِيمُ','الْوَدُودُ',
+  'الْمَجِيدُ','الْبَاعِثُ','الشَّهِيدُ','الْحَقُّ','الْوَكِيلُ','الْقَوِيُّ','الْمَتِينُ','الْوَلِيُّ',
+  'الْحَمِيدُ','الْمُحْصِي','الْمُبْدِئُ','الْمُعِيدُ','الْمُحْيِي','الْمُمِيتُ','الْحَيُّ','الْقَيُّومُ',
+  'الْوَاجِدُ','الْمَاجِدُ','الْوَاحِدُ','الْأَحَدُ','الصَّمَدُ','الْقَادِرُ','الْمُقْتَدِرُ','الْمُقَدِّمُ',
+  'الْمُؤَخِّرُ','الْأَوَّلُ','الْآخِرُ','الظَّاهِرُ','الْبَاطِنُ','الْوَالِي','الْمُتَعَالِي','الْبَرُّ',
+  'التَّوَّابُ','الْمُنْتَقِمُ','الْعَفُوُّ','الرَّءُوفُ','مَالِكُ الْمُلْكِ','ذُو الْجَلَالِ وَالْإِكْرَامِ',
+  'الْمُقْسِطُ','الْجَامِعُ','الْغَنِيُّ','الْمُغْنِي','الْمَانِعُ','الضَّارُّ','النَّافِعُ','النُّورُ',
+  'الْهَادِي','الْبَدِيعُ','الْبَاقِي','الْوَارِثُ','الرَّشِيدُ','الصَّبُورُ'
+];
+
+let allahIdx = 0;
+function rotateAllahName(){
+  const el = document.getElementById('allahName');
+  if(!el) return;
+  el.style.opacity = '0';
+  setTimeout(()=>{
+    el.textContent = ALLAH_NAMES[allahIdx];
+    el.style.opacity = '1';
+    allahIdx = (allahIdx + 1) % ALLAH_NAMES.length;
+  }, 400);
+}
+rotateAllahName();
+setInterval(rotateAllahName, 4000);
 
 // ── QIBLA COMPASS ────────────────────────────────
 const MECCA={lat:21.4225,lng:39.8262};
@@ -867,26 +1900,119 @@ function startCompass(){
   }
 }
 
-function openCityModal(){renderCities();document.getElementById('cityModal').style.display='block';}
-function closeCityModal(e){if(e.target===document.getElementById('cityModal'))document.getElementById('cityModal').style.display='none';}
-
-function renderCities(){
-  const grid=document.getElementById('citiesGrid');grid.innerHTML='';
-  Object.entries(CITIES).forEach(([k,c])=>{
-    const isSel=k===CUR,ni=findNext(c.t),el=document.createElement('div');
-    el.className='city-card'+(isSel?' sel':'');
-    const th=c.t.map((t,i)=>`<div class="ct-item${isSel&&i===ni?' nx':''}"><div class="ct-lbl">${PM_LABELS[i]}</div><div class="ct-val">${fmt(t.h,t.m)}</div></div>`).join('');
-    el.innerHTML=`<div class="city-card-header"><div class="city-card-left"><div class="city-check">✓</div><div><div class="ccname">${c.name}</div><div class="ccdist">🕋 ${c.dist} كم</div></div></div><span class="city-arrow">❯</span></div><div class="city-times-panel"><div class="city-times-inner">${th}</div></div>`;
-    el.onclick=()=>selectCity(k);
-    grid.appendChild(el);
-  });
+function openCityModal(){
+  renderCities('');
+  document.getElementById('cityModal').style.display='block';
+  setTimeout(()=>{ const s=document.getElementById('citySearch'); if(s){s.value='';s.focus();} },200);
 }
+function closeCityModal(e){
+  if(e.target===document.getElementById('cityModal'))
+    document.getElementById('cityModal').style.display='none';
+}
+
+// هەموو شارەکانی کوردستان
+const ALL_CITIES = [
+  // پارێزگای سلێمانی
+  {k:'sulaymaniyah', gov:'سلێمانی', name:'سلێمانی'},
+  {k:'penjwen',      gov:'سلێمانی', name:'پێنجوێن'},
+  {k:'halabja',      gov:'سلێمانی', name:'هەلەبجە'},
+  {k:'kalar',        gov:'سلێمانی', name:'کەلار'},
+  {k:'chamchamal',   gov:'سلێمانی', name:'چەمچەماڵ'},
+  {k:'darbandikhan', gov:'سلێمانی', name:'دەربەندیخان'},
+  {k:'rania',        gov:'سلێمانی', name:'ڕانیە'},
+  {k:'qaladze',      gov:'سلێمانی', name:'قەڵادزێ'},
+  {k:'koya',         gov:'سلێمانی', name:'کۆیە'},
+  {k:'said_sadiq',   gov:'سلێمانی', name:'سەید سادق'},
+  {k:'dokan',        gov:'سلێمانی', name:'دوکان'},
+  {k:'sharazoor',    gov:'سلێمانی', name:'شارەزووڕ'},
+  // پارێزگای هەولێر
+  {k:'hawler',       gov:'هەولێر', name:'هەولێر'},
+  {k:'kifri',        gov:'هەولێر', name:'کفری'},
+  {k:'makhmur',      gov:'هەولێر', name:'مەخموور'},
+  {k:'soran',        gov:'هەولێر', name:'سۆران'},
+  {k:'shaqlawa',     gov:'هەولێر', name:'شەقڵاوە'},
+  {k:'choman',       gov:'هەولێر', name:'چومان'},
+  {k:'mergasor',     gov:'هەولێر', name:'مێرگەسۆر'},
+  {k:'rawanduz',     gov:'هەولێر', name:'ڕەواندز'},
+  // پارێزگای دهۆک
+  {k:'duhok',        gov:'دهۆک', name:'دهۆک'},
+  {k:'zakho',        gov:'دهۆک', name:'زاخۆ'},
+  {k:'amadiya',      gov:'دهۆک', name:'ئامێدی'},
+  {k:'bardarash',    gov:'دهۆک', name:'بەردەرەش'},
+  {k:'semel',        gov:'دهۆک', name:'سیمێل'},
+  {k:'batifa',       gov:'دهۆک', name:'باتیفە'},
+  {k:'sumel',        gov:'دهۆک', name:'سومێل'},
+  // پارێزگای کەرکوک
+  {k:'kirkuk',       gov:'کەرکووک', name:'کەرکووک'},
+  {k:'tuz',          gov:'کەرکووک', name:'تووزخورماتوو'},
+  {k:'daquq',        gov:'کەرکووک', name:'داقووق'},
+  {k:'kifri2',       gov:'کەرکووک', name:'کفری'},
+  // دەرەوەی هەرێم
+  {k:'akre',         gov:'نینەوا', name:'ئەکرێ'},
+  {k:'mosul',        gov:'نینەوا', name:'موسڵ'},
+  {k:'sinjar',       gov:'نینەوا', name:'شنگال'},
+  {k:'telafar',      gov:'نینەوا', name:'تەلعەفەر'},
+];
+
+function renderCities(q){
+  const grid=document.getElementById('citiesGrid');
+  if(!grid) return;
+  const term=(q||'').trim().toLowerCase();
+
+  // فلتەر
+  const filtered = ALL_CITIES.filter(c=>
+    !term ||
+    c.name.includes(term) ||
+    c.gov.includes(term)
+  );
+
+  // گروپ بکە بە پارێزگا
+  const byGov = {};
+  filtered.forEach(c=>{
+    if(!byGov[c.gov]) byGov[c.gov]=[];
+    byGov[c.gov].push(c);
+  });
+
+  let html='';
+  if(filtered.length===0){
+    html='<div style="text-align:center;color:rgba(255,255,255,.4);padding:30px;font-family:Cairo,sans-serif">هیچ شارێک نەدۆزرایەوە</div>';
+  } else {
+    Object.entries(byGov).forEach(([gov,cities])=>{
+      html+=`<div style="font-size:12px;font-weight:700;color:var(--green-light);padding:8px 4px 4px;border-bottom:1px solid rgba(46,204,113,.15);margin-bottom:4px;font-family:'Cairo',sans-serif">📍 ${gov}</div>`;
+      cities.forEach(c=>{
+        const cityData = CITIES[c.k];
+        const isSel = c.k===CUR;
+        html+=`<div class="city-card${isSel?' sel':''}" onclick="selectCity('${c.k}')">
+          <div class="city-card-header">
+            <div class="city-card-left">
+              <div class="city-check">✓</div>
+              <div>
+                <div class="ccname">${c.name}</div>
+                ${cityData ? `<div class="ccdist">🕋 ${cityData.dist} كم</div>` : ''}
+              </div>
+            </div>
+            ${isSel ? '<span style="color:var(--green-light);font-size:16px">✓</span>' : '<span class="city-arrow">❯</span>'}
+          </div>
+        </div>`;
+      });
+    });
+  }
+  grid.innerHTML=html;
+}
+
+function filterCities(val){
+  renderCities(val);
+}
+
 
 function selectCity(k){
   CUR=k;
   localStorage.setItem('selectedCity', k);
   const c=CITIES[k];
-  document.getElementById('hdrCity').textContent=c.name;
+  const hc=document.getElementById('hdrCity');
+  if(hc) hc.textContent=c.name;
+  const wc=document.getElementById('whCity');
+  if(wc) wc.textContent=c.name;
   // قیبلە بە کۆئۆردینەیتی شار
   const coord=COORDS[k];
   if(coord) qiblaAngle=calcQiblaAngle(coord.lat,coord.lng);
@@ -898,8 +2024,10 @@ function selectCity(k){
   const qd=document.getElementById('qDist');
   if(qd) qd.textContent=c.dist+' كم';
   updateCompassDisplay();
-  renderPrayers();renderCities();
+  renderPrayers();renderCities();renderWidgetPrayers();
   document.getElementById('cityModal').style.display='none';
+  // بارکردنی کاتی ڕاستەقینەی ئەمڕۆ
+  fetchTodayTimes(k);
 }
 
 // ساڵی کوردی (زاگرۆس/کوردی) = میلادی - 621
@@ -1000,11 +2128,20 @@ function renderWidgets(){
 }
 
 function switchPage(p){
-  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
   document.querySelectorAll('.nbtn').forEach(x=>x.classList.remove('active'));
-  document.getElementById('pg-'+p).classList.add('active');
-  document.getElementById('nav-'+p).classList.add('active');
+  const pg=document.getElementById('pg-'+p);
+  if(!pg) return;
+  pg.classList.add('active');
+  if(['quran','sura','zikr','hisn','hisn-detail'].includes(p)){
+    pg.classList.add('fullscreen');
+  }
+  const navBtn = document.getElementById('nav-'+p);
+  if(navBtn) navBtn.classList.add('active');
   if(p==='widgets') renderWidgets();
+  if(p==='zikr') renderZikr();
+  if(p==='quran') renderSuraList();
+  if(p==='hisn') renderHisn();
 }
 
 // ── کۆئۆردینەیتی شارەکان ──────────────────────
@@ -1040,7 +2177,8 @@ function detectLocation(){
     showToast('📍 بەرنامەکەت لۆکەیشن پشتگیری ناکات');
     return;
   }
-  btn.textContent='⏳'; btn.style.animation='spin 1s linear infinite';
+  if(btn){btn.textContent='⏳'; btn.style.animation='spin 1s linear infinite';}
+  showToast('📍 دەتبینێت...');
   navigator.geolocation.getCurrentPosition(
     pos=>{
       const {latitude:lat, longitude:lng}=pos.coords;
@@ -1049,18 +2187,69 @@ function detectLocation(){
         const d=haversine(lat,lng,c.lat,c.lng);
         if(d<minDist){minDist=d;nearest=k;}
       });
-      btn.textContent='📍'; btn.style.animation='';
+      if(btn){btn.textContent='📍'; btn.style.animation='';}
       if(nearest){
         selectCity(nearest);
+        closeCityModal();
         showToast('📍 شارەکەت: '+CITIES[nearest].name);
       }
     },
     err=>{
-      btn.textContent='📍'; btn.style.animation='';
+      if(btn){btn.textContent='📍'; btn.style.animation='';}
       showToast('📍 مۆڵەتی لۆکەیشن بدە');
     },
     {timeout:8000, maximumAge:60000}
   );
+}
+
+// ── بارکردنی کاتی ڕاستەقینە لە ba8.org ──────────
+// ── کاتەکانی ba8.org — ئەمڕۆ ٩ی ئازار ٢٠٢٦ ──────
+// بەیانی | خۆرهەڵاتن | نیوەڕۆ | عەسر | ئێوارە | خەوتنان
+const BA8_TODAY = {
+  sulaymaniyah: [{h:4,m:56},{h:6,m:18},{h:12,m:15},{h:15,m:29},{h:18,m:9},{h:19,m:25}],
+  hawler:        [{h:5,m:1}, {h:6,m:29},{h:12,m:23},{h:15,m:35},{h:18,m:9},{h:19,m:24}],
+  kirkuk:        [{h:4,m:57},{h:6,m:18},{h:12,m:18},{h:15,m:36},{h:18,m:10},{h:19,m:24}],
+  halebja:       [{h:4,m:51},{h:6,m:23},{h:12,m:12},{h:15,m:30},{h:18,m:4},{h:19,m:16}],
+  duhok:         [{h:5,m:3}, {h:6,m:32},{h:12,m:27},{h:15,m:44},{h:18,m:15},{h:19,m:38}],
+  kalar:         [{h:4,m:56},{h:6,m:23},{h:12,m:14},{h:15,m:32},{h:18,m:4},{h:19,m:18}],
+  chamchamal:    [{h:5,m:4}, {h:6,m:23},{h:12,m:17},{h:15,m:31},{h:18,m:10},{h:19,m:30}],
+  akre:          [{h:5,m:5}, {h:6,m:30},{h:12,m:22},{h:15,m:41},{h:18,m:13},{h:19,m:28}],
+  darbandikhan:  [{h:4,m:55},{h:6,m:17},{h:12,m:14},{h:15,m:28},{h:18,m:8},{h:19,m:24}],
+  zakho:         [{h:5,m:4}, {h:6,m:33},{h:12,m:28},{h:15,m:45},{h:18,m:16},{h:19,m:39}],
+  ranya:         [{h:4,m:59},{h:6,m:21},{h:12,m:18},{h:15,m:32},{h:18,m:12},{h:19,m:28}],
+  qaladze:       [{h:4,m:57},{h:6,m:19},{h:12,m:16},{h:15,m:30},{h:18,m:10},{h:19,m:26}],
+  koye:          [{h:4,m:59},{h:6,m:27},{h:12,m:21},{h:15,m:33},{h:18,m:7},{h:19,m:22}],
+  kifri:         [{h:4,m:58},{h:6,m:25},{h:12,m:16},{h:15,m:34},{h:18,m:6},{h:19,m:20}],
+  bardarash:     [{h:5,m:5}, {h:6,m:30},{h:12,m:22},{h:15,m:41},{h:18,m:13},{h:19,m:28}],
+  mosul:         [{h:5,m:2}, {h:6,m:24},{h:12,m:23},{h:15,m:40},{h:18,m:14},{h:19,m:30}],
+  penjwen:       [{h:4,m:53},{h:6,m:20},{h:12,m:13},{h:15,m:28},{h:18,m:6},{h:19,m:20}],
+};
+// ڕۆژی reference = ٩ی ئازار ٢٠٢٦
+const BA8_REF_DATE = new Date(2026, 2, 9);
+
+function fetchTodayTimes(cityKey){
+  const base = BA8_TODAY[cityKey];
+  if(!base){ return; }
+  // ژمارەی ڕۆژ لە ئەمڕۆ
+  const now = new Date();
+  const diffDays = Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate()) - BA8_REF_DATE) / 86400000);
+  // هەر ڕۆژ: بەیانی +1چرکە، نیوەڕۆ +1چرکە، ئێوارە +1چرکە
+  function adj(t, minDelta){
+    const total = t.h*60 + t.m + minDelta;
+    return {h: Math.floor(((total%1440)+1440)%1440/60), m: ((total%1440)+1440)%60};
+  }
+  // بەیانی و خۆرهەڵاتن: هەر ڕۆژ ١ خولەک زووتر (بەهار)
+  // نیوەڕۆ، عەسر، ئێوارە، خەوتنان: هەر ڕۆژ ~١ خولەک درەنگتر
+  CITIES[cityKey].t = [
+    adj(base[0], -Math.round(diffDays * 0.9)),  // بەیانی
+    adj(base[1], -Math.round(diffDays * 1.0)),  // خۆرهەڵاتن
+    adj(base[2],  Math.round(diffDays * 0.3)),  // نیوەڕۆ
+    adj(base[3],  Math.round(diffDays * 0.5)),  // عەسر
+    adj(base[4],  Math.round(diffDays * 1.0)),  // ئێوارە
+    adj(base[5],  Math.round(diffDays * 1.0)),  // خەوتنان
+  ];
+  renderPrayers();
+  renderWidgetPrayers();
 }
 
 function showToast(msg){
@@ -1071,14 +2260,19 @@ function showToast(msg){
 }
 
 (function(){
+  loadSavedAzan();
+  // دەستپێک هەمیشە ماڵەوە
+  document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
+  document.getElementById('pg-home').classList.add('active');
   selectCity(CUR);
-  renderDate();renderCal();tick();
+  renderDate();renderCal();tick();renderWidgetPrayers();
+  document.getElementById('plist').classList.add('collapsed');
   setInterval(tick,1000);
   setInterval(()=>{renderDate();renderPrayers();},60000);
-  setTimeout(()=>{
-    const ni=findNext(CITIES[CUR].t);
-    showToast('🕌 کاتی بانگی '+PM[ni].ku+'ە');
-  },2000);
+  fetchTodayTimes(CUR);
+  if(location.hash==='#widgets'){
+    switchPage('widgets');
+  }
 })();
 
 // PWA Service Worker
