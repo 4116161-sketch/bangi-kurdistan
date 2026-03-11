@@ -192,7 +192,7 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 /* BOTTOM NAV */
 .smitem{padding:14px 20px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:600;color:#fff;cursor:pointer;direction:rtl;transition:background .2s}
 .smitem:active{background:rgba(46,204,113,.15)}
-.bnav{background:rgba(8,22,13,.96);border-top:1px solid rgba(255,255,255,.08);padding:7px 0 18px;display:flex;justify-content:space-around;flex-shrink:0}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(8,22,13,.96);border-top:1px solid rgba(255,255,255,.08);padding:7px 0 18px;display:flex;justify-content:space-around;flex-shrink:0;z-index:300}
 .nbtn{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:5px 14px;border:none;background:none;color:rgba(255,255,255,.4);transition:all .2s}
 .nbtn.active{color:var(--green-light)}
 .nicon{font-size:21px}
@@ -200,7 +200,7 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 
 /* PAGES */
 .pg{display:none;flex:1;overflow-y:scroll;padding-bottom:10px;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
-.pg.fullscreen{position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;background:linear-gradient(180deg,#041408 0%,#020a04 100%);display:flex;flex-direction:column;padding-bottom:0}
+.pg.fullscreen{position:fixed;top:0;left:0;width:100%;height:calc(100% - 70px);z-index:200;background:linear-gradient(180deg,#041408 0%,#020a04 100%);display:flex;flex-direction:column;padding-bottom:0;overflow-y:scroll;-webkit-overflow-scrolling:touch}
 .pg.active{display:flex;flex-direction:column}
 ::-webkit-scrollbar{width:0}
 
@@ -668,6 +668,10 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
   <div class="city-sheet">
     <div class="sheet-handle"></div>
     <div class="sheet-title">🏙️ هەڵبژاردنی شار</div>
+    <!-- دوگمەی لۆکەیشن -->
+    <button id="locBtn" onclick="detectLocation()" style="width:100%;margin-bottom:10px;padding:11px;border-radius:14px;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:var(--green-light);font-family:'Cairo',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+      <span>📍</span><span>شارەکەم بدۆزەرەوە</span>
+    </button>
     <!-- سێرچ -->
     <div style="position:relative;margin-bottom:12px">
       <input id="citySearch" type="text" placeholder="🔍  ناوی شار بنووسە..." oninput="filterCities(this.value)"
@@ -763,9 +767,13 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
     <!-- ڕیزی سەرەوە: نوێکردنەوە + ناوی نوێژ | ناوی شار -->
     <!-- کاتژمێر چەپ + هەموو بەرواری ٤ ساڵنامە ڕاست -->
     <div class="wh-mid">
-      <div style="display:flex;align-items:baseline;gap:4px">
-        <div class="wh-clock" id="gcTime">—:——</div>
-        <div id="gcSec" style="font-size:22px;font-weight:600;color:rgba(255,255,255,.45);font-variant-numeric:tabular-nums;line-height:1;margin-bottom:4px">:00</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:2px">
+        <div style="display:flex;align-items:baseline;gap:4px">
+          <div class="wh-clock" id="gcTime">—:——</div>
+          <div id="gcSec" style="font-size:22px;font-weight:600;color:rgba(255,255,255,.45);font-variant-numeric:tabular-nums;line-height:1;margin-bottom:4px">:00</div>
+        </div>
+        <!-- ماوەی بانگ -->
+        <div id="cdLabel" style="font-size:12px;color:rgba(255,255,255,.5);font-family:'Cairo',sans-serif;direction:rtl;line-height:1">—</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         <div id="dayName" style="font-size:14px;font-weight:800;color:#fff;text-align:right">—</div>
@@ -948,20 +956,8 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
   <div class="pg" id="pg-settings">
     <div class="spage">
       <div class="sec-lbl">ڕێکخستنەکان</div>
-      <div class="srow"><div class="sinfo"><div class="sico">🔔</div><div><div class="slbl">هەواڵی بانگ</div><div class="sdesc">ئاگادارکردنەوەی کاتی نوێژ</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="srow"><div class="sinfo"><div class="sico">🔔</div><div><div class="slbl">هەواڵی بانگ</div><div class="sdesc">ئاگادارکردنەوەی کاتی نوێژ</div></div></div><div class="toggle on" id="notifToggle" onclick="toggleNotifSetting()"></div></div>
 
-      <!-- آپلۆدی فایلی ئەزان -->
-      <div class="srow" style="flex-direction:column;align-items:stretch;gap:8px">
-        <div class="sinfo"><div class="sico">🕌</div><div><div class="slbl">فایلی دەنگی بانگ</div><div class="sdesc" id="azanFileName">فایلی mp3 ی ئەزانت آپلۆد بکە</div></div></div>
-        <label style="display:flex;align-items:center;justify-content:center;gap:8px;padding:9px;border-radius:12px;background:rgba(46,204,113,.15);border:1px dashed rgba(46,204,113,.4);cursor:pointer;font-size:13px;color:var(--green-light);font-weight:700">
-          📂 هەڵبژاردنی فایل
-          <input type="file" accept="audio/*" style="display:none" onchange="loadAzanFile(this);document.getElementById('azanFileName').textContent=this.files[0]?.name||'فایل هەڵنەبژێردراوە'">
-        </label>
-        <div style="display:flex;gap:8px">
-          <button onclick="playAzan()" style="flex:1;padding:8px;border-radius:10px;background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.3);color:var(--green-light);font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer">▶ گوێبگرە</button>
-          <button onclick="stopAzan()" style="flex:1;padding:8px;border-radius:10px;background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.2);color:#ff8080;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer">■ بوەستێنە</button>
-        </div>
-      </div>
       <div class="srow"><div class="sinfo"><div class="sico">🌙</div><div><div class="slbl">دۆخی رەمەزان</div><div class="sdesc">پیشاندانی ئیمساک و ئیفتار</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
       <div class="srow"><div class="sinfo"><div class="sico">⏰</div><div><div class="slbl">ئاگاداری پێشوەختە</div><div class="sdesc">١٠ خولەک پێش کاتی نوێژ</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
     </div>
@@ -1226,6 +1222,16 @@ function tick(){
   const diff=Math.max(0,Math.floor((pd-now)/1e3));
   const dh=Math.floor(diff/3600),dm=Math.floor((diff%3600)/60),ds=diff%60;
 
+  // ماوەی بانگ لە خوارەوەی کاتژمێر
+  const cdLabel=document.getElementById('cdLabel');
+  if(cdLabel){
+    const parts=[];
+    if(dh>0) parts.push(dh+'س');
+    parts.push(String(dm).padStart(2,'0')+'خ');
+    parts.push(String(ds).padStart(2,'0')+'چ');
+    cdLabel.textContent = '⏱ '+parts.join(' ')+'  ├  '+PM[ni].ku+' '+fmt(nxt.h,nxt.m);
+  }
+
   // progress bar
   let pi=ni-1;if(pi<0)pi=5;if(pi===1)pi=0;
   const prev=times[pi],pm2=prev.h*60+prev.m,nm2=nxt.h*60+nxt.m;
@@ -1245,16 +1251,30 @@ function tick(){
         showToast('🕌 کاتی بانگی '+PM[i].ku+'ە');
         showPlist();
         renderPrayers();
-        // پەیامی سیستەم
+        // تەنها نۆتیفیکەیشن
         sendPrayerNotification(PM[i].ku, fmt(t.h,t.m));
-        // جەرەسی هێواش
-        playGentleBell();
       }
     });
   }
 }
 
 // ── پەیامی سیستەم و جەرەسی بانگ ─────────────────
+let notifEnabled = localStorage.getItem('notifEnabled') !== 'false';
+
+function toggleNotifSetting(){
+  const btn = document.getElementById('notifToggle');
+  notifEnabled = !notifEnabled;
+  localStorage.setItem('notifEnabled', notifEnabled);
+  if(notifEnabled){
+    btn.classList.add('on');
+    requestNotificationPermission();
+    showToast('🔔 ئاگادارکردنەوە چالاک کرا');
+  } else {
+    btn.classList.remove('on');
+    showToast('🔕 ئاگادارکردنەوە ناچالاک کرا');
+  }
+}
+
 function requestNotificationPermission(){
   if('Notification' in window && Notification.permission==='default'){
     Notification.requestPermission();
@@ -1262,10 +1282,11 @@ function requestNotificationPermission(){
 }
 
 function sendPrayerNotification(prayerName, timeStr){
+  if(!notifEnabled) return;
   if(!('Notification' in window)) return;
   if(Notification.permission==='granted'){
     const n = new Notification('🕌 کاتەکانی بانگ', {
-      body: 'کاتی بانگی ' + prayerName + 'ە — ' + timeStr,
+      body: 'ئێستا کاتی بانگی ' + prayerName + 'ە 🕌',
       icon: 'https://4116161-sketch.github.io/bangi-kurdistan/icon-192.png',
       badge: 'https://4116161-sketch.github.io/bangi-kurdistan/icon-192.png',
       tag: 'prayer-' + prayerName,
@@ -2302,7 +2323,7 @@ function switchPage(p){
   window.scrollTo(0,0);
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
-  if(['quran','sura','zikr','hisn','hisn-detail'].includes(p)){
+  if(['quran','sura','zikr','hisn','hisn-detail','qibla','settings','calendar'].includes(p)){
     pg.classList.add('fullscreen');
   }
   const navBtn = document.getElementById('nav-'+p);
@@ -2346,8 +2367,7 @@ function detectLocation(){
     showToast('📍 بەرنامەکەت لۆکەیشن پشتگیری ناکات');
     return;
   }
-  if(btn){btn.textContent='⏳'; btn.style.animation='spin 1s linear infinite';}
-  showToast('📍 دەتبینێت...');
+  if(btn){ btn.innerHTML='<span>⏳</span><span>دەتبینێت...</span>'; btn.disabled=true; }
   navigator.geolocation.getCurrentPosition(
     pos=>{
       const {latitude:lat, longitude:lng}=pos.coords;
@@ -2356,7 +2376,7 @@ function detectLocation(){
         const d=haversine(lat,lng,c.lat,c.lng);
         if(d<minDist){minDist=d;nearest=k;}
       });
-      if(btn){btn.textContent='📍'; btn.style.animation='';}
+      if(btn){ btn.innerHTML='<span>📍</span><span>شارەکەم بدۆزەرەوە</span>'; btn.disabled=false; }
       if(nearest){
         selectCity(nearest);
         closeCityModal();
@@ -2364,10 +2384,11 @@ function detectLocation(){
       }
     },
     err=>{
-      if(btn){btn.textContent='📍'; btn.style.animation='';}
-      showToast('📍 مۆڵەتی لۆکەیشن بدە');
+      if(btn){ btn.innerHTML='<span>📍</span><span>شارەکەم بدۆزەرەوە</span>'; btn.disabled=false; }
+      if(err.code===1) showToast('⚠️ مۆڵەتی لۆکەیشن بدە لە ڕێکخستنی مۆبایل');
+      else showToast('⚠️ لۆکەیشن نەدۆزرایەوە، شار بەدەست هەڵبژێرە');
     },
-    {timeout:8000, maximumAge:60000}
+    {timeout:10000, maximumAge:60000, enableHighAccuracy:true}
   );
 }
 
@@ -2375,26 +2396,27 @@ function detectLocation(){
 // ── کاتەکانی ba8.org — ئەمڕۆ ٩ی ئازار ٢٠٢٦ ──────
 // بەیانی | خۆرهەڵاتن | نیوەڕۆ | عەسر | ئێوارە | خەوتنان
 const BA8_TODAY = {
-  sulaymaniyah: [{h:4,m:56},{h:6,m:18},{h:12,m:15},{h:15,m:29},{h:18,m:9},{h:19,m:25}],
-  hawler:        [{h:5,m:1}, {h:6,m:29},{h:12,m:23},{h:15,m:35},{h:18,m:9},{h:19,m:24}],
-  kirkuk:        [{h:4,m:57},{h:6,m:18},{h:12,m:18},{h:15,m:36},{h:18,m:10},{h:19,m:24}],
-  halebja:       [{h:4,m:51},{h:6,m:23},{h:12,m:12},{h:15,m:30},{h:18,m:4},{h:19,m:16}],
-  duhok:         [{h:5,m:3}, {h:6,m:32},{h:12,m:27},{h:15,m:44},{h:18,m:15},{h:19,m:38}],
-  kalar:         [{h:4,m:56},{h:6,m:23},{h:12,m:14},{h:15,m:32},{h:18,m:4},{h:19,m:18}],
-  chamchamal:    [{h:5,m:4}, {h:6,m:23},{h:12,m:17},{h:15,m:31},{h:18,m:10},{h:19,m:30}],
-  akre:          [{h:5,m:5}, {h:6,m:30},{h:12,m:22},{h:15,m:41},{h:18,m:13},{h:19,m:28}],
-  darbandikhan:  [{h:4,m:55},{h:6,m:17},{h:12,m:14},{h:15,m:28},{h:18,m:8},{h:19,m:24}],
-  zakho:         [{h:5,m:4}, {h:6,m:33},{h:12,m:28},{h:15,m:45},{h:18,m:16},{h:19,m:39}],
-  ranya:         [{h:4,m:59},{h:6,m:21},{h:12,m:18},{h:15,m:32},{h:18,m:12},{h:19,m:28}],
-  qaladze:       [{h:4,m:57},{h:6,m:19},{h:12,m:16},{h:15,m:30},{h:18,m:10},{h:19,m:26}],
-  koye:          [{h:4,m:59},{h:6,m:27},{h:12,m:21},{h:15,m:33},{h:18,m:7},{h:19,m:22}],
-  kifri:         [{h:4,m:58},{h:6,m:25},{h:12,m:16},{h:15,m:34},{h:18,m:6},{h:19,m:20}],
-  bardarash:     [{h:5,m:5}, {h:6,m:30},{h:12,m:22},{h:15,m:41},{h:18,m:13},{h:19,m:28}],
-  mosul:         [{h:5,m:2}, {h:6,m:24},{h:12,m:23},{h:15,m:40},{h:18,m:14},{h:19,m:30}],
-  penjwen:       [{h:4,m:53},{h:6,m:20},{h:12,m:13},{h:15,m:28},{h:18,m:6},{h:19,m:20}],
+  // کاتەکان بەپێی بەرنامەی ئەوقافی کوردستان — ١١ی ئازار ٢٠٢٦
+  sulaymaniyah: [{h:4,m:54},{h:6,m:15},{h:12,m:14},{h:15,m:29},{h:18,m:7},{h:19,m:23}],
+  hawler:        [{h:5,m:0}, {h:6,m:23},{h:12,m:22},{h:15,m:35},{h:18,m:12},{h:19,m:28}],
+  kirkuk:        [{h:4,m:56},{h:6,m:17},{h:12,m:17},{h:15,m:34},{h:18,m:9}, {h:19,m:24}],
+  halebja:       [{h:4,m:50},{h:6,m:11},{h:12,m:11},{h:15,m:27},{h:18,m:4}, {h:19,m:18}],
+  duhok:         [{h:5,m:2}, {h:6,m:28},{h:12,m:26},{h:15,m:43},{h:18,m:17},{h:19,m:35}],
+  kalar:         [{h:4,m:55},{h:6,m:16},{h:12,m:13},{h:15,m:30},{h:18,m:5}, {h:19,m:20}],
+  chamchamal:    [{h:4,m:56},{h:6,m:17},{h:12,m:16},{h:15,m:31},{h:18,m:9}, {h:19,m:25}],
+  akre:          [{h:5,m:2}, {h:6,m:26},{h:12,m:21},{h:15,m:40},{h:18,m:15},{h:19,m:30}],
+  darbandikhan:  [{h:4,m:53},{h:6,m:14},{h:12,m:13},{h:15,m:28},{h:18,m:7}, {h:19,m:22}],
+  zakho:         [{h:5,m:3}, {h:6,m:29},{h:12,m:27},{h:15,m:44},{h:18,m:18},{h:19,m:36}],
+  ranya:         [{h:4,m:57},{h:6,m:18},{h:12,m:17},{h:15,m:32},{h:18,m:11},{h:19,m:27}],
+  qaladze:       [{h:4,m:55},{h:6,m:16},{h:12,m:15},{h:15,m:30},{h:18,m:9}, {h:19,m:25}],
+  koye:          [{h:4,m:57},{h:6,m:20},{h:12,m:20},{h:15,m:33},{h:18,m:10},{h:19,m:25}],
+  kifri:         [{h:4,m:56},{h:6,m:18},{h:12,m:15},{h:15,m:32},{h:18,m:7}, {h:19,m:22}],
+  bardarash:     [{h:5,m:2}, {h:6,m:26},{h:12,m:21},{h:15,m:40},{h:18,m:15},{h:19,m:30}],
+  mosul:         [{h:5,m:0}, {h:6,m:22},{h:12,m:22},{h:15,m:39},{h:18,m:16},{h:19,m:32}],
+  penjwen:       [{h:4,m:51},{h:6,m:12},{h:12,m:12},{h:15,m:28},{h:18,m:8}, {h:19,m:24}],
 };
-// ڕۆژی reference = ٩ی ئازار ٢٠٢٦
-const BA8_REF_DATE = new Date(2026, 2, 9);
+// ڕۆژی reference = ١١ی ئازار ٢٠٢٦
+const BA8_REF_DATE = new Date(2026, 2, 11);
 
 function fetchTodayTimes(cityKey){
   const coord = COORDS[cityKey];
@@ -2404,7 +2426,7 @@ function fetchTodayTimes(cityKey){
   const mm = String(now.getMonth()+1).padStart(2,'0');
   const yyyy = now.getFullYear();
   // Aladhan API — method=3 (MWL) بۆ کوردستان
-  fetch(`https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}?latitude=${coord.lat}&longitude=${coord.lng}&method=3`)
+  fetch(`https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}?latitude=${coord.lat}&longitude=${coord.lng}&method=8`)
     .then(r=>r.json())
     .then(data=>{
       if(!data || data.code!==200) throw new Error('bad');
@@ -2449,6 +2471,9 @@ function showToast(msg){
 (function(){
   loadSavedAzan();
   requestNotificationPermission();
+  // دامەزراندنی toggle بەپێی localStorage
+  const nt = document.getElementById('notifToggle');
+  if(nt && !notifEnabled) nt.classList.remove('on');
   // دەستپێک هەمیشە ماڵەوە
   document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
   document.getElementById('pg-home').classList.add('active');
