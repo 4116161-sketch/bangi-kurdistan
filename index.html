@@ -994,8 +994,8 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
           <!-- هەڵبژاردنی قاری -->
           <select id="reciterSelect" onchange="changeReciter()" style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:6px 10px;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;outline:none">
-            <option value="gmd">سعد الغامدی 🇸🇦</option>
-            <option value="wishear">🇮🇶 هەندرێن (وشیار حیدر اربیلی)</option>
+            <option value="gmd">سعد الغامدی 🇸🇦 (عەرەبی)</option>
+            <option value="gmd_ku">سعد الغامدی + وەرگێڕانی کوردی 🇮🇶</option>
           </select>
           <!-- دوگمەکان -->
           <div style="display:flex;align-items:center;gap:6px">
@@ -2373,10 +2373,12 @@ let audioPlaying = false;
 function getAudioUrl(suraId){
   const reciter = document.getElementById('reciterSelect')?.value || 'gmd';
   const num = String(suraId).padStart(3,'0');
-  if(reciter === 'wishear'){
-    return `https://server11.mp3quran.net/wishear/${num}.mp3`;
+
+  if(reciter === 'gmd_ku'){
+    // سعد الغامدی بە وەرگێڕانی کوردی — archive.org
+    return `https://archive.org/download/quraninkurdish/Saad_Al_Ghamedi_with_Kurdish_Translation_${num}.ogg`;
   }
-  // سعد الغامدی — default
+  // سعد الغامدی عەرەبی — server7.mp3quran.net
   return `https://server7.mp3quran.net/s_gmd/${num}.mp3`;
 }
 
@@ -2397,12 +2399,13 @@ function loadSuraAudio(suraId, autoplay){
     document.getElementById('audioTime').textContent = '0:00';
   };
   quranAudio.onerror = ()=>{
-    const fallback = `https://server7.mp3quran.net/s_gmd/${String(suraId).padStart(3,'0')}.mp3`;
+    const num = String(suraId).padStart(3,'0');
+    const fallback = `https://server7.mp3quran.net/s_gmd/${num}.mp3`;
     if(quranAudio.src !== fallback){
       quranAudio.src = fallback;
       quranAudio.load();
       if(autoplay) quranAudio.play().catch(()=>{});
-      showToast('⚠️ گەڕایەوە بۆ غامدی');
+      showToast('⚠️ گەڕایەوە بۆ غامدی عەرەبی');
     } else {
       showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
       audioPlaying = false;
