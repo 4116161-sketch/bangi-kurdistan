@@ -982,7 +982,34 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div class="quran-hdr-title">📖 قورئانی پیرۆز</div>
         <div style="width:36px"></div>
       </div>
+      <!-- تابەکان -->
+      <div style="display:flex;border-bottom:1px solid rgba(46,204,113,.2);margin:0 12px">
+        <button id="tabRead" onclick="switchQuranTab('read')" style="flex:1;background:none;border:none;border-bottom:2px solid var(--green-light);color:var(--green-light);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;padding:10px;cursor:pointer">📖 نووسین</button>
+        <button id="tabAudio" onclick="switchQuranTab('audio')" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;padding:10px;cursor:pointer">🎧 دەنگ</button>
+      </div>
+      <!-- لیستی نووسین -->
       <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch" id="suraList"></div>
+      <!-- لیستی دەنگ -->
+      <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch;display:none" id="suraAudioList">
+        <!-- پلەیەری دەنگی گلۆبال -->
+        <div id="globalAudioBar" style="background:rgba(0,0,0,.4);border:1px solid rgba(46,204,113,.2);border-radius:14px;padding:12px 14px;margin:12px 0;display:none">
+          <div id="globalAudioTitle" style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;color:var(--green-light);margin-bottom:8px;text-align:center"></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px">
+            <button onclick="globalAudioSkip(-10)" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px">⏪</button>
+            <button id="globalPlayBtn" onclick="toggleGlobalAudio()" style="background:var(--green);border:none;color:#fff;width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center">▶</button>
+            <button onclick="globalAudioSkip(10)" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px">⏩</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="globalAudioTime" style="font-size:10px;color:rgba(255,255,255,.5);min-width:32px">0:00</span>
+            <div onclick="globalAudioSeek(event)" style="flex:1;height:4px;background:rgba(255,255,255,.15);border-radius:2px;cursor:pointer">
+              <div id="globalAudioProgress" style="height:100%;width:0%;background:var(--green-light);border-radius:2px;transition:width .5s linear"></div>
+            </div>
+            <span id="globalAudioDur" style="font-size:10px;color:rgba(255,255,255,.5);min-width:32px;text-align:right">0:00</span>
+          </div>
+        </div>
+        <!-- لیستی سووڕەتەکان -->
+        <div id="suraAudioItems"></div>
+      </div>
     </div>
   </div>
 
@@ -1264,7 +1291,7 @@ const PM_LABELS=['بەیانی','گزنگ','نیوەڕۆ','عەسر','ئێوار
 const HM=['موحەرەم','سەفەر','ڕەبیول ئەوول','ڕەبیول ئاخیر','جەمادیول ئەوول','جەمادیول ئاخیر','ڕەجەب','شەعبان','رەمەزان','شەوواڵ','زوولقەعدە','زوولحیجە'];
 const DK=['یەکشەممە','دووشەممە','سێشەممە','چوارشەممە','پێنجشەممە','هەینی','شەممە'];
 const KM=['کانوونی دووەم','شوبات','ئازار','نیسان','ئایار','حوزەیران','تەممووز','ئاب','ئەیلوول','تشرینی ئەوول','تشرینی دووەم','کانوونی یەکەم'];
-let CUR = localStorage.getItem('selectedCity') || 'hawler';
+let CUR = localStorage.getItem('selectedCity') || 'penjwen';
 let calOff=0;
 const AR=s=>String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 function fmt(h,m){
@@ -2364,6 +2391,147 @@ function renderSuraList(){
   `).join('');
 }
 
+// ── تابی دەنگ ──────────────────────────────────
+let curAudioSuraId = 1;
+let globalAudio = null;
+let globalPlaying = false;
+let globalHighlightInterval = null;
+
+function switchQuranTab(tab){
+  const readList = document.getElementById('suraList');
+  const audioList = document.getElementById('suraAudioList');
+  const tabRead = document.getElementById('tabRead');
+  const tabAudio = document.getElementById('tabAudio');
+  if(tab === 'audio'){
+    readList.style.display = 'none';
+    audioList.style.display = 'block';
+    tabRead.style.borderBottomColor = 'transparent';
+    tabRead.style.color = 'rgba(255,255,255,.4)';
+    tabAudio.style.borderBottomColor = 'var(--green-light)';
+    tabAudio.style.color = 'var(--green-light)';
+    renderSuraAudioList();
+  } else {
+    readList.style.display = 'block';
+    audioList.style.display = 'none';
+    tabRead.style.borderBottomColor = 'var(--green-light)';
+    tabRead.style.color = 'var(--green-light)';
+    tabAudio.style.borderBottomColor = 'transparent';
+    tabAudio.style.color = 'rgba(255,255,255,.4)';
+  }
+}
+
+function renderSuraAudioList(){
+  const el = document.getElementById('suraAudioItems');
+  if(!el || el.innerHTML) return; // جارێکی تەنها
+  el.innerHTML = SURA_LIST.map(s=>`
+    <div id="audioSuraRow-${s.id}" onclick="playGlobalSura(${s.id})"
+      style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:background .2s;margin-bottom:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)">
+      <div style="width:34px;height:34px;border-radius:8px;background:rgba(46,204,113,.12);display:flex;align-items:center;justify-content:center;font-family:'Scheherazade New',serif;font-size:14px;color:var(--green-light);flex-shrink:0">${toArabicNum(s.id)}</div>
+      <div style="flex:1">
+        <div style="font-family:'Scheherazade New',serif;font-size:16px;color:#fff">${s.name}</div>
+        <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">${toArabicNum(s.ayat)} ئایەت · ${s.type}</div>
+      </div>
+      <div id="audioSuraIcon-${s.id}" style="font-size:18px;color:rgba(255,255,255,.2)">▶</div>
+    </div>
+  `).join('');
+}
+
+function playGlobalSura(id){
+  // ڕیزی پێشوو ڕیست بکە
+  if(curAudioSuraId && curAudioSuraId !== id){
+    const prevIcon = document.getElementById('audioSuraIcon-'+curAudioSuraId);
+    const prevRow = document.getElementById('audioSuraRow-'+curAudioSuraId);
+    if(prevIcon) prevIcon.textContent = '▶';
+    if(prevRow) prevRow.style.background = 'rgba(255,255,255,.04)';
+  }
+
+  curAudioSuraId = id;
+  const sura = SURA_LIST.find(s=>s.id===id);
+  const title = sura ? sura.name : 'سووڕەت '+id;
+
+  // پلەیەر نیشان بدە
+  document.getElementById('globalAudioBar').style.display = 'block';
+  document.getElementById('globalAudioTitle').textContent = '🎧 ' + title;
+
+  // ڕیزی چالاک
+  const row = document.getElementById('audioSuraRow-'+id);
+  const icon = document.getElementById('audioSuraIcon-'+id);
+  if(row) row.style.background = 'rgba(46,204,113,.12)';
+  if(icon) icon.textContent = '⏸';
+
+  // scroll بۆ پلەیەر
+  document.getElementById('globalAudioBar').scrollIntoView({behavior:'smooth', block:'start'});
+
+  // دەنگ بار بکە
+  if(globalAudio){ globalAudio.pause(); globalAudio.src=''; globalAudio=null; }
+  if(globalHighlightInterval){ clearInterval(globalHighlightInterval); globalHighlightInterval=null; }
+
+  const num = String(id).padStart(3,'0');
+  globalAudio = new Audio(`https://archive.org/download/quraninkurdish/Saad_Al_Ghamedi_with_Kurdish_Translation_${num}.ogg`);
+
+  globalAudio.onloadedmetadata = ()=>{
+    const dm=Math.floor(globalAudio.duration/60), ds=Math.floor(globalAudio.duration%60);
+    document.getElementById('globalAudioDur').textContent = dm+':'+String(ds).padStart(2,'0');
+  };
+
+  globalAudio.ontimeupdate = ()=>{
+    if(!globalAudio.duration) return;
+    const pct = (globalAudio.currentTime/globalAudio.duration)*100;
+    document.getElementById('globalAudioProgress').style.width = pct+'%';
+    const m=Math.floor(globalAudio.currentTime/60), s=Math.floor(globalAudio.currentTime%60);
+    document.getElementById('globalAudioTime').textContent = m+':'+String(s).padStart(2,'0');
+  };
+
+  globalAudio.onended = ()=>{
+    globalPlaying = false;
+    document.getElementById('globalPlayBtn').textContent = '▶';
+    if(icon) icon.textContent = '▶';
+    // سووڕەتی دواتر ئۆتۆماتیک
+    const nextId = id < 114 ? id+1 : 1;
+    playGlobalSura(nextId);
+  };
+
+  globalAudio.onerror = ()=>{
+    showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
+    globalPlaying = false;
+    document.getElementById('globalPlayBtn').textContent = '▶';
+    if(icon) icon.textContent = '▶';
+  };
+
+  globalAudio.play().then(()=>{
+    globalPlaying = true;
+    document.getElementById('globalPlayBtn').textContent = '⏸';
+  }).catch(()=>{});
+}
+
+function toggleGlobalAudio(){
+  if(!globalAudio){ playGlobalSura(curAudioSuraId); return; }
+  const icon = document.getElementById('audioSuraIcon-'+curAudioSuraId);
+  if(globalPlaying){
+    globalAudio.pause();
+    globalPlaying = false;
+    document.getElementById('globalPlayBtn').textContent = '▶';
+    if(icon) icon.textContent = '▶';
+  } else {
+    globalAudio.play().then(()=>{
+      globalPlaying = true;
+      document.getElementById('globalPlayBtn').textContent = '⏸';
+      if(icon) icon.textContent = '⏸';
+    }).catch(()=>{});
+  }
+}
+
+function globalAudioSkip(sec){
+  if(!globalAudio) return;
+  globalAudio.currentTime = Math.max(0, Math.min(globalAudio.duration||0, globalAudio.currentTime+sec));
+}
+
+function globalAudioSeek(e){
+  if(!globalAudio || !globalAudio.duration) return;
+  const pct = e.offsetX / e.currentTarget.offsetWidth;
+  globalAudio.currentTime = pct * globalAudio.duration;
+}
+
 let curSuraId = 1;
 let suraTouchY = 0;
 
@@ -2987,7 +3155,14 @@ function switchPage(p){
   }
   const navBtn = document.getElementById('nav-'+p);
   if(navBtn) navBtn.classList.add('active');
-  if(p==='widgets') renderWidgets();
+  if(p !== 'quran'){
+    // داگرتنی globalAudio کاتی جێهێشتنی پەڕەی قورئان
+    if(globalAudio){ globalAudio.pause(); }
+  }
+  if(p === 'quran'){
+    // گەڕانەوە بۆ تابی نووسین
+    switchQuranTab('read');
+  }
   if(p==='zikr') renderZikr();
   if(p==='quran') renderSuraList();
   if(p==='hisn') renderHisn();
