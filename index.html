@@ -448,11 +448,18 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 }
 .ayah-line{
   display:block;
-  padding:6px 0;
+  padding:8px 6px;
   border-bottom:1px solid rgba(180,140,60,.15);
   text-align:center;
+  border-radius:10px;
+  transition:background .3s, box-shadow .3s;
 }
 .ayah-line:last-child{ border-bottom:none; }
+.ayah-line.ayah-active{
+  background:rgba(46,204,113,.15);
+  box-shadow:0 0 0 2px rgba(46,204,113,.4);
+  border-bottom:1px solid transparent;
+}
 .ayah-num-circle{
   display:inline-flex;
   align-items:center;
@@ -990,19 +997,11 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 
       <!-- پلەیەری دەنگ -->
       <div id="audioBar" style="background:rgba(0,0,0,.35);border-bottom:1px solid rgba(46,204,113,.15);padding:10px 14px;display:flex;flex-direction:column;gap:8px">
-        <!-- ڕیزی یەکەم: قاری + دوگمەکان -->
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <!-- هەڵبژاردنی قاری -->
-          <select id="reciterSelect" onchange="changeReciter()" style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:6px 10px;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;outline:none">
-            <option value="gmd">سعد الغامدی 🇸🇦 (عەرەبی)</option>
-            <option value="gmd_ku">سعد الغامدی + وەرگێڕانی کوردی 🇮🇶</option>
-          </select>
-          <!-- دوگمەکان -->
-          <div style="display:flex;align-items:center;gap:6px">
-            <button onclick="audioSkip(-10)" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:13px">⏪</button>
-            <button id="playBtn" onclick="toggleAudio()" style="background:var(--green);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center">▶</button>
-            <button onclick="audioSkip(10)" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:13px">⏩</button>
-          </div>
+        <!-- دوگمەکان -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+          <button onclick="audioSkip(-10)" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px">⏪</button>
+          <button id="playBtn" onclick="toggleAudio()" style="background:var(--green);border:none;color:#fff;width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center">▶</button>
+          <button onclick="audioSkip(10)" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px">⏩</button>
         </div>
         <!-- progress bar -->
         <div style="display:flex;align-items:center;gap:8px">
@@ -1420,6 +1419,8 @@ function renderPrayers(){
   const bt=document.getElementById('bottomBar');
   if(bt)bt.innerHTML=`ئیمساک <span>${fmt(times[0].h,times[0].m)}</span> &nbsp;—&nbsp; ئیفتار <span>${fmt(times[4].h,times[4].m)}</span>`;
   renderWidgetPrayers();
+  // کاتەکانی بانگ بنێرە بۆ Service Worker
+  setTimeout(sendPrayerTimesToSW, 1000);
 }
 
 let lastAzanMinute = -1;
@@ -2371,15 +2372,8 @@ let quranAudio = null;
 let audioPlaying = false;
 
 function getAudioUrl(suraId){
-  const reciter = document.getElementById('reciterSelect')?.value || 'gmd';
   const num = String(suraId).padStart(3,'0');
-
-  if(reciter === 'gmd_ku'){
-    // سعد الغامدی بە وەرگێڕانی کوردی — archive.org
-    return `https://archive.org/download/quraninkurdish/Saad_Al_Ghamedi_with_Kurdish_Translation_${num}.ogg`;
-  }
-  // سعد الغامدی عەرەبی — server7.mp3quran.net
-  return `https://server7.mp3quran.net/s_gmd/${num}.mp3`;
+  return `https://archive.org/download/quraninkurdish/Saad_Al_Ghamedi_with_Kurdish_Translation_${num}.ogg`;
 }
 
 function loadSuraAudio(suraId, autoplay){
@@ -2399,18 +2393,9 @@ function loadSuraAudio(suraId, autoplay){
     document.getElementById('audioTime').textContent = '0:00';
   };
   quranAudio.onerror = ()=>{
-    const num = String(suraId).padStart(3,'0');
-    const fallback = `https://server7.mp3quran.net/s_gmd/${num}.mp3`;
-    if(quranAudio.src !== fallback){
-      quranAudio.src = fallback;
-      quranAudio.load();
-      if(autoplay) quranAudio.play().catch(()=>{});
-      showToast('⚠️ گەڕایەوە بۆ غامدی عەرەبی');
-    } else {
-      showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
-      audioPlaying = false;
-      document.getElementById('playBtn').textContent = '▶';
-    }
+    showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
+    audioPlaying = false;
+    document.getElementById('playBtn').textContent = '▶';
   };
   if(autoplay){
     quranAudio.play().then(()=>{
@@ -2421,54 +2406,32 @@ function loadSuraAudio(suraId, autoplay){
 }
 
 function toggleAudio(){
-  if(!quranAudio) loadSuraAudio(curSuraId, true);
-  else if(audioPlaying){
-    quranAudio.pause();
-    audioPlaying=false;
-    document.getElementById('playBtn').textContent='▶';
-  } else {
-    quranAudio.play().then(()=>{
-      audioPlaying=true;
-      document.getElementById('playBtn').textContent='⏸';
-    }).catch(()=>{ loadSuraAudio(curSuraId, true); });
-  }
-}
-
-function changeReciter(){
-  const wasPlaying = audioPlaying;
-  loadSuraAudio(curSuraId, wasPlaying);
+  playAyahByAyah();
 }
 
 function audioSkip(sec){
-  if(!quranAudio) return;
-  quranAudio.currentTime = Math.max(0, Math.min(quranAudio.duration, quranAudio.currentTime + sec));
+  // ئایەتی پێشوو / دواتر
+  if(sec < 0){
+    currentAyah = Math.max(1, currentAyah - 2);
+  } else {
+    currentAyah = Math.min(totalAyahs, currentAyah);
+  }
+  if(ayahAudio){ ayahAudio.pause(); ayahAudio = null; }
+  if(ayahPlaying) playNextAyah();
 }
 
 function audioSeek(e){
-  if(!quranAudio || !quranAudio.duration) return;
+  // کلیک بەسەر progress bar — بازدانی بۆ ئایەتی دیاریکراو
   const bar = e.currentTarget;
   const pct = e.offsetX / bar.offsetWidth;
-  quranAudio.currentTime = pct * quranAudio.duration;
-}
-
-function updateAudioProgress(){
-  if(!quranAudio || !quranAudio.duration) return;
-  const pct = (quranAudio.currentTime / quranAudio.duration)*100;
-  document.getElementById('audioProgress').style.width = pct+'%';
-  document.getElementById('audioTime').textContent = fmtAudioTime(quranAudio.currentTime);
-}
-
-function fmtAudioTime(sec){
-  if(!sec || isNaN(sec)) return '0:00';
-  const m=Math.floor(sec/60), s=Math.floor(sec%60);
-  return m+':'+ String(s).padStart(2,'0');
+  const target = Math.max(1, Math.ceil(pct * totalAyahs));
+  currentAyah = target;
+  if(ayahAudio){ ayahAudio.pause(); ayahAudio = null; }
+  if(ayahPlaying) playNextAyah();
 }
 
 function stopSuraAudio(){
-  if(quranAudio){ quranAudio.pause(); quranAudio.src=''; quranAudio=null; }
-  audioPlaying=false;
-  const btn=document.getElementById('playBtn');
-  if(btn) btn.textContent='▶';
+  stopAyahAudio();
 }
 
 function suraTouchStart(e){
@@ -2512,7 +2475,7 @@ function showSura(id){
   function renderAyat(ayat){
     // هەر ئایەتێک لەسەر هێڵی خۆی — شێوازی کلاسیکی
     const lines = ayat.map(a=>
-      `<div class="ayah-line">${a.text} <span class="ayah-num-circle">${toArabicNum(a.numberInSurah)}</span></div>`
+      `<div class="ayah-line" id="ayah-${a.numberInSurah}">${a.text} <span class="ayah-num-circle">${toArabicNum(a.numberInSurah)}</span></div>`
     ).join('');
     document.getElementById('suraText').innerHTML =
       `<div class="quran-flow">${lines}</div>`;
@@ -2535,6 +2498,94 @@ function showSura(id){
           </div>`;
       }
     });
+}
+
+// ── هایلایتی ئایەت بە ئایەت ──────────────────────
+let ayahAudio = null;
+let currentAyah = 0;
+let totalAyahs = 0;
+let ayahPlaying = false;
+
+function getAyahUrl(surah, ayah){
+  const s = String(surah).padStart(3,'0');
+  const a = String(ayah).padStart(3,'0');
+  return `https://everyayah.com/data/Alafasy_128kbps/${s}${a}.mp3`;
+}
+
+function playAyahByAyah(){
+  // ژمارەی کۆی ئایەتەکان
+  const ayahEls = document.querySelectorAll('.ayah-line');
+  totalAyahs = ayahEls.length;
+  if(!totalAyahs) return;
+
+  if(ayahPlaying){
+    // پاوسە
+    if(ayahAudio) ayahAudio.pause();
+    ayahPlaying = false;
+    document.getElementById('playBtn').textContent = '▶';
+    return;
+  }
+
+  ayahPlaying = true;
+  document.getElementById('playBtn').textContent = '⏸';
+
+  // ئەگەر بەردەوامبووی دوای پاوس
+  if(currentAyah > 0 && currentAyah <= totalAyahs){
+    if(ayahAudio){ ayahAudio.play().catch(()=>{}); return; }
+  }
+
+  currentAyah = 1;
+  playNextAyah();
+}
+
+function playNextAyah(){
+  if(!ayahPlaying || currentAyah > totalAyahs){
+    ayahPlaying = false;
+    currentAyah = 0;
+    document.getElementById('playBtn').textContent = '▶';
+    // هایلایت لابردن
+    document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
+    return;
+  }
+
+  // هایلایت
+  document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
+  const activeEl = document.getElementById('ayah-'+currentAyah);
+  if(activeEl){
+    activeEl.classList.add('ayah-active');
+    activeEl.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  // progress bar نوێکردنەوە
+  const pct = totalAyahs > 0 ? ((currentAyah-1)/totalAyahs)*100 : 0;
+  document.getElementById('audioProgress').style.width = pct+'%';
+  document.getElementById('audioTime').textContent = currentAyah+'/'+totalAyahs;
+
+  if(ayahAudio){ ayahAudio.pause(); ayahAudio = null; }
+
+  ayahAudio = new Audio(getAyahUrl(curSuraId, currentAyah));
+  ayahAudio.onended = ()=>{
+    currentAyah++;
+    playNextAyah();
+  };
+  ayahAudio.onerror = ()=>{
+    currentAyah++;
+    playNextAyah();
+  };
+  ayahAudio.play().catch(()=>{
+    currentAyah++;
+    playNextAyah();
+  });
+}
+
+function stopAyahAudio(){
+  ayahPlaying = false;
+  currentAyah = 0;
+  if(ayahAudio){ ayahAudio.pause(); ayahAudio = null; }
+  document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
+  document.getElementById('playBtn').textContent = '▶';
+  document.getElementById('audioProgress').style.width = '0%';
+  document.getElementById('audioTime').textContent = '0:00';
 }
 
 function toArabicNum(n){
@@ -3107,6 +3158,23 @@ function sub2(t){ const total=t.h*60+t.m-2; return{h:Math.floor(((total%1440)+14
 // شارەکانی تر بە interpolation لە نزیکترین شار
 const BA8_REF_DATE = new Date(2026, 2, 1); // ١ی ئازار
 
+// ── کاتەکانی بانگ بنێرە بۆ Service Worker ──────────
+function sendPrayerTimesToSW(){
+  if(!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return;
+  const city = CITIES[CUR];
+  if(!city || !city.t) return;
+  const times = city.t.map((t,i)=>({
+    h: t.h, m: t.m,
+    name: PM[i].ku,
+    timeStr: fmt(t.h, t.m)
+  }));
+  navigator.serviceWorker.controller.postMessage({
+    type: 'PRAYER_TIMES',
+    times: times,
+    city: city.ku || CUR
+  });
+}
+
 function fetchTodayTimes(cityKey){
   const now = new Date();
   const dayIdx = (now.getMonth()===2 && now.getFullYear()===2026)
@@ -3181,7 +3249,20 @@ function showToast(msg){
 // PWA Service Worker
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    navigator.serviceWorker.register('./sw.js').then(reg=>{
+      // کاتی active بوونی SW تازە
+      reg.addEventListener('updatefound', ()=>{
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', ()=>{
+          if(newWorker.state === 'activated') sendPrayerTimesToSW();
+        });
+      });
+    }).catch(()=>{});
+
+    // ئەگەر SW پێشوەخت active بوو
+    navigator.serviceWorker.ready.then(()=>{
+      setTimeout(sendPrayerTimesToSW, 2000);
+    });
   });
 }
 </script>
