@@ -880,7 +880,12 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
       <div class="qz-card" onclick="switchPage('quran')">
         <div class="qz-icon">📖</div>
         <div class="qz-title">قورئانی پیرۆز</div>
-        <div class="qz-sub">خوێندنەوەی ئایەتەکان</div>
+        <div class="qz-sub">بەخوێندن</div>
+      </div>
+      <div class="qz-card" onclick="openQuranAudio()">
+        <div class="qz-icon">🎧</div>
+        <div class="qz-title">قورئانی پیرۆز</div>
+        <div class="qz-sub">بە دەنگ</div>
       </div>
       <div class="qz-card" onclick="switchPage('zikr')">
         <div class="qz-icon">📿</div>
@@ -974,24 +979,28 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
     </div>
   </div>
 
-  <!-- QURAN PAGE -->
+  <!-- QURAN READ PAGE -->
   <div class="pg" id="pg-quran">
     <div class="quran-page-wrap">
       <div class="quran-hdr">
         <button onclick="switchPage('home')" class="back-btn">←</button>
-        <div class="quran-hdr-title">📖 قورئانی پیرۆز</div>
+        <div class="quran-hdr-title">📖 قورئانی پیرۆز — بەخوێندن</div>
         <div style="width:36px"></div>
       </div>
-      <!-- تابەکان -->
-      <div style="display:flex;border-bottom:1px solid rgba(46,204,113,.2);margin:0 12px">
-        <button id="tabRead" onclick="switchQuranTab('read')" style="flex:1;background:none;border:none;border-bottom:2px solid var(--green-light);color:var(--green-light);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;padding:10px;cursor:pointer">📖 نووسین</button>
-        <button id="tabAudio" onclick="switchQuranTab('audio')" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;padding:10px;cursor:pointer">🎧 دەنگ</button>
-      </div>
-      <!-- لیستی نووسین -->
       <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch" id="suraList"></div>
-      <!-- لیستی دەنگ -->
-      <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch;display:none" id="suraAudioList">
-        <!-- پلەیەری دەنگی گلۆبال -->
+    </div>
+  </div>
+
+  <!-- QURAN AUDIO PAGE -->
+  <div class="pg" id="pg-quran-audio">
+    <div class="quran-page-wrap">
+      <div class="quran-hdr">
+        <button onclick="switchPage('home')" class="back-btn">←</button>
+        <div class="quran-hdr-title">🎧 قورئانی پیرۆز — بە دەنگ</div>
+        <div style="width:36px"></div>
+      </div>
+      <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch">
+        <!-- پلەیەر -->
         <div id="globalAudioBar" style="background:rgba(0,0,0,.4);border:1px solid rgba(46,204,113,.2);border-radius:14px;padding:12px 14px;margin:12px 0;display:none">
           <div id="globalAudioTitle" style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;color:var(--green-light);margin-bottom:8px;text-align:center"></div>
           <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px">
@@ -1017,7 +1026,7 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
   <div class="pg" id="pg-sura">
     <div class="quran-page-wrap">
       <div class="quran-hdr">
-        <button onclick="switchPage('quran')" class="back-btn">←</button>
+        <button onclick="stopSuraAudio();switchPage('quran')" class="back-btn">←</button>
         <div id="suraTitle" class="quran-hdr-title">—</div>
         <div style="width:36px"></div>
       </div>
@@ -2397,27 +2406,9 @@ let globalAudio = null;
 let globalPlaying = false;
 let globalHighlightInterval = null;
 
-function switchQuranTab(tab){
-  const readList = document.getElementById('suraList');
-  const audioList = document.getElementById('suraAudioList');
-  const tabRead = document.getElementById('tabRead');
-  const tabAudio = document.getElementById('tabAudio');
-  if(tab === 'audio'){
-    readList.style.display = 'none';
-    audioList.style.display = 'block';
-    tabRead.style.borderBottomColor = 'transparent';
-    tabRead.style.color = 'rgba(255,255,255,.4)';
-    tabAudio.style.borderBottomColor = 'var(--green-light)';
-    tabAudio.style.color = 'var(--green-light)';
-    renderSuraAudioList();
-  } else {
-    readList.style.display = 'block';
-    audioList.style.display = 'none';
-    tabRead.style.borderBottomColor = 'var(--green-light)';
-    tabRead.style.color = 'var(--green-light)';
-    tabAudio.style.borderBottomColor = 'transparent';
-    tabAudio.style.color = 'rgba(255,255,255,.4)';
-  }
+function openQuranAudio(){
+  stopSuraAudio();
+  switchPage('quran-audio');
 }
 
 function renderSuraAudioList(){
@@ -3150,21 +3141,26 @@ function switchPage(p){
     const tvWrap = document.getElementById('tvPlayerWrap');
     if(tvWrap) tvWrap.style.display = 'none';
   }
-  if(['quran','sura','zikr','hisn','hisn-detail','qibla','settings','calendar','tv'].includes(p)){
+  if(['quran','quran-audio','sura','zikr','hisn','hisn-detail','qibla','settings','calendar','tv'].includes(p)){
     pg.classList.add('fullscreen');
   }
   const navBtn = document.getElementById('nav-'+p);
   if(navBtn) navBtn.classList.add('active');
-  if(p !== 'quran'){
-    // داگرتنی globalAudio کاتی جێهێشتنی پەڕەی قورئان
-    if(globalAudio){ globalAudio.pause(); }
+  // دەنگی بەشی دەنگ — تەنها دابگرە کاتی جێهێشتنی پەڕەی دەنگ
+  if(p !== 'quran-audio'){
+    if(globalAudio){ globalAudio.pause(); globalPlaying = false;
+      const gb = document.getElementById('globalPlayBtn'); if(gb) gb.textContent='▶';
+      const icon = document.getElementById('audioSuraIcon-'+curAudioSuraId);
+      if(icon) icon.textContent = '▶';
+    }
   }
-  if(p === 'quran'){
-    // گەڕانەوە بۆ تابی نووسین
-    switchQuranTab('read');
+  // دەنگی بەشی نووسین — تەنها دابگرە کاتی جێهێشتنی پەڕەی نووسین
+  if(p !== 'sura'){
+    stopSuraAudio();
   }
   if(p==='zikr') renderZikr();
   if(p==='quran') renderSuraList();
+  if(p==='quran-audio') renderSuraAudioList();
   if(p==='hisn') renderHisn();
   if(p==='tv') renderTVChannels();
 }
