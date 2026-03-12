@@ -2370,68 +2370,128 @@ let suraTouchY = 0;
 // ── پلەیەری قورئان ──────────────────────────────
 let quranAudio = null;
 let audioPlaying = false;
+let ayahTimings = [];
+let highlightInterval = null;
 
 function getAudioUrl(suraId){
   const num = String(suraId).padStart(3,'0');
   return `https://archive.org/download/quraninkurdish/Saad_Al_Ghamedi_with_Kurdish_Translation_${num}.ogg`;
 }
 
-function loadSuraAudio(suraId, autoplay){
-  if(quranAudio){
-    quranAudio.pause();
-    quranAudio.src='';
+// ── هایلایتی ئایەت بەپێی کاتی دەنگ ──────────────────
+
+function buildAyahTimings(totalDur, ayahCount){
+  // تەخمینی کاتی هەر ئایەتێک بەپێی کاتی تەواوی فایل
+  ayahTimings = [];
+  const perAyah = totalDur / ayahCount;
+  for(let i=0; i<ayahCount; i++){
+    ayahTimings.push({
+      start: i * perAyah,
+      end: (i+1) * perAyah,
+      ayah: i+1
+    });
   }
+}
+
+function updateHighlight(){
+  if(!quranAudio || !ayahTimings.length) return;
+  const cur = quranAudio.currentTime;
+  const active = ayahTimings.find(t => cur >= t.start && cur < t.end);
+  if(!active) return;
+
+  document.querySelectorAll('.ayah-line').forEach(el => el.classList.remove('ayah-active'));
+  const el = document.getElementById('ayah-'+active.ayah);
+  if(el){
+    el.classList.add('ayah-active');
+    // scroll ئۆتۆماتیک
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  // progress bar
+  const pct = (cur / quranAudio.duration) * 100;
+  document.getElementById('audioProgress').style.width = pct + '%';
+  const m = Math.floor(cur/60), s = Math.floor(cur%60);
+  document.getElementById('audioTime').textContent = m+':'+String(s).padStart(2,'0');
+  const dm = Math.floor(quranAudio.duration/60), ds = Math.floor(quranAudio.duration%60);
+  document.getElementById('audioDur').textContent = dm+':'+String(ds).padStart(2,'0');
+}
+
+function loadSuraAudio(suraId, autoplay){
+  if(quranAudio){ quranAudio.pause(); quranAudio.src=''; quranAudio=null; }
+  if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
+  document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
+
   quranAudio = new Audio(getAudioUrl(suraId));
-  quranAudio.ontimeupdate = updateAudioProgress;
+
   quranAudio.onloadedmetadata = ()=>{
-    document.getElementById('audioDur').textContent = fmtAudioTime(quranAudio.duration);
+    const ayahEls = document.querySelectorAll('.ayah-line');
+    buildAyahTimings(quranAudio.duration, ayahEls.length);
+    document.getElementById('audioDur').textContent =
+      Math.floor(quranAudio.duration/60)+':'+String(Math.floor(quranAudio.duration%60)).padStart(2,'0');
   };
+
   quranAudio.onended = ()=>{
     audioPlaying = false;
     document.getElementById('playBtn').textContent = '▶';
     document.getElementById('audioProgress').style.width = '0%';
     document.getElementById('audioTime').textContent = '0:00';
+    document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
+    if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
   };
+
   quranAudio.onerror = ()=>{
     showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
     audioPlaying = false;
     document.getElementById('playBtn').textContent = '▶';
+    if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
   };
+
   if(autoplay){
     quranAudio.play().then(()=>{
-      audioPlaying=true;
-      document.getElementById('playBtn').textContent='⏸';
+      audioPlaying = true;
+      document.getElementById('playBtn').textContent = '⏸';
+      highlightInterval = setInterval(updateHighlight, 500);
     }).catch(()=>{});
   }
 }
 
 function toggleAudio(){
-  playAyahByAyah();
+  if(!quranAudio){ loadSuraAudio(curSuraId, true); return; }
+  if(audioPlaying){
+    quranAudio.pause();
+    audioPlaying = false;
+    document.getElementById('playBtn').textContent = '▶';
+    if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
+  } else {
+    quranAudio.play().then(()=>{
+      audioPlaying = true;
+      document.getElementById('playBtn').textContent = '⏸';
+      highlightInterval = setInterval(updateHighlight, 500);
+    }).catch(()=>{ loadSuraAudio(curSuraId, true); });
+  }
 }
 
 function audioSkip(sec){
-  // ئایەتی پێشوو / دواتر
-  if(sec < 0){
-    currentAyah = Math.max(1, currentAyah - 2);
-  } else {
-    currentAyah = Math.min(totalAyahs, currentAyah);
-  }
-  if(ayahAudio){ ayahAudio.pause(); ayahAudio = null; }
-  if(ayahPlaying) playNextAyah();
+  if(!quranAudio) return;
+  quranAudio.currentTime = Math.max(0, Math.min(quranAudio.duration||0, quranAudio.currentTime + sec));
 }
 
 function audioSeek(e){
-  // کلیک بەسەر progress bar — بازدانی بۆ ئایەتی دیاریکراو
+  if(!quranAudio || !quranAudio.duration) return;
   const bar = e.currentTarget;
   const pct = e.offsetX / bar.offsetWidth;
-  const target = Math.max(1, Math.ceil(pct * totalAyahs));
-  currentAyah = target;
-  if(ayahAudio){ ayahAudio.pause(); ayahAudio = null; }
-  if(ayahPlaying) playNextAyah();
+  quranAudio.currentTime = pct * quranAudio.duration;
 }
 
 function stopSuraAudio(){
-  stopAyahAudio();
+  if(quranAudio){ quranAudio.pause(); quranAudio.src=''; quranAudio=null; }
+  audioPlaying = false;
+  if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
+  document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
+  const btn = document.getElementById('playBtn');
+  if(btn) btn.textContent = '▶';
+  document.getElementById('audioProgress').style.width = '0%';
+  document.getElementById('audioTime').textContent = '0:00';
 }
 
 function suraTouchStart(e){
@@ -2498,94 +2558,6 @@ function showSura(id){
           </div>`;
       }
     });
-}
-
-// ── هایلایتی ئایەت بە ئایەت ──────────────────────
-let ayahAudio = null;
-let currentAyah = 0;
-let totalAyahs = 0;
-let ayahPlaying = false;
-
-function getAyahUrl(surah, ayah){
-  const s = String(surah).padStart(3,'0');
-  const a = String(ayah).padStart(3,'0');
-  return `https://everyayah.com/data/Alafasy_128kbps/${s}${a}.mp3`;
-}
-
-function playAyahByAyah(){
-  // ژمارەی کۆی ئایەتەکان
-  const ayahEls = document.querySelectorAll('.ayah-line');
-  totalAyahs = ayahEls.length;
-  if(!totalAyahs) return;
-
-  if(ayahPlaying){
-    // پاوسە
-    if(ayahAudio) ayahAudio.pause();
-    ayahPlaying = false;
-    document.getElementById('playBtn').textContent = '▶';
-    return;
-  }
-
-  ayahPlaying = true;
-  document.getElementById('playBtn').textContent = '⏸';
-
-  // ئەگەر بەردەوامبووی دوای پاوس
-  if(currentAyah > 0 && currentAyah <= totalAyahs){
-    if(ayahAudio){ ayahAudio.play().catch(()=>{}); return; }
-  }
-
-  currentAyah = 1;
-  playNextAyah();
-}
-
-function playNextAyah(){
-  if(!ayahPlaying || currentAyah > totalAyahs){
-    ayahPlaying = false;
-    currentAyah = 0;
-    document.getElementById('playBtn').textContent = '▶';
-    // هایلایت لابردن
-    document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
-    return;
-  }
-
-  // هایلایت
-  document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
-  const activeEl = document.getElementById('ayah-'+currentAyah);
-  if(activeEl){
-    activeEl.classList.add('ayah-active');
-    activeEl.scrollIntoView({behavior:'smooth', block:'center'});
-  }
-
-  // progress bar نوێکردنەوە
-  const pct = totalAyahs > 0 ? ((currentAyah-1)/totalAyahs)*100 : 0;
-  document.getElementById('audioProgress').style.width = pct+'%';
-  document.getElementById('audioTime').textContent = currentAyah+'/'+totalAyahs;
-
-  if(ayahAudio){ ayahAudio.pause(); ayahAudio = null; }
-
-  ayahAudio = new Audio(getAyahUrl(curSuraId, currentAyah));
-  ayahAudio.onended = ()=>{
-    currentAyah++;
-    playNextAyah();
-  };
-  ayahAudio.onerror = ()=>{
-    currentAyah++;
-    playNextAyah();
-  };
-  ayahAudio.play().catch(()=>{
-    currentAyah++;
-    playNextAyah();
-  });
-}
-
-function stopAyahAudio(){
-  ayahPlaying = false;
-  currentAyah = 0;
-  if(ayahAudio){ ayahAudio.pause(); ayahAudio = null; }
-  document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
-  document.getElementById('playBtn').textContent = '▶';
-  document.getElementById('audioProgress').style.width = '0%';
-  document.getElementById('audioTime').textContent = '0:00';
 }
 
 function toArabicNum(n){
