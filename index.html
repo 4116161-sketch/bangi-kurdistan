@@ -536,6 +536,7 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .ticon{font-size:20px}
 .ttext{font-family:'Amiri',serif;font-size:14px;color:#fff}
 </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.7/hls.min.js"></script>
 </head>
 <body>
 
@@ -879,10 +880,15 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div class="qz-title">زیکر و دوعا</div>
         <div class="qz-sub">زیکرەکانی ڕۆژانە</div>
       </div>
-      <div class="qz-card" onclick="switchPage('hisn')" style="grid-column:1/-1">
+      <div class="qz-card" onclick="switchPage('hisn')">
         <div class="qz-icon">🏰</div>
         <div class="qz-title">قەڵای موسڵمان</div>
-        <div class="qz-sub">نزا و ویردەکانی ڕۆژانە — ١٢١ بەش</div>
+        <div class="qz-sub">١٢١ بەش — نزا و ویرد</div>
+      </div>
+      <div class="qz-card" onclick="switchPage('tv')">
+        <div class="qz-icon">📺</div>
+        <div class="qz-title">پەخشی ڕاستەوخۆ</div>
+        <div class="qz-sub" style="display:flex;align-items:center;justify-content:center;gap:4px"><span style="width:5px;height:5px;background:#e74c3c;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>LIVE</div>
       </div>
     </div>
 
@@ -981,6 +987,38 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div id="suraTitle" class="quran-hdr-title">—</div>
         <div style="width:36px"></div>
       </div>
+
+      <!-- پلەیەری دەنگ -->
+      <div id="audioBar" style="background:rgba(0,0,0,.35);border-bottom:1px solid rgba(46,204,113,.15);padding:10px 14px;display:flex;flex-direction:column;gap:8px">
+        <!-- ڕیزی یەکەم: قاری + دوگمەکان -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <!-- هەڵبژاردنی قاری -->
+          <select id="reciterSelect" onchange="changeReciter()" style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:6px 10px;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;outline:none">
+            <option value="cdn:ar.alafasy">مشاری العفاسی</option>
+            <option value="cdn:ar.abdurrahmaansudais">عبدالرحمن السدیس</option>
+            <option value="cdn:ar.husary">محمود خلیل الحصری</option>
+            <option value="cdn:ar.minshawi">محمد صدیق المنشاوی</option>
+            <option value="cdn:ar.muhammadayyoub">محمد أیوب</option>
+            <option value="gmd:s_gmd">سعد الغامدی 🇸🇦</option>
+            <option value="mp3q:wishear">🇮🇶 هەندرێن (وشیار حیدر اربیلی)</option>
+          </select>
+          <!-- دوگمەکان -->
+          <div style="display:flex;align-items:center;gap:6px">
+            <button onclick="audioSkip(-10)" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:13px">⏪</button>
+            <button id="playBtn" onclick="toggleAudio()" style="background:var(--green);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center">▶</button>
+            <button onclick="audioSkip(10)" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:13px">⏩</button>
+          </div>
+        </div>
+        <!-- progress bar -->
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="audioTime" style="font-size:10px;color:rgba(255,255,255,.5);min-width:32px;font-variant-numeric:tabular-nums">0:00</span>
+          <div onclick="audioSeek(event)" style="flex:1;height:4px;background:rgba(255,255,255,.15);border-radius:2px;cursor:pointer;position:relative">
+            <div id="audioProgress" style="height:100%;width:0%;background:var(--green-light);border-radius:2px;transition:width .5s linear"></div>
+          </div>
+          <span id="audioDur" style="font-size:10px;color:rgba(255,255,255,.5);min-width:32px;text-align:right;font-variant-numeric:tabular-nums">0:00</span>
+        </div>
+      </div>
+
       <div id="suraScroll" style="padding:16px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain"
         ontouchstart="suraTouchStart(event)"
         ontouchend="suraTouchEnd(event)">
@@ -1002,7 +1040,7 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
   </div>
 
   <!-- HISN PAGE — قەڵای موسڵمان -->
-  <div class="pg fullscreen" id="pg-hisn">
+  <div class="pg fullscreen" id="pg-hisn" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
     <div style="padding:16px 12px 30px">
       <!-- هیدەر -->
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
@@ -1011,6 +1049,116 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
       </div>
       <!-- بەشەکان -->
       <div id="hisnList" style="display:flex;flex-direction:column;gap:6px"></div>
+
+      <!-- 📺 پەخشی ڕاستەوخۆ -->
+      <div style="margin-top:24px">
+        <div style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:var(--green-light);margin-bottom:12px;display:flex;align-items:center;gap:6px">
+          <span style="width:3px;height:16px;background:var(--green-light);border-radius:2px;display:inline-block"></span>
+          📺 پەخشی ڕاستەوخۆ
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px" id="tvChannelList">
+
+          <!-- ئامۆژگاری -->
+          <div onclick="openLiveTV('amozhgary')" style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(46,204,113,.15);border-radius:14px;padding:12px 14px;cursor:pointer;active:opacity:.7">
+            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#1a4a2a,#0d2418);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">📡</div>
+            <div style="flex:1">
+              <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff">کەناڵی ئامۆژگاری</div>
+              <div style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.45);margin-top:2px">کوردی — پەخشی ڕاستەوخۆ</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.3);border-radius:20px;padding:3px 8px">
+              <span style="width:6px;height:6px;background:#e74c3c;border-radius:50%;display:block;animation:pulse 1.5s infinite"></span>
+              <span style="font-family:'Cairo',sans-serif;font-size:10px;color:#e74c3c;font-weight:700">LIVE</span>
+            </div>
+          </div>
+
+          <!-- وەبەر -->
+          <div onclick="openLiveTV('waber')" style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(46,204,113,.15);border-radius:14px;padding:12px 14px;cursor:pointer">
+            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#1a2a4a,#0d1824);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🕌</div>
+            <div style="flex:1">
+              <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff">کەناڵی وەبەر</div>
+              <div style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.45);margin-top:2px">کوردی — ئیسلامی</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.3);border-radius:20px;padding:3px 8px">
+              <span style="width:6px;height:6px;background:#e74c3c;border-radius:50%;display:block;animation:pulse 1.5s infinite"></span>
+              <span style="font-family:'Cairo',sans-serif;font-size:10px;color:#e74c3c;font-weight:700">LIVE</span>
+            </div>
+          </div>
+
+          <!-- مکە ڕاستەوخۆ -->
+          <div onclick="openLiveTV('mecca')" style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(46,204,113,.15);border-radius:14px;padding:12px 14px;cursor:pointer">
+            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#4a3a1a,#241e0d);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🕋</div>
+            <div style="flex:1">
+              <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff">مسجد الحرام — مکە</div>
+              <div style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.45);margin-top:2px">پەخشی ڕاستەوخۆ ٢٤/٧</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.3);border-radius:20px;padding:3px 8px">
+              <span style="width:6px;height:6px;background:#e74c3c;border-radius:50%;display:block;animation:pulse 1.5s infinite"></span>
+              <span style="font-family:'Cairo',sans-serif;font-size:10px;color:#e74c3c;font-weight:700">LIVE</span>
+            </div>
+          </div>
+
+          <!-- مەدینە -->
+          <div onclick="openLiveTV('madina')" style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(46,204,113,.15);border-radius:14px;padding:12px 14px;cursor:pointer">
+            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#1a4a1a,#0d240d);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🟢</div>
+            <div style="flex:1">
+              <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff">مسجد النبوی — مەدینە</div>
+              <div style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.45);margin-top:2px">پەخشی ڕاستەوخۆ ٢٤/٧</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.3);border-radius:20px;padding:3px 8px">
+              <span style="width:6px;height:6px;background:#e74c3c;border-radius:50%;display:block;animation:pulse 1.5s infinite"></span>
+              <span style="font-family:'Cairo',sans-serif;font-size:10px;color:#e74c3c;font-weight:700">LIVE</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 📺 TV PAGE -->
+  <div class="pg fullscreen" id="pg-tv" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
+    <div style="padding:16px 12px 100px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
+        <div style="font-size:17px;font-weight:800;color:#fff">📺 پەخشی ڕاستەوخۆ</div>
+      </div>
+
+      <!-- پلەیەر -->
+      <div id="tvPlayerWrap" style="display:none;margin-bottom:16px;position:sticky;top:0;z-index:50;background:var(--theme-bg1,#041408);padding-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div id="tvNowTitle" style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;color:var(--green-light)"></div>
+          <button onclick="closeTVPlayer()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);font-family:'Cairo',sans-serif;font-size:12px;border-radius:8px;padding:4px 10px;cursor:pointer">✕</button>
+        </div>
+        <div style="border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9;position:relative">
+          <video id="tvVideo" controls autoplay playsinline style="width:100%;height:100%;object-fit:contain;background:#000"></video>
+          <div id="tvLoading" style="display:none;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6)">
+            <div style="font-size:28px;animation:spin 1s linear infinite">⏳</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:6px">
+          <a id="tvExternalLink" href="" target="_blank" style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.4);text-decoration:none">🔗 بە براوزەر بکرەوە</a>
+        </div>
+      </div>
+
+      <!-- گروپی کوردی -->
+      <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:var(--green-light);margin:0 0 8px;display:flex;align-items:center;gap:6px">
+        <span style="width:3px;height:14px;background:var(--green-light);border-radius:2px;display:inline-block"></span>🇮🇶 کوردی
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px" id="tvListKu"></div>
+
+      <!-- گروپی فارسی -->
+      <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:#c9a84c;margin:0 0 8px;display:flex;align-items:center;gap:6px">
+        <span style="width:3px;height:14px;background:#c9a84c;border-radius:2px;display:inline-block"></span>🇮🇷 فارسی
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px" id="tvListFa"></div>
+
+      <!-- گروپی عەرەبی -->
+      <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:#4fa3e0;margin:0 0 8px;display:flex;align-items:center;gap:6px">
+        <span style="width:3px;height:14px;background:#4fa3e0;border-radius:2px;display:inline-block"></span>🌍 عەرەبی
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px" id="tvListAr"></div>
+
     </div>
   </div>
 
@@ -1319,17 +1467,21 @@ function tick(){
   if(fill) fill.style.width=pct+'%';
 
   // دەنگی ئەزان
-  const curMin=hh*60+mm;
-  if(ss===0 && curMin!==lastAzanMinute){
+  // ئاگادارکردنەوەی بانگ — پشکنینی هەر چرکەیەک
+  const curMin = hh*60 + mm;
+  if(curMin !== lastAzanMinute){
     times.forEach((t,i)=>{
-      if(t.h*60+t.m===curMin && !mutedPrayers[i]){
-        lastAzanMinute=curMin;
-        playAzan();
-        showToast('🕌 کاتی بانگی '+PM[i].ku+'ە');
-        showPlist();
-        renderPrayers();
-        // تەنها نۆتیفیکەیشن
-        sendPrayerNotification(PM[i].ku, fmt(t.h,t.m));
+      const pMin = t.h*60 + t.m;
+      // کاتی بانگ گەیشت (لە ناوبەری ٠-٥٩ چرکە)
+      if(curMin === pMin && ss < 60){
+        if(lastAzanMinute !== pMin){
+          lastAzanMinute = pMin;
+          playAzan();
+          showToast('🕌 کاتی بانگی '+PM[i].ku+'ە');
+          showPlist();
+          renderPrayers();
+          sendPrayerNotification(PM[i].ku, fmt(t.h,t.m));
+        }
       }
     });
   }
@@ -1353,29 +1505,55 @@ function toggleNotifSetting(){
 }
 
 function requestNotificationPermission(){
-  if('Notification' in window && Notification.permission==='default'){
-    Notification.requestPermission();
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'granted'){
+    showToast('✅ ئاگادارکردنەوە پێشتر مۆڵەت درابوو');
+    return;
   }
+  if(Notification.permission === 'denied'){
+    showToast('⚠️ ئاگادارکردنەوە بلۆک کراوە — لە ڕێکخستنی براوزەر چالاک بکە');
+    return;
+  }
+  Notification.requestPermission().then(p=>{
+    if(p==='granted') showToast('✅ ئاگادارکردنەوەی بانگ چالاک کرا');
+    else showToast('⚠️ مۆڵەت نەدرا — ئاگادارکردنەوە کار ناکات');
+  });
 }
 
 function sendPrayerNotification(prayerName, timeStr){
   if(!notifEnabled) return;
   if(!('Notification' in window)) return;
-  if(Notification.permission==='granted'){
-    const n = new Notification('🕌 کاتەکانی بانگ', {
-      body: 'ئێستا کاتی بانگی ' + prayerName + 'ە 🕌',
-      icon: 'https://4116161-sketch.github.io/bangi-kurdistan/icon-192.png',
-      badge: 'https://4116161-sketch.github.io/bangi-kurdistan/icon-192.png',
-      tag: 'prayer-' + prayerName,
-      silent: false,
-      vibrate: [200, 100, 200],
-      requireInteraction: false
-    });
-    setTimeout(()=>n.close(), 8000);
-  } else if(Notification.permission==='default'){
-    Notification.requestPermission().then(p=>{
-      if(p==='granted') sendPrayerNotification(prayerName, timeStr);
-    });
+
+  const doSend = ()=>{
+    // Service Worker notification — کار دەکات کاتی داخراوی ئەپیش
+    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+      navigator.serviceWorker.controller.postMessage({
+        type: 'PRAYER_NOTIFICATION',
+        title: '🕌 کاتی بانگ — ' + prayerName,
+        body: 'ئێستا کاتی بانگی ' + prayerName + 'ە  ⏰ ' + timeStr,
+        icon: 'https://4116161-sketch.github.io/bangi-kurdistan/icon-192.png'
+      });
+    } else {
+      // Fallback: Notification ئاسایی
+      try{
+        const n = new Notification('🕌 کاتی بانگ — ' + prayerName, {
+          body: 'ئێستا کاتی بانگی ' + prayerName + 'ە  ⏰ ' + timeStr,
+          icon: 'https://4116161-sketch.github.io/bangi-kurdistan/icon-192.png',
+          badge: 'https://4116161-sketch.github.io/bangi-kurdistan/icon-192.png',
+          tag: 'prayer',
+          silent: false,
+          vibrate: [300, 100, 300, 100, 300],
+          requireInteraction: true
+        });
+        setTimeout(()=>n.close(), 15000);
+      }catch(e){}
+    }
+  };
+
+  if(Notification.permission === 'granted'){
+    doSend();
+  } else if(Notification.permission === 'default'){
+    Notification.requestPermission().then(p=>{ if(p==='granted') doSend(); });
   }
 }
 
@@ -1803,6 +1981,123 @@ function toggleSideMenu(){
   m.style.right = open ? '-280px' : '0px';
   o.style.display = open ? 'none' : 'block';
 }
+// ── TV کەناڵەکان ─────────────────────────────────
+const TV_CHANNELS = {
+  ku: [
+    {name:'MMNHD Quran',       sub:'قورئانی کوردی',      icon:'📖', url:'http://mmn.mypsx.net:1935/live/mmnhdquran/chunklist.m3u8'},
+    {name:'ZAVAR-TV Quran',    sub:'بادینانی',            icon:'📡', url:'http://zavartv.badinan.xyz:1935/live/ZAVAR-TV/playlist.m3u8'},
+    {name:'Barın Quran HD',    sub:'قورئانی HD',          icon:'🕌', url:'http://baskhd.ddns.net:40/live/QURANHDTV/chunklist.m3u8'},
+    {name:'IMKQURANHD',        sub:'قورئانی HD',          icon:'📖', url:'http://avrstream.com:1935/live/IMKQURANHD/chunklist_w518013730.m3u8'},
+    {name:'Dengi Quran Soran', sub:'دەنگی قورئان — سۆران',icon:'🎙', url:'https://fl1002.bozztv.com/ssh101/dengisoran/tracks-v1a1/mono.m3u8'},
+    {name:'Amozhgary TV',      sub:'ئامۆژگاری — سێرڤەری ١',icon:'📡', url:'https://app-live.org/live/3268334b/index.m3u8'},
+    {name:'Amozhgary TV 2',    sub:'ئامۆژگاری — سێرڤەری ٢',icon:'📡', url:'https://panadatv.karwan.tv/AMOZHGARE/index.m3u8'},
+    {name:'FarmodaTV',         sub:'کوردی',               icon:'📺', url:'http://avrstream.com:1935/live/FarmodaTV/chunklist_w1657527726.m3u8'},
+    {name:'RavandHD',          sub:'ڕەوەند HD',           icon:'📺', url:'http://ravandtv.badinan.xyz:1935/live/RAVAND-HD/playlist.m3u8'},
+    {name:'IMK',               sub:'IMK HD',              icon:'📺', url:'http://imkhd.ddns.net:1935/live/imkhd/chunklist_w891424854.m3u8'},
+    {name:'kmp TV',            sub:'KMP',                 icon:'📺', url:'https://fl1002.bozztv.com:443/ssh101/kmp/tracks-v1a1/mono.m3u8'},
+    {name:'ArifanSunnat',      sub:'عارفان سوننەت',       icon:'🕌', url:'https://panadatv.karwan.tv/ArifanSunnat/index.m3u8'},
+    {name:'Spi TV HD',         sub:'سپی HD',              icon:'📺', url:'http://avrstream.com:1935/live/SPIHD/chunklist_w90425750.m3u8'},
+    {name:'Nrt4',              sub:'NRT4',                icon:'📺', url:'https://panadatv.karwan.tv/Nrt4/index.m3u8'},
+    {name:'Bangawaz TV',       sub:'بانگاواز',            icon:'🔊', url:'http://baskhd.ddns.net:40/live/bangawaztv/playlist.m3u8'},
+    {name:'Bangxwazen Badinan',sub:'بانگخوازەن بادینان',  icon:'🔊', url:'http://bangxwazen.badinan.xyz:1935/live/Bangxwazen-Badinan/chunklist_w779630796.m3u8'},
+    {name:'Esra TV Quran',     sub:'عیسرا — قورئان',     icon:'📖', url:'http://fl1002.bozztv.com:80/ssh101/esraquranhd/tracks-v1a1/mono.m3u8'},
+    {name:'Esra TV',           sub:'عیسرا',               icon:'📺', url:'http://fl1002.bozztv.com:80/ssh101/esrahd/tracks-v1a1/mono.m3u8'},
+    {name:'Pro Quran',         sub:'پرۆ قورئان',          icon:'📖', url:'http://tv.ezanvaktipro.com:80/hls/quran.m3u8'},
+    {name:'QallamAiny',        sub:'قەلامی عەینی',        icon:'🕌', url:'https://panadatv.karwan.tv/QallamAiny/index.m3u8'},
+    {name:'Bask HD TV',        sub:'باسک HD',             icon:'📺', url:'http://baskhd.ddns.net:40/live/baskhd/chunklist_w1520153455.m3u8'},
+    {name:'Srosht',            sub:'سرۆشت',               icon:'📺', url:'https://panadatv.karwan.tv/Srosht/index.m3u8'},
+    {name:'MihrabTV',          sub:'مهراب TV',            icon:'🕌', url:'http://baskhd.ddns.net:40/live/MihrabTV/playlist.m3u8'},
+    {name:'Sada TV',           sub:'صەدا TV',             icon:'📺', url:'http://baskhd.ddns.net:40/live/sadatv/playlist.m3u8'},
+    {name:'EmanTV',            sub:'ئیمان TV',            icon:'🕌', url:'http://avrstream.com:1935/live/emantv/media_w437685233.m3u8'},
+    {name:'Niroj Ayni',        sub:'نیروژ ئایینی',       icon:'☀️', url:'http://142.132.133.190:1935/live/niroj_ayini/index.m3u8'},
+    {name:'RasoulallahTV',     sub:'رسول الله TV',       icon:'🕌', url:'http://avrstream.com:1935/live/rasoulallahtv/playlist.m3u8'},
+    {name:'Gewher HD',         sub:'گەوهەر HD',           icon:'📺', url:'http://avrstream.com:1935/live/Gewher-HD/playlist.m3u8'},
+    {name:'HormzyarHD',        sub:'هۆرمزیار HD',         icon:'📺', url:'http://avrstream.com:1935/live/HormzyarHD/TEST.m3u8'},
+    {name:'mihrabfm',          sub:'مهراب FM',            icon:'🎙', url:'http://bblserver.ddns.net:1935/live/mihrabfm/chunklist_w873257582.m3u8'},
+  ],
+  fa: [
+    {name:'Towheed TV',  sub:'توحید',    icon:'🕌', url:'http://avrstream.com:1935/live/towheedtv/chunklist_w1180515060.m3u8'},
+    {name:'Noor TV',     sub:'نور',      icon:'💡', url:'https://cdn.bestream.io:19360/elfaro4/elfaro4.m3u8'},
+    {name:'Kalemeh TV',  sub:'کەلمە',   icon:'📺', url:'https://player.kalemeh.tv/live/ngrp:kalemeh_all/playlist.m3u8'},
+  ],
+  ar: [
+    {name:'Saudi Quran TV',   sub:'قرآن السعودية',      icon:'📖', url:'https://al-ekhbaria-prod-dub.shahid.net:443/out/v1/9885cab0a3ec4008b53bae57a27ca76b/index_1.m3u8'},
+    {name:'Saudi Sunnah TV',  sub:'سنة السعودية',       icon:'🕌', url:'https://sbc-prod-dub-enc.edgenextcdn.net:443/out/v1/b09bbb8d9b684763be4211b088168de7/index_9.m3u8'},
+    {name:'Bahrain Quran',    sub:'قرآن البحرين',       icon:'📖', url:'https://5c7b683162943.streamlock.net:443/live/ngrp:bahrainquran_all/chunklist_w1885837154_b2487000.m3u8'},
+    {name:'Sharjah Quran',    sub:'قرآن الشارقة',       icon:'📖', url:'https://live.kwikmotion.com/sharjahtvquranlive/shqurantv.smil//sharjahtvquranpublish/shqurantv_source/chunks.m3u8'},
+    {name:'Almajid Quran',    sub:'المجد للقرآن',       icon:'📖', url:'https://edge66.magictvbox.com/liveApple/al_majd/tracks-v1a1/mono.m3u8'},
+    {name:'Makka TV',         sub:'مكة المكرمة',        icon:'🕋', url:'https://media2.streambrothers.com:1936/8122/8122/chunklist.m3u8'},
+    {name:'Iqraa Arabic',     sub:'إقرأ عربي',          icon:'📺', url:'https://jmc-live.ercdn.net/iqraa/iqraa.m3u8'},
+    {name:'Iqraa Quran',      sub:'إقرأ قرآن',          icon:'📖', url:'https://playlist.fasttvcdn.com:443/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv2/playlist/0.m3u8'},
+    {name:'Tanasuh TV',       sub:'تناسح',              icon:'🕌', url:'https://tip.stream.tanasuh.tv:4434/live/smil:tanasuhtv.smil/chunklist.m3u8'},
+    {name:'Noor Dubai',       sub:'نور دبي',            icon:'💡', url:'https://dmiffthftl.cdn.mangomolo.com:443/noordubaitv/smil:noordubaitv.smil/chunklist_b2400000.m3u8'},
+    {name:'Alistiqama TV',    sub:'الاستقامة',          icon:'🕌', url:'http://jmc-live.ercdn.net:80/alistiqama/alistiqama_576p.m3u8'},
+    {name:'Alfath TV',        sub:'الفتح',              icon:'🌟', url:'https://alfat7-q.com:5443/LiveApp/streams/986613792230697141226562.m3u8f'},
+    {name:'Kuwait Ethra',     sub:'الكويت — إثراء',     icon:'📺', url:'https://kwtethta.cdn.mangomolo.com/eth/smil:eth.stream.smil/chunklist_b550000_t64MzYwcA==.m3u8'},
+    {name:'Quranic Audio',    sub:'صوت القرآن',         icon:'🎙', url:'https://quran.aymane.xyz/quranicaudio.m3u8'},
+  ]
+};
+
+let tvHls = null;
+
+function renderTVChannels(){
+  ['ku','fa','ar'].forEach(lang=>{
+    const el = document.getElementById('tvList'+lang.charAt(0).toUpperCase()+lang.slice(1));
+    if(!el) return;
+    el.innerHTML = TV_CHANNELS[lang].map((ch,i)=>`
+      <div onclick="openLiveTV('${lang}',${i})" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;cursor:pointer">
+        <div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ch.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${ch.name}</div>
+          <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.4);margin-top:1px">${ch.sub}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:3px;background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.25);border-radius:16px;padding:2px 7px;flex-shrink:0">
+          <span style="width:5px;height:5px;background:#e74c3c;border-radius:50%;display:block;animation:pulse 1.5s infinite"></span>
+          <span style="font-family:'Cairo',sans-serif;font-size:9px;color:#e74c3c;font-weight:700">LIVE</span>
+        </div>
+      </div>`).join('');
+  });
+}
+
+function openLiveTV(lang, idx){
+  const ch = TV_CHANNELS[lang][idx];
+  if(!ch) return;
+
+  document.getElementById('tvNowTitle').textContent = ch.icon + ' ' + ch.name + ' — ' + ch.sub;
+  document.getElementById('tvExternalLink').href = ch.url;
+  document.getElementById('tvPlayerWrap').style.display = 'block';
+
+  const video = document.getElementById('tvVideo');
+
+  // HLS.js پاکردنەوەی کۆن
+  if(tvHls){ tvHls.destroy(); tvHls = null; }
+
+  if(typeof Hls !== 'undefined' && Hls.isSupported()){
+    tvHls = new Hls({ enableWorker:false });
+    tvHls.loadSource(ch.url);
+    tvHls.attachMedia(video);
+    tvHls.on(Hls.Events.MANIFEST_PARSED, ()=>{ video.play().catch(()=>{}); });
+    tvHls.on(Hls.Events.ERROR, (e,d)=>{
+      if(d.fatal) showToast('⚠️ کەناڵەکە نەکرایەوە، تاقی کەرەوەی دیکە');
+    });
+  } else if(video.canPlayType('application/vnd.apple.mpegurl')){
+    // iOS native HLS
+    video.src = ch.url;
+    video.play().catch(()=>{});
+  } else {
+    showToast('⚠️ براوزەرەکەت پشتگیری HLS ناکات');
+  }
+
+  document.getElementById('tvPlayerWrap').scrollIntoView({behavior:'smooth'});
+}
+
+function closeTVPlayer(){
+  if(tvHls){ tvHls.destroy(); tvHls = null; }
+  const video = document.getElementById('tvVideo');
+  if(video){ video.pause(); video.src=''; }
+  document.getElementById('tvPlayerWrap').style.display = 'none';
+}
+
 function closeSideMenu(){
   document.getElementById('sideMenu').style.right = '-280px';
   document.getElementById('sideMenuOverlay').style.display = 'none';
@@ -2059,6 +2354,109 @@ function renderSuraList(){
 let curSuraId = 1;
 let suraTouchY = 0;
 
+// ── پلەیەری قورئان ──────────────────────────────
+let quranAudio = null;
+let audioPlaying = false;
+
+function getAudioUrl(suraId){
+  const reciter = document.getElementById('reciterSelect')?.value || 'cdn:ar.alafasy';
+  const num = String(suraId).padStart(3,'0');
+
+  if(reciter.startsWith('cdn:')){
+    // cdn.islamic.network
+    const edition = reciter.slice(4);
+    return `https://cdn.islamic.network/quran/audio-surah/128/${edition}/${suraId}.mp3`;
+  } else if(reciter.startsWith('gmd:')){
+    // سعد الغامدی — server7.mp3quran.net
+    return `https://server7.mp3quran.net/s_gmd/${num}.mp3`;
+  } else if(reciter.startsWith('mp3q:')){
+    const folder = reciter.slice(5);
+    // هەندرێن — server11.mp3quran.net/wishear/
+    return `https://server11.mp3quran.net/${folder}/${num}.mp3`;
+  }
+  return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${suraId}.mp3`;
+}
+
+function loadSuraAudio(suraId, autoplay){
+  if(quranAudio){
+    quranAudio.pause();
+    quranAudio.src='';
+  }
+  quranAudio = new Audio(getAudioUrl(suraId));
+  quranAudio.ontimeupdate = updateAudioProgress;
+  quranAudio.onloadedmetadata = ()=>{
+    document.getElementById('audioDur').textContent = fmtAudioTime(quranAudio.duration);
+  };
+  quranAudio.onended = ()=>{
+    audioPlaying = false;
+    document.getElementById('playBtn').textContent = '▶';
+    document.getElementById('audioProgress').style.width = '0%';
+    document.getElementById('audioTime').textContent = '0:00';
+  };
+  quranAudio.onerror = ()=>{
+    showToast('⚠️ دەنگەکە نەبارکرا، ئینتەرنێت پشکن');
+    audioPlaying = false;
+    document.getElementById('playBtn').textContent = '▶';
+  };
+  if(autoplay){
+    quranAudio.play().then(()=>{
+      audioPlaying=true;
+      document.getElementById('playBtn').textContent='⏸';
+    }).catch(()=>{});
+  }
+}
+
+function toggleAudio(){
+  if(!quranAudio) loadSuraAudio(curSuraId, true);
+  else if(audioPlaying){
+    quranAudio.pause();
+    audioPlaying=false;
+    document.getElementById('playBtn').textContent='▶';
+  } else {
+    quranAudio.play().then(()=>{
+      audioPlaying=true;
+      document.getElementById('playBtn').textContent='⏸';
+    }).catch(()=>{ loadSuraAudio(curSuraId, true); });
+  }
+}
+
+function changeReciter(){
+  const wasPlaying = audioPlaying;
+  loadSuraAudio(curSuraId, wasPlaying);
+}
+
+function audioSkip(sec){
+  if(!quranAudio) return;
+  quranAudio.currentTime = Math.max(0, Math.min(quranAudio.duration, quranAudio.currentTime + sec));
+}
+
+function audioSeek(e){
+  if(!quranAudio || !quranAudio.duration) return;
+  const bar = e.currentTarget;
+  const pct = e.offsetX / bar.offsetWidth;
+  quranAudio.currentTime = pct * quranAudio.duration;
+}
+
+function updateAudioProgress(){
+  if(!quranAudio || !quranAudio.duration) return;
+  const pct = (quranAudio.currentTime / quranAudio.duration)*100;
+  document.getElementById('audioProgress').style.width = pct+'%';
+  document.getElementById('audioTime').textContent = fmtAudioTime(quranAudio.currentTime);
+}
+
+function fmtAudioTime(sec){
+  if(!sec || isNaN(sec)) return '0:00';
+  const m=Math.floor(sec/60), s=Math.floor(sec%60);
+  return m+':'+ String(s).padStart(2,'0');
+}
+
+function stopSuraAudio(){
+  if(quranAudio){ quranAudio.pause(); quranAudio.src=''; quranAudio=null; }
+  audioPlaying=false;
+  const btn=document.getElementById('playBtn');
+  if(btn) btn.textContent='▶';
+}
+
 function suraTouchStart(e){
   suraTouchY = e.touches[0].clientY;
 }
@@ -2081,8 +2479,13 @@ function suraTouchEnd(e){
 
 function showSura(id){
   curSuraId = id;
+  stopSuraAudio();
   const el = document.getElementById('suraScroll');
   if(el) el.scrollTop = 0;
+  // progress reset
+  const ap=document.getElementById('audioProgress'); if(ap) ap.style.width='0%';
+  const at=document.getElementById('audioTime'); if(at) at.textContent='0:00';
+  const ad=document.getElementById('audioDur'); if(ad) ad.textContent='0:00';
   const meta = SURA_LIST.find(s=>s.id===id);
   document.getElementById('suraTitle').textContent = meta.name + ' — ' + meta.ku;
   document.getElementById('suraText').innerHTML =
@@ -2535,7 +2938,14 @@ function switchPage(p){
   window.scrollTo(0,0);
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
-  if(['quran','sura','zikr','hisn','hisn-detail','qibla','settings','calendar'].includes(p)){
+  if(p !== 'tv'){
+    if(tvHls){ tvHls.destroy(); tvHls=null; }
+    const video = document.getElementById('tvVideo');
+    if(video){ video.pause(); video.src=''; }
+    const tvWrap = document.getElementById('tvPlayerWrap');
+    if(tvWrap) tvWrap.style.display = 'none';
+  }
+  if(['quran','sura','zikr','hisn','hisn-detail','qibla','settings','calendar','tv'].includes(p)){
     pg.classList.add('fullscreen');
   }
   const navBtn = document.getElementById('nav-'+p);
@@ -2544,6 +2954,7 @@ function switchPage(p){
   if(p==='zikr') renderZikr();
   if(p==='quran') renderSuraList();
   if(p==='hisn') renderHisn();
+  if(p==='tv') renderTVChannels();
 }
 
 // ── کۆئۆردینەیتی شارەکان ──────────────────────
