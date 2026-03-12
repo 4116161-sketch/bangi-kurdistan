@@ -994,13 +994,8 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
           <!-- هەڵبژاردنی قاری -->
           <select id="reciterSelect" onchange="changeReciter()" style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:6px 10px;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;outline:none">
-            <option value="gh:1">مشاری العفاسی</option>
-            <option value="gh:2">أبوبکر الشاطری</option>
-            <option value="gh:3">ناصر القطامی</option>
-            <option value="gh:4">یاسر الدوساری</option>
-            <option value="gh:5">هانی الرفاعی</option>
-            <option value="mp3q:s_gmd">سعد الغامدی 🇸🇦</option>
-            <option value="mp3q:wishear">🇮🇶 هەندرێن (وشیار حیدر اربیلی)</option>
+            <option value="gmd">سعد الغامدی 🇸🇦</option>
+            <option value="wishear">🇮🇶 هەندرێن (وشیار حیدر اربیلی)</option>
           </select>
           <!-- دوگمەکان -->
           <div style="display:flex;align-items:center;gap:6px">
@@ -2376,19 +2371,13 @@ let quranAudio = null;
 let audioPlaying = false;
 
 function getAudioUrl(suraId){
-  const reciter = document.getElementById('reciterSelect')?.value || 'gh:1';
+  const reciter = document.getElementById('reciterSelect')?.value || 'gmd';
   const num = String(suraId).padStart(3,'0');
-
-  if(reciter.startsWith('gh:')){
-    // GitHub CDN — CORS باز، بەهێز
-    const id = reciter.slice(3);
-    return `https://github.com/The-Quran-Project/Quran-Audio-Chapters/raw/refs/heads/main/Data/${id}/${suraId}.mp3`;
-  } else if(reciter.startsWith('mp3q:')){
-    const folder = reciter.slice(5);
-    if(folder === 's_gmd') return `https://server7.mp3quran.net/s_gmd/${num}.mp3`;
-    return `https://server11.mp3quran.net/${folder}/${num}.mp3`;
+  if(reciter === 'wishear'){
+    return `https://server11.mp3quran.net/wishear/${num}.mp3`;
   }
-  return `https://github.com/The-Quran-Project/Quran-Audio-Chapters/raw/refs/heads/main/Data/1/${suraId}.mp3`;
+  // سعد الغامدی — default
+  return `https://server7.mp3quran.net/s_gmd/${num}.mp3`;
 }
 
 function loadSuraAudio(suraId, autoplay){
@@ -2407,14 +2396,13 @@ function loadSuraAudio(suraId, autoplay){
     document.getElementById('audioProgress').style.width = '0%';
     document.getElementById('audioTime').textContent = '0:00';
   };
-  quranAudio.onerror = (e)=>{
-    console.warn('Audio error:', getAudioUrl(suraId));
-    const fallback = `https://github.com/The-Quran-Project/Quran-Audio-Chapters/raw/refs/heads/main/Data/1/${suraId}.mp3`;
+  quranAudio.onerror = ()=>{
+    const fallback = `https://server7.mp3quran.net/s_gmd/${String(suraId).padStart(3,'0')}.mp3`;
     if(quranAudio.src !== fallback){
       quranAudio.src = fallback;
       quranAudio.load();
       if(autoplay) quranAudio.play().catch(()=>{});
-      showToast('⚠️ قارییەکە نەبارکرا، گەڕایەوە بۆ عەفاسی');
+      showToast('⚠️ گەڕایەوە بۆ غامدی');
     } else {
       showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
       audioPlaying = false;
