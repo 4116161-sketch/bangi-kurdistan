@@ -994,12 +994,12 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
           <!-- هەڵبژاردنی قاری -->
           <select id="reciterSelect" onchange="changeReciter()" style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:6px 10px;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;outline:none">
-            <option value="cdn:ar.alafasy">مشاری العفاسی</option>
-            <option value="cdn:ar.abdurrahmaansudais">عبدالرحمن السدیس</option>
-            <option value="cdn:ar.husary">محمود خلیل الحصری</option>
-            <option value="cdn:ar.minshawi">محمد صدیق المنشاوی</option>
-            <option value="cdn:ar.muhammadayyoub">محمد أیوب</option>
-            <option value="gmd:s_gmd">سعد الغامدی 🇸🇦</option>
+            <option value="gh:1">مشاری العفاسی</option>
+            <option value="gh:2">أبوبکر الشاطری</option>
+            <option value="gh:3">ناصر القطامی</option>
+            <option value="gh:4">یاسر الدوساری</option>
+            <option value="gh:5">هانی الرفاعی</option>
+            <option value="mp3q:s_gmd">سعد الغامدی 🇸🇦</option>
             <option value="mp3q:wishear">🇮🇶 هەندرێن (وشیار حیدر اربیلی)</option>
           </select>
           <!-- دوگمەکان -->
@@ -1142,6 +1142,11 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
       </div>
 
       <!-- گروپی کوردی -->
+      <div style="background:rgba(255,200,50,.08);border:1px solid rgba(255,200,50,.2);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,200,100,.8);direction:rtl;line-height:1.8">
+        ▶ بۆ تاقیکردن لە ناو ئەپ<br>
+        🔗 ئەگەر نەبارکرا — بەکاربێنە بۆ کراوەکردن بە براوزەر یان VLC
+      </div>
+
       <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:var(--green-light);margin:0 0 8px;display:flex;align-items:center;gap:6px">
         <span style="width:3px;height:14px;background:var(--green-light);border-radius:2px;display:inline-block"></span>🇮🇶 کوردی
       </div>
@@ -2045,50 +2050,62 @@ function renderTVChannels(){
     const el = document.getElementById('tvList'+lang.charAt(0).toUpperCase()+lang.slice(1));
     if(!el) return;
     el.innerHTML = TV_CHANNELS[lang].map((ch,i)=>`
-      <div onclick="openLiveTV('${lang}',${i})" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;cursor:pointer">
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px">
         <div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ch.icon}</div>
         <div style="flex:1;min-width:0">
           <div style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${ch.name}</div>
           <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.4);margin-top:1px">${ch.sub}</div>
         </div>
-        <div style="display:flex;align-items:center;gap:3px;background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.25);border-radius:16px;padding:2px 7px;flex-shrink:0">
-          <span style="width:5px;height:5px;background:#e74c3c;border-radius:50%;display:block;animation:pulse 1.5s infinite"></span>
-          <span style="font-family:'Cairo',sans-serif;font-size:9px;color:#e74c3c;font-weight:700">LIVE</span>
+        <div style="display:flex;gap:6px">
+          <button onclick="playInApp('${lang}',${i})" style="background:rgba(46,204,113,.2);border:1px solid rgba(46,204,113,.35);color:var(--green-light);border-radius:8px;padding:5px 9px;font-size:12px;cursor:pointer" title="لە ناوەوە">▶</button>
+          <button onclick="openExternal('${lang}',${i})" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:8px;padding:5px 9px;font-size:12px;cursor:pointer" title="بە براوزەر">🔗</button>
         </div>
       </div>`).join('');
   });
 }
 
-function openLiveTV(lang, idx){
+function playInApp(lang, idx){
   const ch = TV_CHANNELS[lang][idx];
   if(!ch) return;
 
-  document.getElementById('tvNowTitle').textContent = ch.icon + ' ' + ch.name + ' — ' + ch.sub;
+  document.getElementById('tvNowTitle').textContent = ch.icon + ' ' + ch.name;
   document.getElementById('tvExternalLink').href = ch.url;
   document.getElementById('tvPlayerWrap').style.display = 'block';
+  document.getElementById('tvPlayerWrap').scrollIntoView({behavior:'smooth'});
 
   const video = document.getElementById('tvVideo');
-
-  // HLS.js پاکردنەوەی کۆن
   if(tvHls){ tvHls.destroy(); tvHls = null; }
 
+  // تاقیکردنەوەی HLS.js
   if(typeof Hls !== 'undefined' && Hls.isSupported()){
-    tvHls = new Hls({ enableWorker:false });
+    tvHls = new Hls({ enableWorker:false, xhrSetup: xhr => { xhr.withCredentials = false; } });
     tvHls.loadSource(ch.url);
     tvHls.attachMedia(video);
     tvHls.on(Hls.Events.MANIFEST_PARSED, ()=>{ video.play().catch(()=>{}); });
     tvHls.on(Hls.Events.ERROR, (e,d)=>{
-      if(d.fatal) showToast('⚠️ کەناڵەکە نەکرایەوە، تاقی کەرەوەی دیکە');
+      if(d.fatal){
+        tvHls.destroy(); tvHls=null;
+        // فالبەک: native video
+        video.src = ch.url;
+        video.load();
+        video.play().catch(()=>{
+          showToast('⚠️ ناتوانرێت لە ناوەوە بکرێتەوە — دوگمەی 🔗 بەکاربێنە');
+        });
+      }
     });
   } else if(video.canPlayType('application/vnd.apple.mpegurl')){
-    // iOS native HLS
     video.src = ch.url;
-    video.play().catch(()=>{});
+    video.play().catch(()=>{ showToast('⚠️ دوگمەی 🔗 بەکاربێنە'); });
   } else {
-    showToast('⚠️ براوزەرەکەت پشتگیری HLS ناکات');
+    showToast('⚠️ براوزەرەکەت پشتگیری HLS ناکات — دوگمەی 🔗 بەکاربێنە');
   }
+}
 
-  document.getElementById('tvPlayerWrap').scrollIntoView({behavior:'smooth'});
+function openExternal(lang, idx){
+  const ch = TV_CHANNELS[lang][idx];
+  if(!ch) return;
+  // کراوەکردن بە ئەپی دەرەوە (VLC، MX Player، براوزەر)
+  window.open(ch.url, '_blank');
 }
 
 function closeTVPlayer(){
@@ -2359,22 +2376,19 @@ let quranAudio = null;
 let audioPlaying = false;
 
 function getAudioUrl(suraId){
-  const reciter = document.getElementById('reciterSelect')?.value || 'cdn:ar.alafasy';
+  const reciter = document.getElementById('reciterSelect')?.value || 'gh:1';
   const num = String(suraId).padStart(3,'0');
 
-  if(reciter.startsWith('cdn:')){
-    // cdn.islamic.network
-    const edition = reciter.slice(4);
-    return `https://cdn.islamic.network/quran/audio-surah/128/${edition}/${suraId}.mp3`;
-  } else if(reciter.startsWith('gmd:')){
-    // سعد الغامدی — server7.mp3quran.net
-    return `https://server7.mp3quran.net/s_gmd/${num}.mp3`;
+  if(reciter.startsWith('gh:')){
+    // GitHub CDN — CORS باز، بەهێز
+    const id = reciter.slice(3);
+    return `https://github.com/The-Quran-Project/Quran-Audio-Chapters/raw/refs/heads/main/Data/${id}/${suraId}.mp3`;
   } else if(reciter.startsWith('mp3q:')){
     const folder = reciter.slice(5);
-    // هەندرێن — server11.mp3quran.net/wishear/
+    if(folder === 's_gmd') return `https://server7.mp3quran.net/s_gmd/${num}.mp3`;
     return `https://server11.mp3quran.net/${folder}/${num}.mp3`;
   }
-  return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${suraId}.mp3`;
+  return `https://github.com/The-Quran-Project/Quran-Audio-Chapters/raw/refs/heads/main/Data/1/${suraId}.mp3`;
 }
 
 function loadSuraAudio(suraId, autoplay){
@@ -2393,10 +2407,19 @@ function loadSuraAudio(suraId, autoplay){
     document.getElementById('audioProgress').style.width = '0%';
     document.getElementById('audioTime').textContent = '0:00';
   };
-  quranAudio.onerror = ()=>{
-    showToast('⚠️ دەنگەکە نەبارکرا، ئینتەرنێت پشکن');
-    audioPlaying = false;
-    document.getElementById('playBtn').textContent = '▶';
+  quranAudio.onerror = (e)=>{
+    console.warn('Audio error:', getAudioUrl(suraId));
+    const fallback = `https://github.com/The-Quran-Project/Quran-Audio-Chapters/raw/refs/heads/main/Data/1/${suraId}.mp3`;
+    if(quranAudio.src !== fallback){
+      quranAudio.src = fallback;
+      quranAudio.load();
+      if(autoplay) quranAudio.play().catch(()=>{});
+      showToast('⚠️ قارییەکە نەبارکرا، گەڕایەوە بۆ عەفاسی');
+    } else {
+      showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
+      audioPlaying = false;
+      document.getElementById('playBtn').textContent = '▶';
+    }
   };
   if(autoplay){
     quranAudio.play().then(()=>{
