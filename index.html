@@ -48,7 +48,7 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
     radial-gradient(ellipse at 50% 55%, #0d3d1e 0%, #061a0d 35%, #020a05 70%, #000 100%);
 }
 
-.app{position:relative;z-index:1;max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column}
+.app{position:relative;z-index:1;max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column}
 
 /* HEADER */
 .hdr{background:rgba(10,30,16,.88);padding:10px 14px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0}
@@ -58,6 +58,10 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .hdr-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
 .hdr-btn:active{background:rgba(255,255,255,.25)}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes salahFadeIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
 
 /* TOP ROW: شار چەپ + کاتژمێری شوشەیی ڕاست */
 .top-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 4px;gap:10px;flex-shrink:0}
@@ -226,8 +230,8 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .nlabel{font-size:9px;font-weight:600;font-family:'Cairo',sans-serif}
 
 /* PAGES */
-.pg{display:none;flex:1;overflow-y:scroll;padding-bottom:10px;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
-.pg.fullscreen{position:fixed;top:0;left:0;width:100%;height:calc(100% - 70px);z-index:200;background:linear-gradient(180deg,#041408 0%,#020a04 100%);display:flex;flex-direction:column;padding-bottom:0;overflow-y:scroll;-webkit-overflow-scrolling:touch}
+.pg{display:none;flex:1;overflow-y:auto;padding-bottom:100px;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;min-height:0}
+.pg.fullscreen{position:fixed;top:0;left:0;width:100%;height:100dvh;z-index:300;background:linear-gradient(180deg,#041408 0%,#020a04 100%);display:flex;flex-direction:column;padding-bottom:100px;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0}
 .pg.active{display:flex;flex-direction:column}
 ::-webkit-scrollbar{width:0}
 
@@ -547,7 +551,7 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 /* قورئان و زیکر */
 .qz-grid{
   display:grid;grid-template-columns:1fr 1fr;
-  gap:10px;padding:10px 12px;
+  gap:10px;padding:10px 12px 16px;
 }
 .qz-card{
   background:rgba(255,255,255,.07);
@@ -873,8 +877,8 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
     <div class="wh-mid">
       <div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
         <!-- ماوەی بانگ — گەورە -->
-        <div id="cdPrayerName" style="font-size:12px;color:rgba(255,255,255,.45);font-family:'Cairo',sans-serif;direction:rtl;line-height:1">—</div>
-        <div id="cdCountdown" style="font-size:32px;font-weight:900;color:var(--green-light);font-family:'Cairo',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:1px;line-height:1">—</div>
+        <div id="cdCountdown" style="font-size:38px;font-weight:800;color:var(--green-light);font-family:'Inter','SF Pro Display','Segoe UI',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-1px;line-height:1">—</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);font-family:'Cairo',sans-serif;margin-top:3px">ماوە بۆ بانگ</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         <div id="dayName" style="font-size:14px;font-weight:800;color:#fff;text-align:right">—</div>
@@ -923,6 +927,11 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div class="qz-icon">📺</div>
         <div class="qz-title">پەخشی ڕاستەوخۆ</div>
         <div class="qz-sub" style="display:flex;align-items:center;justify-content:center;gap:4px"><span style="width:5px;height:5px;background:#e74c3c;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>LIVE</div>
+      </div>
+      <div class="qz-card" onclick="switchPage('salah')">
+        <div class="qz-icon">🕌</div>
+        <div class="qz-title">چۆنیەتی نوێژ</div>
+        <div class="qz-sub">هەموو نوێژەکان</div>
       </div>
       <div class="qz-card" style="opacity:.75;cursor:default">
         <div class="qz-icon">📚</div>
@@ -1003,18 +1012,22 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:radial-gradient(circle,#2ecc71,#1a8a4e);box-shadow:0 0 12px rgba(46,204,113,.6);z-index:15"></div>
         </div>
 
-        <!-- سووزانی قیبلە — دووری بچەرخێت بەپێی ئاراستە -->
-        <div id="qiblaNeedle" style="position:absolute;top:0;left:0;width:280px;height:280px;border-radius:50%;pointer-events:none;z-index:10;transition:transform .15s ease">
-          <!-- سووزانی سەرەوە — ئاراستەی قیبلە -->
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);transform-origin:50% 100%;display:flex;flex-direction:column;align-items:center;gap:2px">
-            <div style="font-size:26px;filter:drop-shadow(0 0 8px rgba(241,196,15,.8))">🕋</div>
-            <div style="width:3px;height:80px;background:linear-gradient(180deg,#f1c40f,rgba(241,196,15,.1));border-radius:2px;box-shadow:0 0 6px rgba(241,196,15,.4)"></div>
-          </div>
-          <!-- سووزانی خوارەوە — ڕووی دووری -->
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,0%);transform-origin:50% 0%">
-            <div style="width:3px;height:70px;background:linear-gradient(180deg,rgba(239,83,80,.1),#ef5350);border-radius:2px;margin:0 auto"></div>
-            <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid #ef5350;margin:0 auto;filter:drop-shadow(0 0 4px rgba(239,83,80,.6))"></div>
-          </div>
+        <!-- سووزانی قیبلە — SVG سادە -->
+        <div id="qiblaNeedle" style="position:absolute;top:0;left:0;width:280px;height:280px;pointer-events:none;z-index:10;transition:transform .12s ease;transform-origin:140px 140px">
+          <svg width="280" height="280" viewBox="0 0 280 280">
+            <!-- سووزانی سەرەوە: زەرد بۆ قیبلە -->
+            <line x1="140" y1="140" x2="140" y2="40" stroke="#f1c40f" stroke-width="3" stroke-linecap="round"/>
+            <polygon points="140,28 134,48 146,48" fill="#f1c40f" filter="url(#glow)"/>
+            <!-- سووزانی خوارەوە: سووری سوور -->
+            <line x1="140" y1="140" x2="140" y2="220" stroke="#ef5350" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+            <polygon points="140,232 134,216 146,216" fill="#ef5350" opacity="0.8"/>
+            <!-- گلۆی زەرد -->
+            <defs>
+              <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+          </svg>
+          <!-- کەعبە لە سەروی سووزانەکە -->
+          <div style="position:absolute;top:18px;left:50%;transform:translateX(-50%);font-size:20px;line-height:1;filter:drop-shadow(0 0 6px rgba(241,196,15,.9))">🕋</div>
         </div>
 
         <!-- گەردەی دەرەکی — حەلقەی درەجە -->
@@ -1190,6 +1203,33 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
     </div>
   </div>
 
+  <!-- SALAH PAGE — چۆنیەتی نوێژ -->
+  <div class="pg fullscreen" id="pg-salah" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
+    <div style="padding:16px 12px 40px">
+
+      <!-- هیدەر -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <button onclick="switchPage('home')" class="back-btn">←</button>
+        <div style="font-family:'Cairo',sans-serif;font-size:17px;font-weight:700;color:#fff">🕌 چۆنیەتی نوێژ</div>
+      </div>
+
+      <!-- کارتەکانی نوێژ -->
+      <div id="salahList" style="display:flex;flex-direction:column;gap:10px"></div>
+
+    </div>
+  </div>
+
+  <!-- SALAH DETAIL PAGE -->
+  <div class="pg fullscreen" id="pg-salah-detail" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
+    <div style="padding:16px 12px 40px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <button onclick="switchPage('salah')" class="back-btn">←</button>
+        <div id="salahDetailTitle" style="font-family:'Cairo',sans-serif;font-size:17px;font-weight:700;color:#fff"></div>
+      </div>
+      <div id="salahDetailContent"></div>
+    </div>
+  </div>
+
   <!-- HISN PAGE — قەڵای موسڵمان -->
   <div class="pg fullscreen" id="pg-hisn" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
     <div style="padding:16px 12px 30px">
@@ -1334,6 +1374,11 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
     <div class="spage">
       <div class="sec-lbl">ڕێکخستنەکان</div>
       <div class="srow"><div class="sinfo"><div class="sico">🔔</div><div><div class="slbl">هەواڵی بانگ</div><div class="sdesc">ئاگادارکردنەوەی کاتی نوێژ</div></div></div><div class="toggle on" id="notifToggle" onclick="toggleNotifSetting()"></div></div>
+
+      <div class="srow" style="cursor:pointer" onclick="playShortAdhan();showToast('🔊 تاقیکردنەوەی دەنگی بانگ')">
+        <div class="sinfo"><div class="sico">🎵</div><div><div class="slbl">تاقیکردنەوەی دەنگی بانگ</div><div class="sdesc">دەنگی بانگ بیبیستە</div></div></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.4)">▶</div>
+      </div>
 
       <div class="srow"><div class="sinfo"><div class="sico">🌙</div><div><div class="slbl">دۆخی رەمەزان</div><div class="sdesc">پیشاندانی ئیمساک و ئیفتار</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
       <div class="srow"><div class="sinfo"><div class="sico">⏰</div><div><div class="slbl">ئاگاداری پێشوەختە</div><div class="sdesc">١٠ خولەک پێش کاتی نوێژ</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
@@ -1530,12 +1575,93 @@ function loadAzanFile(input){
 }
 
 function playAzan(){
+  // ئەگەر فایلی کەسیی ئەپلۆد کراوە — ئەوی بدە
   if(azanAudio){
     azanAudio.currentTime = 0;
-    azanAudio.play().catch(()=>{ showToast('⚠️ فایلی بانگت ئەپلۆد بکە لە ڕێکخستن'); });
+    azanAudio.play().catch(()=>{});
     return;
   }
-  showToast('⚠️ فایلی بانگت ئەپلۆد بکە لە ڕێکخستن');
+  // بانگی کورت بە Web Audio — تەقلیدی ئەزان
+  playShortAdhan();
+}
+
+function playShortAdhan(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // تەکنیکی: نۆتەکانی ئەللاهو ئەکبەر بە فریکوێنسی نزیک
+    // ئەللاهو ئەکبەر — ئەللاهو ئەکبەر — ئەشهەدو...
+    const notes = [
+      // ئەللاهو  ئەکبەر
+      {f:220, t:0.0,  d:0.45}, {f:247, t:0.4,  d:0.4},
+      {f:277, t:0.75, d:0.5},  {f:247, t:1.2,  d:0.6},
+      // ئەللاهو  ئەکبەر
+      {f:220, t:2.1,  d:0.45}, {f:247, t:2.5,  d:0.4},
+      {f:277, t:2.85, d:0.5},  {f:247, t:3.3,  d:0.6},
+      // ئەشهەدو ئەن لا ئیلاهە
+      {f:196, t:4.2,  d:0.4},  {f:220, t:4.6,  d:0.4},
+      {f:247, t:5.0,  d:0.5},  {f:277, t:5.5,  d:0.4},
+      {f:294, t:5.9,  d:0.6},  {f:277, t:6.5,  d:0.8},
+      // ئیللەللاه
+      {f:247, t:7.5,  d:0.4},  {f:220, t:7.9,  d:0.5},
+      {f:196, t:8.4,  d:1.2},
+      // حەییە عەلەسسەلا
+      {f:247, t:10.0, d:0.4},  {f:277, t:10.4, d:0.4},
+      {f:294, t:10.8, d:0.5},  {f:330, t:11.3, d:0.4},
+      {f:294, t:11.7, d:0.6},  {f:277, t:12.3, d:1.0},
+    ];
+
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.0, ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0.55, ctx.currentTime + 0.3);
+    master.gain.setValueAtTime(0.55, ctx.currentTime + 12.5);
+    master.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 13.5);
+    master.connect(ctx.destination);
+
+    // reverb هێواش بە convolver
+    const reverb = ctx.createConvolver();
+    const revLen = ctx.sampleRate * 2;
+    const revBuf = ctx.createBuffer(2, revLen, ctx.sampleRate);
+    for(let ch=0;ch<2;ch++){
+      const d=revBuf.getChannelData(ch);
+      for(let i=0;i<revLen;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/revLen,2)*0.3;
+    }
+    reverb.buffer = revBuf;
+    reverb.connect(master);
+
+    notes.forEach(n=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const vibrato = ctx.createOscillator();
+      const vibratoGain = ctx.createGain();
+
+      vibrato.frequency.value = 5.5;
+      vibratoGain.gain.value = 4;
+      vibrato.connect(vibratoGain);
+      vibratoGain.connect(osc.frequency);
+      vibrato.start(ctx.currentTime + n.t);
+      vibrato.stop(ctx.currentTime + n.t + n.d + 0.1);
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(n.f, ctx.currentTime + n.t);
+      // کۆتایی نۆتەکە بۆ خوارەوە بچێت
+      osc.frequency.linearRampToValueAtTime(n.f * 0.97, ctx.currentTime + n.t + n.d);
+
+      gain.gain.setValueAtTime(0, ctx.currentTime + n.t);
+      gain.gain.linearRampToValueAtTime(0.7, ctx.currentTime + n.t + 0.06);
+      gain.gain.setValueAtTime(0.7, ctx.currentTime + n.t + n.d * 0.7);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n.t + n.d + 0.15);
+
+      osc.connect(gain);
+      gain.connect(reverb);
+      gain.connect(master);
+      osc.start(ctx.currentTime + n.t);
+      osc.stop(ctx.currentTime + n.t + n.d + 0.2);
+    });
+
+    setTimeout(()=>{ try{ ctx.close(); }catch(e){} }, 16000);
+  } catch(e){
+    console.warn('adhan audio failed:', e);
+  }
 }
 
 function stopAzan(){
@@ -1603,16 +1729,14 @@ function tick(){
   const dh=Math.floor(diff/3600),dm=Math.floor((diff%3600)/60),ds=diff%60;
 
   // ماوەی بانگ — دوو هێڵ
-  const cdName = document.getElementById('cdPrayerName');
   const cdTime = document.getElementById('cdCountdown');
-  if(cdName) cdName.textContent = '⏳ تا ' + PM[ni].ku + ' ' + fmt(nxt.h, nxt.m);
   if(cdTime){
-    const parts=[];
-    if(dh>0) parts.push(dh+'س');
-    parts.push(String(dm).padStart(2,'0')+'خ');
-    parts.push(String(ds).padStart(2,'0')+'چ');
-    cdTime.textContent = parts.join(' : ');
-    // کاتی نزیک — رەنگی زەرد
+    const hStr = String(dh).padStart(2,'0');
+    const mStr = String(dm).padStart(2,'0');
+    const sStr = String(ds).padStart(2,'0');
+    cdTime.textContent = dh > 0
+      ? `${hStr}:${mStr}:${sStr}`
+      : `${mStr}:${sStr}`;
     cdTime.style.color = (dh===0 && dm < 15) ? '#f1c40f' : 'var(--green-light)';
   }
 
@@ -2997,6 +3121,173 @@ function toArabicNum(n){
   return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 }
 
+// ── چۆنیەتی نوێژ ────────────────────────────────
+const SALAH_LIST = [
+  {
+    id:'fajr', icon:'🌅', name:'نوێژی بەیانی', rakat:'٢ سوننەت + ٢ فەرز',
+    color:'#f39c12',
+    steps:[
+      {title:'نیەت', ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْفَجْرِ', ku:'نیەتم کرد بۆ نوێژی فەرزی بەیانی'},
+      {title:'تەکبیری تەحریمە', ar:'اللَّهُ أَكْبَرُ', ku:'خوای گەورە — دەستبەکار دەبیت'},
+      {title:'دوعای سەنا', ar:'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَهَ غَيْرُكَ', ku:'پیرۆزیت بۆ خودایە، ستایشت دەکەم...'},
+      {title:'سوورەتی فاتحە', ar:'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمَٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ', ku:'بە ناوی خوای بەخشندە و میهرەبان...'},
+      {title:'رووکوع', ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ', ku:'پیرۆزە پەروەردگاری گەورەم — ٣ جار'},
+      {title:'هەستانەوە لە رووکوع', ar:'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا وَلَكَ الْحَمْدُ', ku:'خوا بیستی ستایشی ستایشکار'},
+      {title:'سەجدەی یەکەم', ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى', ku:'پیرۆزە پەروەردگاری بەرزم — ٣ جار'},
+      {title:'نیشتن نێوان دوو سەجدە', ar:'رَبِّ اغْفِرْ لِي', ku:'پەروەردگارەکەم لێم ببوورێت'},
+      {title:'سەجدەی دووەم', ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى', ku:'پیرۆزە پەروەردگاری بەرزم — ٣ جار'},
+      {title:'تەشەههود', ar:'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', ku:'سڵاوەکان، نوێژەکان و باشییەکان بۆ خوان...'},
+      {title:'سەڵات و سەڵام', ar:'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ', ku:'خودایە سەڵاتت بنێرە بۆ محمد و ئاڵی محمد'},
+      {title:'سەڵام', ar:'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ', ku:'سەڵامی خوا و میهرەبانییەکەی لەسەر ئێوە — ٢ لا'}
+    ]
+  },
+  {
+    id:'dhuhr', icon:'☀️', name:'نوێژی نیوەڕۆ', rakat:'٤ سوننەت + ٤ فەرز + ٢ سوننەت',
+    color:'#e67e22',
+    steps:[
+      {title:'نیەت', ar:'نَوَيْتُ أُصَلِّي فَرْضَ الظُّهْرِ', ku:'نیەتم کرد بۆ نوێژی فەرزی نیوەڕۆ'},
+      {title:'تەکبیری تەحریمە', ar:'اللَّهُ أَكْبَرُ', ku:'خوای گەورە'},
+      {title:'دوعای سەنا', ar:'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَهَ غَيْرُكَ', ku:'پیرۆزیت بۆ خودایە...'},
+      {title:'فاتحە + سووڕەتێک', ar:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ...', ku:'فاتحە بخوێنە + سووڕەتێکی تر لە ڕکعەتی ١ و ٢'},
+      {title:'رووکوع', ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ', ku:'٣ جار'},
+      {title:'هەستانەوە', ar:'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا وَلَكَ الْحَمْدُ', ku:''},
+      {title:'سەجدەی یەکەم', ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى', ku:'٣ جار'},
+      {title:'نیشتن نێوان', ar:'رَبِّ اغْفِرْ لِي', ku:''},
+      {title:'سەجدەی دووەم', ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى', ku:'٣ جار'},
+      {title:'تەشەههود (پاش ڕکعەتی ٢)', ar:'التَّحِيَّاتُ لِلَّهِ...', ku:'تەشەههودی کورت بخوێنە، دواتر هەستەوە بۆ ڕکعەتی ٣'},
+      {title:'تەشەههود + سەڵات (کۆتایی)', ar:'التَّحِيَّاتُ... اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ...', ku:'تەشەههود و سەڵاتی تەواو بخوێنە'},
+      {title:'سەڵام', ar:'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ', ku:'٢ لا'}
+    ]
+  },
+  {
+    id:'asr', icon:'🌤️', name:'نوێژی عەسر', rakat:'٤ فەرز',
+    color:'#27ae60',
+    steps:[
+      {title:'نیەت', ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْعَصْرِ', ku:'نیەتم کرد بۆ نوێژی فەرزی عەسر'},
+      {title:'تەکبیری تەحریمە', ar:'اللَّهُ أَكْبَرُ', ku:'خوای گەورە'},
+      {title:'فاتحە + سووڕەتێک', ar:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ...', ku:'لە ڕکعەتی ١ و ٢'},
+      {title:'رووکوع', ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ', ku:'٣ جار'},
+      {title:'هەستانەوە', ar:'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا وَلَكَ الْحَمْدُ', ku:''},
+      {title:'سەجدەی یەکەم', ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى', ku:'٣ جار'},
+      {title:'نیشتن نێوان', ar:'رَبِّ اغْفِرْ لِي', ku:''},
+      {title:'سەجدەی دووەم', ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى', ku:'٣ جار'},
+      {title:'تەشەههود + سەڵات + سەڵام', ar:'التَّحِيَّاتُ... اللَّهُمَّ صَلِّ... السَّلَامُ عَلَيْكُمْ', ku:'وەک نوێژی نیوەڕۆ'}
+    ]
+  },
+  {
+    id:'maghrib', icon:'🌆', name:'نوێژی ئێوارە', rakat:'٣ فەرز + ٢ سوننەت',
+    color:'#8e44ad',
+    steps:[
+      {title:'نیەت', ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْمَغْرِبِ', ku:'نیەتم کرد بۆ نوێژی فەرزی ئێوارە'},
+      {title:'تەکبیری تەحریمە', ar:'اللَّهُ أَكْبَرُ', ku:'خوای گەورە'},
+      {title:'فاتحە + سووڕەتێک', ar:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ...', ku:'لە ڕکعەتی ١ و ٢'},
+      {title:'رووکوع', ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ', ku:'٣ جار'},
+      {title:'سەجدە', ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى', ku:'٣ جار — دوو سەجدە'},
+      {title:'تەشەههود (پاش ڕکعەتی ٢)', ar:'التَّحِيَّاتُ لِلَّهِ...', ku:'تەشەههودی کورت — دواتر هەستەوە بۆ ڕکعەتی ٣'},
+      {title:'ڕکعەتی ٣ — تەنها فاتحە', ar:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ...', ku:'لە ڕکعەتی ٣ تەنها فاتحە بخوێنە'},
+      {title:'تەشەههود + سەڵات + سەڵام', ar:'التَّحِيَّاتُ... اللَّهُمَّ صَلِّ... السَّلَامُ عَلَيْكُمْ', ku:'تەواو بخوێنە — سەڵام ٢ لا'}
+    ]
+  },
+  {
+    id:'isha', icon:'🌙', name:'نوێژی شەو', rakat:'٤ فەرز + ٢ سوننەت + ٣ وتر',
+    color:'#2980b9',
+    steps:[
+      {title:'نیەت', ar:'نَوَيْتُ أُصَلِّي فَرْضَ الْعِشَاءِ', ku:'نیەتم کرد بۆ نوێژی فەرزی شەو'},
+      {title:'تەکبیری تەحریمە', ar:'اللَّهُ أَكْبَرُ', ku:'خوای گەورە'},
+      {title:'فاتحە + سووڕەتێک', ar:'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ...', ku:'لە ڕکعەتی ١ و ٢'},
+      {title:'رووکوع', ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ', ku:'٣ جار'},
+      {title:'سەجدە', ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى', ku:'٣ جار — دوو سەجدە'},
+      {title:'تەشەههود (پاش ڕکعەتی ٢)', ar:'التَّحِيَّاتُ لِلَّهِ...', ku:'دواتر هەستەوە بۆ ڕکعەتی ٣ و ٤'},
+      {title:'تەشەههود + سەڵات + سەڵام', ar:'التَّحِيَّاتُ... اللَّهُمَّ صَلِّ... السَّلَامُ عَلَيْكُمْ', ku:'کۆتایی نوێژی فەرز'},
+      {title:'نوێژی وتر (٣ ڕکعەت)', ar:'قُلْ هُوَ اللَّهُ أَحَدٌ...', ku:'سوننەتی موەەکەدە — ئیخلاص، فەلەق، ناس بخوێنە'},
+      {title:'دوعای قونووت', ar:'اللَّهُمَّ اهْدِنَا فِيمَنْ هَدَيْتَ...', ku:'لە ڕکعەتی کۆتایی وتر پاش رووکوع'}
+    ]
+  }
+];
+
+let salahStepIdx = 0;
+let salahCurrent = null;
+let salahAnimating = false;
+
+function renderSalah(){
+  const el = document.getElementById('salahList');
+  if(!el) return;
+  el.innerHTML = SALAH_LIST.map(s=>`
+    <div onclick="openSalah('${s.id}')" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;active:scale(.97)">
+      <div style="font-size:32px;flex-shrink:0">${s.icon}</div>
+      <div style="flex:1">
+        <div style="font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:3px">${s.name}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">${s.rakat}</div>
+      </div>
+      <div style="width:10px;height:10px;border-right:2px solid rgba(255,255,255,.3);border-top:2px solid rgba(255,255,255,.3);transform:rotate(45deg)"></div>
+    </div>
+  `).join('');
+}
+
+function openSalah(id){
+  salahCurrent = SALAH_LIST.find(s=>s.id===id);
+  if(!salahCurrent) return;
+  salahStepIdx = 0;
+  document.getElementById('salahDetailTitle').textContent = salahCurrent.icon + ' ' + salahCurrent.name;
+  renderSalahStep();
+  switchPage('salah-detail');
+}
+
+function renderSalahStep(){
+  const el = document.getElementById('salahDetailContent');
+  if(!el || !salahCurrent) return;
+  const steps = salahCurrent.steps;
+  const total = steps.length;
+
+  // progress
+  const pct = Math.round(((salahStepIdx+1)/total)*100);
+
+  el.innerHTML = `
+    <!-- progress -->
+    <div style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px">
+        <span>تەوەری ${salahStepIdx+1} لە ${total}</span>
+        <span>${pct}%</span>
+      </div>
+      <div style="height:6px;background:rgba(255,255,255,.08);border-radius:10px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,${salahCurrent.color},${salahCurrent.color}aa);border-radius:10px;transition:width .4s ease"></div>
+      </div>
+    </div>
+
+    <!-- کارتی تەوەر -->
+    <div id="salahStepCard" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:24px 18px;margin-bottom:20px;animation:salahFadeIn .35s ease">
+      <div style="font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,255,255,.4);margin-bottom:8px;text-align:center">— ${steps[salahStepIdx].title} —</div>
+      ${steps[salahStepIdx].ar ? `<div style="font-family:'Amiri',serif;font-size:22px;color:#fff;text-align:center;line-height:2;direction:rtl;margin-bottom:14px">${steps[salahStepIdx].ar}</div>` : ''}
+      ${steps[salahStepIdx].ku ? `<div style="font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,255,255,.55);text-align:center;line-height:1.8;direction:rtl">${steps[salahStepIdx].ku}</div>` : ''}
+    </div>
+
+    <!-- دوگمەکان -->
+    <div style="display:flex;gap:10px">
+      ${salahStepIdx > 0 ? `<button onclick="salahStep(-1)" style="flex:1;padding:14px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-family:'Cairo',sans-serif;font-size:14px;cursor:pointer">← پێشوو</button>` : '<div style="flex:1"></div>'}
+      ${salahStepIdx < total-1 
+        ? `<button onclick="salahStep(1)" style="flex:2;padding:14px;border-radius:14px;background:linear-gradient(135deg,${salahCurrent.color}cc,${salahCurrent.color});border:none;color:#fff;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;cursor:pointer">داهاتوو ←</button>`
+        : `<button onclick="switchPage('salah')" style="flex:2;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1b8a4e,#2ecc71);border:none;color:#fff;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;cursor:pointer">✅ نوێژ تەواو بوو</button>`
+      }
+    </div>
+
+    <!-- خاڵەکان -->
+    <div style="display:flex;justify-content:center;gap:6px;margin-top:16px;flex-wrap:wrap">
+      ${steps.map((_,i)=>`<div onclick="salahJump(${i})" style="width:8px;height:8px;border-radius:50%;background:${i===salahStepIdx ? salahCurrent.color : 'rgba(255,255,255,.15)'};cursor:pointer;transition:all .2s"></div>`).join('')}
+    </div>
+  `;
+}
+
+function salahStep(dir){
+  if(!salahCurrent) return;
+  salahStepIdx = Math.max(0, Math.min(salahCurrent.steps.length-1, salahStepIdx+dir));
+  renderSalahStep();
+}
+
+function salahJump(idx){
+  salahStepIdx = idx;
+  renderSalahStep();
+}
+
 // ── زیکر ────────────────────────────────
 const ZIKRS = [
   // ── زیکری بەیانی ──
@@ -3166,29 +3457,22 @@ function calcQiblaAngle(lat,lng){
 }
 
 function updateCompassDisplay(){
-  // Ring بەپێی heading ی مۆبایل دەگەڕێتەوە (N هەمیشە باکوورە)
   const ring = document.getElementById('compassRing');
   if(ring) ring.style.transform = `rotate(${-deviceHeading}deg)`;
 
-  // Needle بەپێی ئاراستەی قیبلە دەگەڕێتەوە — سەربەخۆ لە ring
   const needle = document.getElementById('qiblaNeedle');
-  if(needle){
-    const angle = qiblaAngle - deviceHeading;
-    needle.style.transform = `rotate(${angle}deg)`;
-  }
+  if(needle) needle.style.transform = `rotate(${qiblaAngle - deviceHeading}deg)`;
 
-  // دۆخی هاوئاراستەبوون
   const diff = ((qiblaAngle - deviceHeading) % 360 + 360) % 360;
   const aligned = diff < 8 || diff > 352;
   const st = document.getElementById('compassStatus');
-  const ring2 = document.getElementById('compassRing');
 
   if(aligned){
     if(st) st.innerHTML = '<span style="color:#2ecc71;font-size:15px;font-weight:700">✅ ڕووی کەعبەتەوەیە!</span>';
-    if(ring2) ring2.style.boxShadow = '0 0 0 3px rgba(46,204,113,.5),0 0 30px rgba(46,204,113,.3),inset 0 0 60px rgba(0,0,0,.4)';
+    if(ring) ring.style.boxShadow = '0 0 0 3px rgba(46,204,113,.5),0 0 30px rgba(46,204,113,.25)';
   } else {
     if(st) st.textContent = '🧭 چالاکە — ' + Math.round(deviceHeading) + '°';
-    if(ring2) ring2.style.boxShadow = '0 0 0 2px rgba(46,204,113,.15),0 0 40px rgba(0,0,0,.6),inset 0 0 60px rgba(0,0,0,.4)';
+    if(ring) ring.style.boxShadow = '0 0 0 2px rgba(46,204,113,.15),0 0 40px rgba(0,0,0,.6)';
   }
 }
 
@@ -3506,6 +3790,10 @@ function switchPage(p){
   const pg=document.getElementById('pg-'+p);
   if(!pg) return;
   pg.classList.add('active');
+  // هەموو بەشێک جگە لە home و widgets فول شاشە
+  if(p !== 'home' && p !== 'widgets'){
+    pg.classList.add('fullscreen');
+  }
   // سەرەوەی شاشە
   pg.scrollTop = 0;
   window.scrollTo(0,0);
@@ -3763,7 +4051,7 @@ function showToast(msg){
   document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
   document.getElementById('pg-home').classList.add('active');
   selectCity(CUR);
-  renderDate();renderCal();tick();renderWidgetPrayers();
+  renderDate();renderCal();tick();renderWidgetPrayers();renderSalah();
   document.getElementById('plist').classList.add('collapsed');
   setInterval(tick,1000);
   setInterval(()=>{renderDate();renderPrayers();},60000);
@@ -3771,17 +4059,6 @@ function showToast(msg){
   if(location.hash==='#widgets'){
     switchPage('widgets');
   }
-
-  // دوگمەی بەرگەڕانی مۆبایل — پەیامی دڵنیابوون
-  history.pushState({app:true}, '');
-  window.addEventListener('popstate', ()=>{
-    const confirmed = confirm('دڵنیای لەم بەرنامەیە دەردەچیت؟');
-    if(confirmed){
-      history.back();
-    } else {
-      history.pushState({app:true}, '');
-    }
-  });
 })();
 
 // PWA Service Worker
