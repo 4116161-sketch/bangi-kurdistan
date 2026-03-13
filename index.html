@@ -771,15 +771,6 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
           <span style="font-family:'Cairo',sans-serif;font-size:11px;color:#e74c3c">🌹 گوڵ</span>
         </button>
 
-        <button onclick="applyTheme('light')" class="theme-btn" id="tb-light"
-          style="border-radius:12px;border:2px solid rgba(46,125,50,.3);padding:10px 6px;cursor:pointer;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);display:flex;flex-direction:column;align-items:center;gap:5px">
-          <div style="display:flex;gap:3px">
-            <span style="width:12px;height:12px;border-radius:50%;background:#2e7d32;display:block"></span>
-            <span style="width:12px;height:12px;border-radius:50%;background:#43a047;display:block"></span>
-            <span style="width:12px;height:12px;border-radius:50%;background:#e8f5e9;display:block"></span>
-          </div>
-          <span style="font-family:'Cairo',sans-serif;font-size:11px;color:#2e7d32">☀️ ڕووناک</span>
-        </button>
 
       </div>
     </div>
@@ -808,18 +799,25 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
     </div>
 
     <!-- گۆڕانکاری وەشان -->
-    <div onclick="toggleChangelog()" class="smitem" style="display:flex;justify-content:space-between;align-items:center">
-      <span>ℹ️ گۆڕانکاری وەشان</span><span id="changeArrow" style="font-size:12px;color:rgba(255,255,255,.3)">❯</span>
-    </div>
-    <div id="changelogPanel" style="display:none;margin:0 12px 4px;background:rgba(255,255,255,.04);border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,.07)">
-      <div style="font-family:'Cairo',sans-serif;font-size:11px;color:var(--white-faint);direction:rtl;line-height:2.2">
-        <div style="color:var(--green-light);font-weight:700;margin-bottom:4px">وەشانی ٣.٠</div>
-        <div>✅ قەڵای موسڵمان</div>
-        <div>✅ شێوازی کلاسیکی قورئان</div>
-        <div>✅ مێنیوی لادێ</div>
-        <div>✅ کاتی ڕاستەقینەی بانگ</div>
-        <div>✅ قیبلەنمای پڕ شاشە</div>
-      </div>
+    <!-- سۆشیال میدیا -->
+    <div style="margin:8px 12px 0;border-top:1px solid rgba(255,255,255,.08);padding-top:12px;display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.3);text-align:center;margin-bottom:2px">📲 دوایمان بکەوە</div>
+      <a href="https://tiktok.com/@computeraweza" target="_blank"
+        style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.05);border-radius:12px;text-decoration:none;border:1px solid rgba(255,255,255,.08)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.75a8.16 8.16 0 004.77 1.52V6.82a4.85 4.85 0 01-1-.13z"/></svg>
+        <div>
+          <div style="font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;color:#fff">TikTok</div>
+          <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.4)">@computeraweza</div>
+        </div>
+      </a>
+      <a href="https://facebook.com/pcaweza" target="_blank"
+        style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.05);border-radius:12px;text-decoration:none;border:1px solid rgba(255,255,255,.08)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+        <div>
+          <div style="font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;color:#fff">Facebook</div>
+          <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.4)">pcaweza</div>
+        </div>
+      </a>
     </div>
 
   </div>
@@ -901,6 +899,13 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div class="qz-icon">📺</div>
         <div class="qz-title">پەخشی ڕاستەوخۆ</div>
         <div class="qz-sub" style="display:flex;align-items:center;justify-content:center;gap:4px"><span style="width:5px;height:5px;background:#e74c3c;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>LIVE</div>
+      </div>
+      <div class="qz-card" style="opacity:.75;cursor:default">
+        <div class="qz-icon">📚</div>
+        <div class="qz-title">کتێبخانە</div>
+        <div class="qz-sub" style="display:flex;align-items:center;justify-content:center;gap:4px">
+          <span style="width:5px;height:5px;background:#f39c12;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>بەزوودی دێت
+        </div>
       </div>
     </div>
 
@@ -987,6 +992,21 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div class="quran-hdr-title">📖 قورئانی پیرۆز — بەخوێندن</div>
         <div style="width:36px"></div>
       </div>
+      <div style="padding:8px 12px 4px">
+        <input id="suraSearch" oninput="filterSuraList(this.value)" type="search" placeholder="🔍 گەڕان بەدوای سووڕەت..."
+          style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:9px 14px;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;outline:none">
+      </div>
+      <div style="padding:4px 12px 8px">
+        <select id="readerSelect" onchange="changeReader(this.value)"
+          style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:8px 12px;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;outline:none;appearance:none;-webkit-appearance:none">
+          <option value="ar.alafasy">🎙 مصطفى العفاسي</option>
+          <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
+          <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
+          <option value="ar.husary">🎙 محمود خليل الحصري</option>
+          <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
+          <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
+        </select>
+      </div>
       <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch" id="suraList"></div>
     </div>
   </div>
@@ -998,6 +1018,10 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <button onclick="switchPage('home')" class="back-btn">←</button>
         <div class="quran-hdr-title">🎧 قورئانی پیرۆز — بە دەنگ</div>
         <div style="width:36px"></div>
+      </div>
+      <div style="padding:8px 12px 4px">
+        <input id="suraAudioSearch" oninput="filterSuraAudioList(this.value)" type="search" placeholder="🔍 گەڕان بەدوای سووڕەت..."
+          style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:9px 14px;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;outline:none">
       </div>
       <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch">
         <!-- پلەیەر -->
@@ -1033,6 +1057,16 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 
       <!-- پلەیەری دەنگ -->
       <div id="audioBar" style="background:rgba(0,0,0,.35);border-bottom:1px solid rgba(46,204,113,.15);padding:10px 14px;display:flex;flex-direction:column;gap:8px">
+        <!-- هەڵبژاردنی قارئ -->
+        <select onchange="changeReader(this.value)" id="suraReaderSelect"
+          style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.15);border-radius:8px;padding:6px 10px;color:#fff;font-family:'Cairo',sans-serif;font-size:11px;outline:none;appearance:none;-webkit-appearance:none;text-align:center">
+          <option value="ar.alafasy">🎙 مصطفى العفاسي</option>
+          <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
+          <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
+          <option value="ar.husary">🎙 محمود خليل الحصري</option>
+          <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
+          <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
+        </select>
         <!-- دوگمەکان -->
         <div style="display:flex;align-items:center;justify-content:center;gap:12px">
           <button onclick="audioSkip(-10)" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px">⏪</button>
@@ -1059,13 +1093,25 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
   </div>
 
   <!-- ZIKR PAGE -->
+  <!-- ZIKR MENU PAGE -->
   <div class="pg" id="pg-zikr">
     <div style="padding:16px 12px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
         <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
         <div style="font-size:17px;font-weight:800;color:#fff">📿 زیکر و دوعا</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px" id="zikrList"></div>
+      <div style="display:flex;flex-direction:column;gap:8px" id="zikrMenuGrid"></div>
+    </div>
+  </div>
+
+  <!-- ZIKR DETAIL PAGE -->
+  <div class="pg fullscreen" id="pg-zikr-detail" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
+    <div style="padding:16px 12px 40px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <button onclick="switchPage('zikr')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
+        <div id="zikrDetailTitle" style="font-size:17px;font-weight:800;color:#fff"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="zikrDetailList"></div>
     </div>
   </div>
 
@@ -1544,8 +1590,7 @@ function toggleNotifSetting(){
 function requestNotificationPermission(){
   if(!('Notification' in window)) return;
   if(Notification.permission === 'granted'){
-    showToast('✅ ئاگادارکردنەوە پێشتر مۆڵەت درابوو');
-    return;
+    return; // بێ پەیام
   }
   if(Notification.permission === 'denied'){
     showToast('⚠️ ئاگادارکردنەوە بلۆک کراوە — لە ڕێکخستنی براوزەر چالاک بکە');
@@ -1955,12 +2000,6 @@ const THEMES = {
     body:'#1a0508', bg1:'#1a0508', bg2:'#0d0204', menu:'linear-gradient(180deg,#2a0d10,#150508)',
     fullscreen:'linear-gradient(180deg,#1a0508 0%,#0d0204 100%)', svg1:'#1a0508', svg2:'#0d0204',
     text:'#fff'
-  },
-  light:{
-    '--green':'#2e7d32','--green-light':'#43a047','--green-dark':'#1b5e20',
-    body:'#f1f8e9', bg1:'#e8f5e9', bg2:'#c8e6c9', menu:'linear-gradient(180deg,#dcedc8,#c8e6c9)',
-    fullscreen:'linear-gradient(180deg,#e8f5e9 0%,#c8e6c9 100%)', svg1:'#e8f5e9', svg2:'#c8e6c9',
-    text:'#1a2e1a'
   }
 };
 
@@ -1969,37 +2008,30 @@ function applyTheme(name){
   if(!t) return;
   localStorage.setItem('appTheme', name);
 
-  // رووتی CSS
   const root = document.documentElement;
   root.style.setProperty('--green', t['--green']);
   root.style.setProperty('--green-light', t['--green-light']);
   root.style.setProperty('--green-dark', t['--green-dark']);
 
-  // بەکگراوندی بادی
   document.body.style.background = t.body;
   document.body.style.color = t.text;
 
-  // مێنیو
   const menu = document.getElementById('sideMenu');
   if(menu) menu.style.background = t.menu;
 
-  // پەیجە fullscreenەکان
   document.querySelectorAll('.pg.fullscreen').forEach(el=>{
     el.style.background = t.fullscreen;
   });
-  // ئەگەر هێشتا fullscreen class نەداراون
   document.querySelectorAll('.pg').forEach(el=>{
     if(el.classList.contains('fullscreen')) el.style.background = t.fullscreen;
   });
 
-  // SVG gradientەکان
   const stops = document.querySelectorAll('linearGradient stop');
   if(stops.length>=2){
     stops[0].setAttribute('stop-color', t.svg1);
     stops[1].setAttribute('stop-color', t.svg2);
   }
 
-  // دوگمەکانی تیم highlight بکە
   document.querySelectorAll('.theme-btn').forEach(b=> b.style.opacity='0.6');
   const active = document.getElementById('tb-'+name);
   if(active){ active.style.opacity='1'; active.style.transform='scale(1.05)'; }
@@ -2022,25 +2054,12 @@ function toggleSideMenu(){
 const TV_CHANNELS = {
   ku: [
     {name:'MMNHD Quran',       sub:'قورئانی کوردی',      icon:'📖', url:'http://mmn.mypsx.net:1935/live/mmnhdquran/chunklist.m3u8'},
-    {name:'ZAVAR-TV Quran',    sub:'بادینانی',            icon:'📡', url:'http://zavartv.badinan.xyz:1935/live/ZAVAR-TV/playlist.m3u8'},
-    {name:'Barın Quran HD',    sub:'قورئانی HD',          icon:'🕌', url:'http://baskhd.ddns.net:40/live/QURANHDTV/chunklist.m3u8'},
-    {name:'IMKQURANHD',        sub:'قورئانی HD',          icon:'📖', url:'http://avrstream.com:1935/live/IMKQURANHD/chunklist_w518013730.m3u8'},
-    {name:'Dengi Quran Soran', sub:'دەنگی قورئان — سۆران',icon:'🎙', url:'https://fl1002.bozztv.com/ssh101/dengisoran/tracks-v1a1/mono.m3u8'},
+
     {name:'Amozhgary TV',      sub:'ئامۆژگاری — سێرڤەری ١',icon:'📡', url:'https://app-live.org/live/3268334b/index.m3u8'},
-    {name:'Amozhgary TV 2',    sub:'ئامۆژگاری — سێرڤەری ٢',icon:'📡', url:'https://panadatv.karwan.tv/AMOZHGARE/index.m3u8'},
-    {name:'FarmodaTV',         sub:'کوردی',               icon:'📺', url:'http://avrstream.com:1935/live/FarmodaTV/chunklist_w1657527726.m3u8'},
-    {name:'RavandHD',          sub:'ڕەوەند HD',           icon:'📺', url:'http://ravandtv.badinan.xyz:1935/live/RAVAND-HD/playlist.m3u8'},
+
     {name:'IMK',               sub:'IMK HD',              icon:'📺', url:'http://imkhd.ddns.net:1935/live/imkhd/chunklist_w891424854.m3u8'},
-    {name:'kmp TV',            sub:'KMP',                 icon:'📺', url:'https://fl1002.bozztv.com:443/ssh101/kmp/tracks-v1a1/mono.m3u8'},
-    {name:'ArifanSunnat',      sub:'عارفان سوننەت',       icon:'🕌', url:'https://panadatv.karwan.tv/ArifanSunnat/index.m3u8'},
-    {name:'Spi TV HD',         sub:'سپی HD',              icon:'📺', url:'http://avrstream.com:1935/live/SPIHD/chunklist_w90425750.m3u8'},
-    {name:'Nrt4',              sub:'NRT4',                icon:'📺', url:'https://panadatv.karwan.tv/Nrt4/index.m3u8'},
-    {name:'Bangawaz TV',       sub:'بانگاواز',            icon:'🔊', url:'http://baskhd.ddns.net:40/live/bangawaztv/playlist.m3u8'},
-    {name:'Bangxwazen Badinan',sub:'بانگخوازەن بادینان',  icon:'🔊', url:'http://bangxwazen.badinan.xyz:1935/live/Bangxwazen-Badinan/chunklist_w779630796.m3u8'},
-    {name:'Esra TV Quran',     sub:'عیسرا — قورئان',     icon:'📖', url:'http://fl1002.bozztv.com:80/ssh101/esraquranhd/tracks-v1a1/mono.m3u8'},
-    {name:'Esra TV',           sub:'عیسرا',               icon:'📺', url:'http://fl1002.bozztv.com:80/ssh101/esrahd/tracks-v1a1/mono.m3u8'},
-    {name:'Pro Quran',         sub:'پرۆ قورئان',          icon:'📖', url:'http://tv.ezanvaktipro.com:80/hls/quran.m3u8'},
-    {name:'QallamAiny',        sub:'قەلامی عەینی',        icon:'🕌', url:'https://panadatv.karwan.tv/QallamAiny/index.m3u8'},
+
+
     {name:'Bask HD TV',        sub:'باسک HD',             icon:'📺', url:'http://baskhd.ddns.net:40/live/baskhd/chunklist_w1520153455.m3u8'},
     {name:'Srosht',            sub:'سرۆشت',               icon:'📺', url:'https://panadatv.karwan.tv/Srosht/index.m3u8'},
     {name:'MihrabTV',          sub:'مهراب TV',            icon:'🕌', url:'http://baskhd.ddns.net:40/live/MihrabTV/playlist.m3u8'},
@@ -2411,20 +2430,48 @@ function openQuranAudio(){
   switchPage('quran-audio');
 }
 
-function renderSuraAudioList(){
-  const el = document.getElementById('suraAudioItems');
-  if(!el || el.innerHTML) return; // جارێکی تەنها
-  el.innerHTML = SURA_LIST.map(s=>`
-    <div id="audioSuraRow-${s.id}" onclick="playGlobalSura(${s.id})"
-      style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:background .2s;margin-bottom:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)">
-      <div style="width:34px;height:34px;border-radius:8px;background:rgba(46,204,113,.12);display:flex;align-items:center;justify-content:center;font-family:'Scheherazade New',serif;font-size:14px;color:var(--green-light);flex-shrink:0">${toArabicNum(s.id)}</div>
-      <div style="flex:1">
-        <div style="font-family:'Scheherazade New',serif;font-size:16px;color:#fff">${s.name}</div>
-        <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">${toArabicNum(s.ayat)} ئایەت · ${s.type}</div>
+function filterSuraList(q){
+  const list = document.getElementById('suraList');
+  if(!list) return;
+  const s = q.trim().toLowerCase();
+  const filtered = s ? SURA_LIST.filter(x=>
+    x.name.includes(s) || x.ku.toLowerCase().includes(s) ||
+    String(x.id).includes(s) || toArabicNum(x.id).includes(s)
+  ) : SURA_LIST;
+  list.innerHTML = filtered.map(x=>`
+    <div class="quran-card" onclick="showSura(${x.id})">
+      <div class="quran-num">${toArabicNum(x.id)}</div>
+      <div class="quran-info">
+        <div class="quran-name">${x.name}</div>
+        <div class="quran-sub">${toArabicNum(x.ayat)} ئایەت · ${x.type}</div>
       </div>
-      <div id="audioSuraIcon-${s.id}" style="font-size:18px;color:rgba(255,255,255,.2)">▶</div>
+      <div class="quran-arrow">❯</div>
     </div>
-  `).join('');
+  `).join('') || '<div style="text-align:center;padding:30px;color:rgba(255,255,255,.3);font-family:Cairo,sans-serif">هیچ سووڕەتێک نەدۆزرایەوە</div>';
+}
+
+function filterSuraAudioList(q){
+  const el = document.getElementById('suraAudioItems');
+  if(!el) return;
+  const s = q.trim().toLowerCase();
+  const filtered = s ? SURA_LIST.filter(x=>
+    x.name.includes(s) || x.ku.toLowerCase().includes(s) ||
+    String(x.id).includes(s) || toArabicNum(x.id).includes(s)
+  ) : SURA_LIST;
+  el.innerHTML = filtered.map(x=>`
+    <div id="audioSuraRow-${x.id}" onclick="playGlobalSura(${x.id})"
+      style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:background .2s;margin-bottom:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)">
+      <div style="width:34px;height:34px;border-radius:8px;background:rgba(46,204,113,.12);display:flex;align-items:center;justify-content:center;font-family:'Scheherazade New',serif;font-size:14px;color:var(--green-light);flex-shrink:0">${toArabicNum(x.id)}</div>
+      <div style="flex:1">
+        <div style="font-family:'Scheherazade New',serif;font-size:16px;color:#fff">${x.name}</div>
+        <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">${toArabicNum(x.ayat)} ئایەت · ${x.type}</div>
+      </div>
+      <div id="audioSuraIcon-${x.id}" style="font-size:18px;color:rgba(255,255,255,.2)">▶</div>
+    </div>
+  `).join('') || '<div style="text-align:center;padding:30px;color:rgba(255,255,255,.3);font-family:Cairo,sans-serif">هیچ سووڕەتێک نەدۆزرایەوە</div>';
+}
+function renderSuraAudioList(){
+  filterSuraAudioList('');
 }
 
 function playGlobalSura(id){
@@ -2524,6 +2571,22 @@ function globalAudioSeek(e){
 }
 
 let curSuraId = 1;
+let curReader = 'ar.alafasy';
+
+function changeReader(val){
+  curReader = val;
+  // هەردوو select sync بکە
+  const s1 = document.getElementById('readerSelect');
+  const s2 = document.getElementById('suraReaderSelect');
+  if(s1) s1.value = val;
+  if(s2) s2.value = val;
+  // ئەگەر سووڕەتێک کراوەبوو — دووبارە بارکەرەوە
+  const suraPage = document.getElementById('pg-sura');
+  if(suraPage && suraPage.classList.contains('active')){
+    stopSuraAudio();
+    showSura(curSuraId);
+  }
+}
 let suraTouchY = 0;
 
 // ── پلەیەری قورئان ──────────────────────────────
@@ -2700,7 +2763,7 @@ function showSura(id){
       `<div class="quran-flow">${lines}</div>`;
   }
 
-  fetch('https://api.alquran.cloud/v1/surah/'+id+'/ar.alafasy')
+  fetch('https://api.alquran.cloud/v1/surah/'+id+'/'+curReader)
     .then(r=>r.json())
     .then(data=>{
       if(data.code===200) renderAyat(data.data.ayahs);
@@ -2717,6 +2780,16 @@ function showSura(id){
           </div>`;
       }
     });
+}
+
+function openSidebar(){
+  const sb = document.getElementById('sidebar');
+  if(sb){ sb.style.display='block'; }
+}
+function closeSidebar(e){
+  if(e && e.target !== document.getElementById('sidebar')) return;
+  const sb = document.getElementById('sidebar');
+  if(sb){ sb.style.display='none'; }
 }
 
 function toArabicNum(n){
@@ -2751,25 +2824,100 @@ const ZIKRS = [
   {cat:'📿 زیکری ڕۆژانە', ar:'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ', ku:'هیچ خودایەک نییە جگە لە اللە، تەنیا بێ هاوبەش', count:'١٠ جار'},
   {cat:'📿 زیکری ڕۆژانە', ar:'أَسْتَغْفِرُ اللَّهَ', ku:'داوای لێبوردن دەکەم لە خوا', count:'٣ جار'},
   {cat:'📿 زیکری ڕۆژانە', ar:'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ', ku:'خوایە درود بنێرە بۆ محەمەد', count:'١٠ جار'},
+
+  // ── تەسبیحەکان ──
+  {cat:'📿 تەسبیحەکان', ar:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ', ku:'پاکی خوا و ستایشی', count:'١٠٠ جار'},
+  {cat:'📿 تەسبیحەکان', ar:'سُبْحَانَ اللَّهِ الْعَظِيمِ', ku:'پاکی خوای گەورە', count:'١٠٠ جار'},
+  {cat:'📿 تەسبیحەکان', ar:'سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَٰهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ', ku:'پاکی خوا، ستایشی، یەکتایی، گەورەتری', count:'٢٥ جار'},
+  {cat:'📿 تەسبیحەکان', ar:'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ', ku:'هیچ هێز و توانایەک نییە جگە بە خوا', count:'١٠ جار'},
+  {cat:'📿 تەسبیحەکان', ar:'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ', ku:'خوا بەسمانە و ئەو چاکترین پشتبەستنە', count:'٧ جار'},
+  {cat:'📿 تەسبیحەکان', ar:'لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ', ku:'دوعای یونس — بۆ کاتی تەنگی', count:'٤٠ جار'},
+  {cat:'📿 تەسبیحەکان', ar:'اللَّهُمَّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ', ku:'خوایە لێم ببوردە و توبەم قبوڵ بکە', count:'١٠٠ جار'},
+
+  // ── دوعاکانی دوای نوێژ ──
+  {cat:'🕌 دوعاکانی دوای نوێژ', ar:'اللَّهُمَّ أَعِنِّي عَلَىٰ ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ', ku:'خوایە یارمەتیم بدە لە زیکرت، شوکرت، و چاک پەرستینت', count:'١ جار'},
+  {cat:'🕌 دوعاکانی دوای نوێژ', ar:'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ وَأَعُوذُ بِكَ مِنْ أَرْذَلِ الْعُمُرِ', ku:'خوایە پەناه دەبەم بۆت لە ترس و خەسیسی', count:'١ جار'},
+  {cat:'🕌 دوعاکانی دوای نوێژ', ar:'اللَّهُمَّ اغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ وَمَا أَسْرَرْتُ وَمَا أَعْلَنْتُ', ku:'خوایە ببوردە گوناهەکانی پێشم و دوام و نهێنی و ئاشکرام', count:'١ جار'},
+  {cat:'🕌 دوعاکانی دوای نوێژ', ar:'رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي رَبَّنَا وَتَقَبَّلْ دُعَاءِ', ku:'پەروەردگارە منم و نەوەکەم نوێژخوازمان بکە و دوعاکەم قبوڵ بکە', count:'١ جار'},
+  {cat:'🕌 دوعاکانی دوای نوێژ', ar:'اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ', ku:'خوایە خۆم زیاد ستەمم کردووە و کەس نابوردێت جگە لە تۆ', count:'١ جار'},
+  {cat:'🕌 دوعاکانی دوای نوێژ', ar:'اللَّهُمَّ رَبَّ جِبْرِيلَ وَمِيكَائِيلَ وَإِسْرَافِيلَ فَاطِرَ السَّمَاوَاتِ وَالْأَرْضِ', ku:'خوایە پەروەردگاری جبرائیل، میکائیل، ئیسرافیل، دروستکەری ئاسمان و زەوی', count:'١ جار'},
+
+  // ── دوعای ئیستیخارە ──
+  {cat:'🤲 دوعای ئیستیخارە', ar:'اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ', ku:'خوایە داوا لێ دەکەم بەپێی زانستت هەڵبژاردنی باشترم بکەی', count:'١ جار'},
+  {cat:'🤲 دوعای ئیستیخارە', ar:'فَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ وَتَعْلَمُ وَلَا أَعْلَمُ وَأَنْتَ عَلَّامُ الْغُيُوبِ', ku:'تۆ توانایەکەت هەیە و من ناتوانم، تۆ دەزانیت و من نازانم، تۆ زانای نهێنییەکانی', count:'١ جار'},
+  {cat:'🤲 دوعای ئیستیخارە', ar:'اللَّهُمَّ إِنْ كُنْتَ تَعْلَمُ أَنَّ هَٰذَا الْأَمْرَ خَيْرٌ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي', ku:'خوایە ئەگەر ئەم کارە بۆم باشە لە ئایین و ژیان و داهاتوومدا', count:'١ جار'},
+  {cat:'🤲 دوعای ئیستیخارە', ar:'فَاقْدُرْهُ لِي وَيَسِّرْهُ لِي ثُمَّ بَارِكْ لِي فِيهِ', ku:'پێمی دیاری بکە و ئاسانم بکەرەوە و پیرۆزیت تێدا بنێرە', count:'١ جار'},
+  {cat:'🤲 دوعای ئیستیخارە', ar:'وَإِنْ كُنْتَ تَعْلَمُ أَنَّ هَٰذَا الْأَمْرَ شَرٌّ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي فَاصْرِفْهُ عَنِّي', ku:'ئەگەر زیانمانە لە ئایین و ژیان و داهاتووم — دوورمی بخستەوە', count:'١ جار'},
+  {cat:'🤲 دوعای ئیستیخارە', ar:'وَاقْدُرْ لِي الْخَيْرَ حَيْثُ كَانَ ثُمَّ أَرْضِنِي بِهِ', ku:'باشترین شت پێم دیاری بکە لە هەرکوێ بێت، پاشان ڕازیم پێکەرە', count:'١ جار'},
+
+  // ── دوعاکانی مانگی ڕەمەزان ──
+  {cat:'🌙 دوعاکانی ڕەمەزان', ar:'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي', ku:'خوایە تۆ لێبوردنخوازی و ئیشقی لێبوردن هەیتە، لێم ببوردە', count:'زۆر جار — بەتایبەتی شەوی قەدر'},
+  {cat:'🌙 دوعاکانی ڕەمەزان', ar:'اللَّهُمَّ بَارِكْ لَنَا فِي رَجَبٍ وَشَعْبَانَ وَبَلِّغْنَا رَمَضَانَ', ku:'خوایە پیرۆزی بنێرە لە ڕەجەب و شەعبان و بمگەیەنە ڕەمەزان', count:'١ جار'},
+  {cat:'🌙 دوعاکانی ڕەمەزان', ar:'اللَّهُمَّ تَقَبَّلْ مِنِّي صِيَامِي وَقِيَامِي وَرُكُوعِي وَسُجُودِي', ku:'خوایە ڕۆژووم، شەوخستنم، ڕوکووم و سوجودم قبوڵ بکە', count:'١ جار'},
+  {cat:'🌙 دوعاکانی ڕەمەزان', ar:'اللَّهُمَّ اجْعَلْ صِيَامِي فِيهِ صِيَامَ الصَّائِمِينَ وَقِيَامِي فِيهِ قِيَامَ الْقَائِمِينَ', ku:'خوایە ڕۆژووم وەک ڕۆژووی ڕاستەقینە ڕۆژووخواز بکە', count:'١ جار'},
+  {cat:'🌙 دوعاکانی ڕەمەزان', ar:'ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ', ku:'تینووی چووە، دەمار شێ بوون، و مزد جێگیر بوو ئینشاءاللە — دوعای ئیفتار', count:'١ جار — کاتی ئیفتار'},
+  {cat:'🌙 دوعاکانی ڕەمەزان', ar:'اللَّهُمَّ أَعِنِّي عَلَىٰ صِيَامِهِ وَقِيَامِهِ وَاحْفَظْ جَوَارِحِي فِيهِ', ku:'خوایە یارمەتیم بدە لە ڕۆژوو و شەوخستنی ڕەمەزان و ئەندامەکانم بپارێزە', count:'١ جار'},
+
+  // ── شەوی قەدر ──
+  {cat:'✨ شەوی قەدر', ar:'', ku:'💡 بیرۆکەیەکی زێڕین بۆ شەوانی قەدر...', count:'', info:true},
+
+  {cat:'✨ شەوی قەدر', ar:'قُلْ هُوَ اللَّهُ أَحَدٌ', ku:'سوڕەتی ئیخلاص — هەموو شەوێک ٣ جار بیخوێنە. ئەگەر کەوتە شەوی قەدرەوە وەک ئەوەیە ٨٤ ساڵ ڕۆژانە قورئانت خەتم کردبێت.', count:'٣ جار'},
+
+  {cat:'✨ شەوی قەدر', ar:'', ku:'🕌 هەر شەوێک ئەگەر توانیت شەونوێژ بکە لەگەڵ ئیمام کە سەد ئایەت بخوێنێت، یان لەماڵ سەد ئایەت بخوێنە — ئەگەر کەوتە شەوی قەدرەوە بۆ ٨٤ ساڵ لە قانتین هەژمار دەکرێیت.', count:'', info:true},
+
+  {cat:'✨ شەوی قەدر', ar:'آمَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِن رَّبِّهِ...', ku:'دوو ئایەتی کۆتایی سوڕەتی بەقەرە — هەموو شەوێک بیخوێنە. ئەگەر کەوتە شەوی قەدرەوە وەک ئەوەیە ٨٤ ساڵ ڕۆژانە ٣٠٠ هەزار جار ئەنجامدابێت.', count:'هەموو شەو'},
+
+  {cat:'✨ شەوی قەدر', ar:'', ku:'🤲 هەموو شەوێک شتێک بکە بە خێر — بچووکیش بێت. ئەگەر کەوتە شەوی قەدرەوە وەک ئەوەیە ٨٤ ساڵ خێرت ئەنجامدابێت.', count:'', info:true},
+
+  {cat:'✨ شەوی قەدر', ar:'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ', ku:'ئەگەر کەوتە شەوی قەدرەوە وەک ئەوەیە ٣٠٠ هەزار کۆیلەت ڕزگار کردبێت — هۆکاری ڕزگاری تۆ لە ئاگری دۆزەخ.', count:'١٠٠ جار'},
+
+  {cat:'✨ شەوی قەدر', ar:'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، اللَّهُ أَكْبَرُ كَبِيرًا، وَالْحَمْدُ لِلَّهِ كَثِيرًا، وَسُبْحَانَ اللَّهِ رَبِّ الْعَالَمِينَ، لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَزِيزِ الْحَكِيمِ — اللَّهُمَّ اغْفِرْ لِي وَارْحَمْنِي وَاهْدِنِي وَارْزُقْنِي', ku:'ئەگەر کەوتە شەوی قەدرەوە وەک ئەوەیە ٣٠ هەزار جار خێری ڕۆژانەت دەست کەوتبێت.', count:'١ جار'},
+
+  {cat:'✨ شەوی قەدر', ar:'اللَّهُمَّ اغْفِرْ لِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ', ku:'دوعا بۆ ئیماندارانی پیاو ئافرەت — ئەگەر کەوتە شەوی قەدرەوە وەک ئەوەیە ٦٠ بلیۆن چاکەت دەست کەوتبێت و ٦٠ بلیۆن خراپەت لاچوبێت.', count:'زۆر جار'},
+
+  {cat:'✨ شەوی قەدر', ar:'سُبْحَانَ اللَّهِ', ku:'ئەگەر کەوتە شەوی قەدرەوە وەک ئەوەیە ٣٠٠ ملیۆن چاکەت دەست کەوتبێت.', count:'١٠٠ جار'},
+
+  {cat:'✨ شەوی قەدر', ar:'سُبْحَانَ اللَّهِ الْعَظِيمِ وَبِحَمْدِهِ', ku:'ئەگەر کەوتە شەوی قەدرەوە وەک ئەوەیە ٣٠ ملیۆن دار خورمات لە بەهەشتدا بۆ دەچێندرێت.', count:'١٠٠ جار'},
+
+  {cat:'✨ شەوی قەدر', ar:'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ', ku:'١٠٠ جار صەڵاوات لەسەر پێغمبەر ﷺ — ئەگەر کەوتە شەوی قەدرەوە وەک ئەوەیە ٣٠ ملیۆن جار ڕەحمی پەروەردگار بۆ بێت، ٣٠ ملیۆن چاکەت دەست کەوێت، ٣٠ ملیۆن خراپەت لاچێت.', count:'١٠٠ جار'},
 ];
 
 function renderZikr(){
-  const list=document.getElementById('zikrList');
-  if(!list) return;
-  let html='';
-  let lastCat='';
-  ZIKRS.forEach(z=>{
-    if(z.cat !== lastCat){
-      html+=`<div style="font-size:14px;font-weight:800;color:#fff;padding:10px 4px 4px;border-bottom:1px solid rgba(46,204,113,.2);margin-bottom:4px">${z.cat}</div>`;
-      lastCat=z.cat;
-    }
-    html+=`<div class="zikr-card">
-      <div class="zikr-arabic">${z.ar}</div>
-      <div class="zikr-kurdish">${z.ku}</div>
-      <div class="zikr-count">🔁 ${z.count}</div>
+  const grid = document.getElementById('zikrMenuGrid');
+  if(!grid) return;
+  // بەشە جیاوازەکان
+  const cats = [...new Set(ZIKRS.map(z=>z.cat))];
+  grid.innerHTML = cats.map(cat=>{
+    const icon = cat.split(' ')[0];
+    const title = cat.split(' ').slice(1).join(' ');
+    const count = ZIKRS.filter(z=>z.cat===cat).length;
+    return `<div onclick="openZikrCat('${cat.replace(/'/g,"\\'")}')"
+      style="background:rgba(255,255,255,.05);border:1px solid rgba(46,204,113,.15);border-radius:12px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .2s">
+      <div style="font-size:22px">${icon}</div>
+      <div style="flex:1">
+        <div style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:#fff">${title}</div>
+        <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.35);margin-top:2px">${count} دوعا</div>
+      </div>
+      <div style="color:rgba(255,255,255,.3);font-size:14px">❯</div>
     </div>`;
-  });
-  list.innerHTML=html;
+  }).join('');
+}
+
+function openZikrCat(cat){
+  const items = ZIKRS.filter(z=>z.cat===cat);
+  document.getElementById('zikrDetailTitle').textContent = cat;
+  document.getElementById('zikrDetailList').innerHTML = items.map(z=>{
+    if(z.info){
+      return `<div style="background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.25);border-radius:14px;padding:14px 16px;margin-bottom:8px;font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,220,100,.9);direction:rtl;line-height:1.9">${z.ku}</div>`;
+    }
+    return `
+    <div class="zikr-card">
+      ${z.ar ? `<div class="zikr-arabic">${z.ar}</div>` : ''}
+      <div class="zikr-kurdish">${z.ku}</div>
+      ${z.count ? `<div class="zikr-count">🔁 ${z.count}</div>` : ''}
+    </div>`;
+  }).join('');
+  switchPage('zikr-detail');
 }
 
 // ── ٩٩ ناوی خوا ──────────────────────────────
@@ -3141,7 +3289,7 @@ function switchPage(p){
     const tvWrap = document.getElementById('tvPlayerWrap');
     if(tvWrap) tvWrap.style.display = 'none';
   }
-  if(['quran','quran-audio','sura','zikr','hisn','hisn-detail','qibla','settings','calendar','tv'].includes(p)){
+  if(['quran','quran-audio','sura','zikr','zikr-detail','hisn','hisn-detail','qibla','settings','calendar','tv'].includes(p)){
     pg.classList.add('fullscreen');
   }
   const navBtn = document.getElementById('nav-'+p);
