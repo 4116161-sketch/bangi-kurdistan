@@ -1,5 +1,5 @@
-// Service Worker - کاتەکانی بانگ v4
-const CACHE = 'bangi-v4';
+// Service Worker - کاتەکانی بانگ v5
+const CACHE = 'bangi-v5';
 const FILES = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
@@ -21,59 +21,80 @@ self.addEventListener('fetch', e => {
   );
 });
 
-// ── پێگری ئاگادارکردنەوە لە ئەپ ──
+// ── پێگری ئاگادارکردنەوە ──
+self.prayerTimes = null;
+self.cityName = '';
+self.lastNotified = -1;
+
+function checkPrayerTimes(){
+  if(!self.prayerTimes) return;
+  const now = new Date();
+  const curMin = now.getHours()*60 + now.getMinutes();
+
+  self.prayerTimes.forEach(pt => {
+    const pMin = pt.h*60 + pt.m;
+    if(curMin === pMin && self.lastNotified !== pMin){
+      self.lastNotified = pMin;
+      self.registration.showNotification('🕌 کاتی بانگ — ' + pt.name, {
+        body: 'ئێستا کاتی بانگی ' + pt.name + 'ە  ⏰ ' + pt.timeStr,
+        icon: './icon-192.png',
+        badge: './icon-192.png',
+        tag: 'prayer-' + pMin,
+        vibrate: [500,200,500,200,500,200,500,200,1000],
+        requireInteraction: true,
+        silent: false,
+        data: { url: './' }
+      });
+    }
+  });
+}
+
+// هەر ٣٠ چرکەیەک پشکنین — بەردەوام کار دەکات
 self.addEventListener('message', e => {
   if(!e.data) return;
 
   if(e.data.type === 'PRAYER_TIMES'){
-    // کاتەکانی بانگ لە SW ذەخیرە دەکرێن
     self.prayerTimes = e.data.times;
     self.cityName = e.data.city || '';
-
-    // ئەگەر alarm interval هەیە پاکی بکەوە
-    if(self.prayerInterval) clearInterval(self.prayerInterval);
     self.lastNotified = self.lastNotified || -1;
 
-    // هەر ٣٠ چرکەیەک پشکنین
+    // پاککردنەوەی interval ی کۆن
+    if(self.prayerInterval){ clearInterval(self.prayerInterval); self.prayerInterval = null; }
+
+    // هەر ٣٠ چرکەیەک — بە waitUntil تا SW نەمرێت
     self.prayerInterval = setInterval(()=>{
-      if(!self.prayerTimes) return;
-      const now = new Date();
-      const curMin = now.getHours()*60 + now.getMinutes();
-      const curSec = now.getSeconds();
-
-      if(curSec > 30) return; // تەنها لە نیوەی یەکەمی خولەکە
-
-      self.prayerTimes.forEach(pt => {
-        const pMin = pt.h*60 + pt.m;
-        if(curMin === pMin && self.lastNotified !== pMin){
-          self.lastNotified = pMin;
-          self.registration.showNotification('🕌 کاتی بانگ — ' + pt.name, {
-            body: 'ئێستا کاتی بانگی ' + pt.name + 'ە  ⏰ ' + pt.timeStr,
-            icon: './icon-192.png',
-            badge: './icon-192.png',
-            tag: 'prayer-' + pt.name,
-            vibrate: [300,100,300,100,300],
-            requireInteraction: true,
-            silent: false,
-            data: { url: './' }
-          });
-        }
-      });
+      // e.waitUntil نییە ئێرە — بەڵام periodic background sync بەکاردەهێنین
+      checkPrayerTimes();
     }, 30000);
+    
+    // یەکەم پشکنین ئێستا
+    checkPrayerTimes();
   }
 
-  // ئاگادارکردنەوەی فەوری (کاتی کراوەبوونی ئەپ)
+  // ئاگادارکردنەوەی فەوری
   if(e.data.type === 'PRAYER_NOTIFICATION'){
     self.registration.showNotification(e.data.title || '🕌 کاتی بانگ', {
       body: e.data.body || '',
       icon: './icon-192.png',
       badge: './icon-192.png',
       tag: 'prayer',
-      vibrate: [300,100,300,100,300],
+      vibrate: [500,200,500,200,500,200,500,200,1000],
       requireInteraction: true,
       silent: false,
       data: { url: './' }
     });
+  }
+
+  // KEEPALIVE — ئەپ هەر ٢٠ چرکەیەک پەیام دەنێرێت تا SW زیندوو بمێنێت
+  if(e.data.type === 'KEEPALIVE'){
+    checkPrayerTimes();
+  }
+});
+
+// Periodic Background Sync — بۆ براوزەرە پشتگیریکارەکان
+self.addEventListener('periodicsync', e => {
+  if(e.tag === 'prayer-check'){
+    e.waitUntil(checkPrayerTimes());
   }
 });
 
