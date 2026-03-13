@@ -2061,14 +2061,13 @@ const TV_CHANNELS = {
 
 
     {name:'Bask HD TV',        sub:'باسک HD',             icon:'📺', url:'http://baskhd.ddns.net:40/live/baskhd/chunklist_w1520153455.m3u8'},
-    {name:'Srosht',            sub:'سرۆشت',               icon:'📺', url:'https://panadatv.karwan.tv/Srosht/index.m3u8'},
+
     {name:'MihrabTV',          sub:'مهراب TV',            icon:'🕌', url:'http://baskhd.ddns.net:40/live/MihrabTV/playlist.m3u8'},
     {name:'Sada TV',           sub:'صەدا TV',             icon:'📺', url:'http://baskhd.ddns.net:40/live/sadatv/playlist.m3u8'},
     {name:'EmanTV',            sub:'ئیمان TV',            icon:'🕌', url:'http://avrstream.com:1935/live/emantv/media_w437685233.m3u8'},
-    {name:'Niroj Ayni',        sub:'نیروژ ئایینی',       icon:'☀️', url:'http://142.132.133.190:1935/live/niroj_ayini/index.m3u8'},
+
     {name:'RasoulallahTV',     sub:'رسول الله TV',       icon:'🕌', url:'http://avrstream.com:1935/live/rasoulallahtv/playlist.m3u8'},
-    {name:'Gewher HD',         sub:'گەوهەر HD',           icon:'📺', url:'http://avrstream.com:1935/live/Gewher-HD/playlist.m3u8'},
-    {name:'HormzyarHD',        sub:'هۆرمزیار HD',         icon:'📺', url:'http://avrstream.com:1935/live/HormzyarHD/TEST.m3u8'},
+
     {name:'mihrabfm',          sub:'مهراب FM',            icon:'🎙', url:'http://bblserver.ddns.net:1935/live/mihrabfm/chunklist_w873257582.m3u8'},
   ],
   fa: [
@@ -2096,13 +2095,51 @@ const TV_CHANNELS = {
 
 let tvHls = null;
 
+function chLogo(ch){
+  const logos = {
+    'MMNHD Quran':    {bg:'#1a3a2a', text:'MMN',    color:'#2ecc71', size:'10px'},
+    'Amozhgary TV':   {bg:'#1a2a3a', text:'AMZ',    color:'#3498db', size:'10px'},
+    'IMK':            {bg:'#2a1a3a', text:'IMK',     color:'#9b59b6', size:'11px'},
+    'Bask HD TV':     {bg:'#3a2a1a', text:'BASK',   color:'#e67e22', size:'9px'},
+    'MihrabTV':       {bg:'#1a2a1a', text:'MHR',    color:'#27ae60', size:'10px'},
+    'Sada TV':        {bg:'#2a1a1a', text:'SADA',   color:'#e74c3c', size:'9px'},
+    'EmanTV':         {bg:'#1a2a3a', text:'EMAN',   color:'#2980b9', size:'9px'},
+    'RasoulallahTV':  {bg:'#2a2a1a', text:'RSL',    color:'#f1c40f', size:'10px'},
+    'mihrabfm':       {bg:'#1a1a2a', text:'FM',     color:'#8e44ad', size:'11px'},
+    'Towheed TV':     {bg:'#1a2a1a', text:'TWH',    color:'#16a085', size:'10px'},
+    'Noor TV':        {bg:'#2a2a1a', text:'NOOR',   color:'#f39c12', size:'9px'},
+    'Kalemeh TV':     {bg:'#2a1a2a', text:'KLM',    color:'#c0392b', size:'10px'},
+    'Saudi Quran TV': {bg:'#1a2a1a', text:'KSA\nQ', color:'#2ecc71', size:'9px'},
+    'Saudi Sunnah TV':{bg:'#1a2a1a', text:'KSA\nS', color:'#27ae60', size:'9px'},
+    'Bahrain Quran':  {bg:'#2a1a1a', text:'BHR',    color:'#e74c3c', size:'10px'},
+    'Sharjah Quran':  {bg:'#1a1a2a', text:'SHJ',    color:'#3498db', size:'10px'},
+    'Almajid Quran':  {bg:'#2a2a1a', text:'MJD',    color:'#f1c40f', size:'10px'},
+    'Makka TV':       {bg:'#2a1a1a', text:'مکه',    color:'#e67e22', size:'11px'},
+    'Iqraa Arabic':   {bg:'#1a2a2a', text:'اقرأ',   color:'#1abc9c', size:'11px'},
+    'Iqraa Quran':    {bg:'#1a2a1a', text:'اقرأ\nQ', color:'#2ecc71', size:'10px'},
+    'Tanasuh TV':     {bg:'#2a1a2a', text:'TNS',    color:'#9b59b6', size:'10px'},
+    'Noor Dubai':     {bg:'#1a2a3a', text:'نور\nDXB',color:'#3498db', size:'9px'},
+    'Alistiqama TV':  {bg:'#1a2a1a', text:'AST',    color:'#27ae60', size:'10px'},
+    'Alfath TV':      {bg:'#2a2a1a', text:'فتح',    color:'#f1c40f', size:'11px'},
+    'Kuwait Ethra':   {bg:'#1a2a1a', text:'KWT',    color:'#2ecc71', size:'10px'},
+    'Quranic Audio':  {bg:'#1a1a2a', text:'🎙',     color:'#8e44ad', size:'16px'},
+  };
+  const l = logos[ch.name];
+  if(l){
+    return `<div style="width:38px;height:38px;border-radius:9px;background:${l.bg};border:1px solid ${l.color}40;display:flex;align-items:center;justify-content:center;flex-shrink:0;flex-direction:column;line-height:1.1">
+      <span style="font-size:${l.size};font-weight:900;color:${l.color};font-family:'Cairo',sans-serif;text-align:center;white-space:pre">${l.text}</span>
+    </div>`;
+  }
+  return `<div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ch.icon}</div>`;
+}
+
 function renderTVChannels(){
   ['ku','fa','ar'].forEach(lang=>{
     const el = document.getElementById('tvList'+lang.charAt(0).toUpperCase()+lang.slice(1));
     if(!el) return;
     el.innerHTML = TV_CHANNELS[lang].map((ch,i)=>`
       <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px">
-        <div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ch.icon}</div>
+        ${chLogo(ch)}
         <div style="flex:1;min-width:0">
           <div style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${ch.name}</div>
           <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.4);margin-top:1px">${ch.sub}</div>
@@ -2427,6 +2464,8 @@ let globalHighlightInterval = null;
 
 function openQuranAudio(){
   stopSuraAudio();
+  // دەنگی بەشی خوێندن ش داببگرە
+  if(typeof quranAudio !== 'undefined' && quranAudio){ quranAudio.pause(); quranAudio.src=''; quranAudio=null; }
   switchPage('quran-audio');
 }
 
@@ -2739,6 +2778,10 @@ function suraTouchEnd(e){
 function showSura(id){
   curSuraId = id;
   stopSuraAudio();
+  // دەنگی بەشی بەدەنگ ش داببگرە
+  if(globalAudio){ globalAudio.pause(); globalAudio.src=''; globalAudio=null; globalPlaying=false; }
+  if(globalHighlightInterval){ clearInterval(globalHighlightInterval); globalHighlightInterval=null; }
+  document.getElementById('globalAudioBar').style.display='none';
   const el = document.getElementById('suraScroll');
   if(el) el.scrollTop = 0;
   // progress reset
