@@ -2638,9 +2638,18 @@ let ayahTimings = [];
 let highlightInterval = null;
 
 function getAudioUrl(suraId){
-  // بەشی بەخوێندن: تەنها دەنگی قارئی هەڵبژێردراو — بێ وەرگێڕ
   const num = String(suraId).padStart(3,'0');
-  return `https://cdn.islamic.network/quran/audio-surah/128/${curReader.replace('ar.','')}/${num}.mp3`;
+  // mp3quran.net — سێرڤەری باوەڕپێکراو بۆ هەر قارئێک
+  const servers = {
+    'alafasy':           `https://server8.mp3quran.net/afs/${num}.mp3`,
+    'abdurrahmaansudais':`https://server11.mp3quran.net/sds/${num}.mp3`,
+    'minshawi':          `https://server13.mp3quran.net/minsh/${num}.mp3`,
+    'husary':            `https://server13.mp3quran.net/husr/${num}.mp3`,
+    'abdullahbasfar':    `https://server7.mp3quran.net/basit/${num}.mp3`,
+    'mahermuaiqly':      `https://server12.mp3quran.net/maher/${num}.mp3`,
+  };
+  const key = curReader.replace('ar.','');
+  return servers[key] || servers['alafasy'];
 }
 
 // ── هایلایتی ئایەت بەپێی کاتی دەنگ ──────────────────
