@@ -124,8 +124,8 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 /* COUNTDOWN */
 .cd-wrap{display:flex;align-items:center;gap:8px;padding:4px 16px;flex-shrink:0}
 .cd-tag{font-size:11px;color:var(--white-dim);background:rgba(0,0,0,.32);padding:3px 10px;border-radius:20px;backdrop-filter:blur(6px);flex-shrink:0}
-.cd-bar{flex:1;height:3px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
-.cd-fill{height:100%;background:linear-gradient(90deg,var(--green-dark),var(--green-light));border-radius:2px;transition:width 1s linear}
+.cd-bar{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:10px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.3)}
+.cd-fill{height:100%;background:linear-gradient(90deg,var(--green-dark),var(--green-light),#a8f0c6);border-radius:10px;transition:width 1s linear;box-shadow:0 0 8px rgba(46,204,113,.4)}
 .cd-timer{font-size:13px;font-weight:700;color:var(--green-light);background:rgba(0,0,0,.32);padding:3px 10px;border-radius:20px;backdrop-filter:blur(6px);flex-shrink:0;font-variant-numeric:tabular-nums}
 
 /* PRAYER LIST TOGGLE */
@@ -871,13 +871,10 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
     <!-- ڕیزی سەرەوە: نوێکردنەوە + ناوی نوێژ | ناوی شار -->
     <!-- کاتژمێر چەپ + هەموو بەرواری ٤ ساڵنامە ڕاست -->
     <div class="wh-mid">
-      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:2px">
-        <div style="display:flex;align-items:baseline;gap:4px">
-          <div class="wh-clock" id="gcTime">—:——</div>
-          <div id="gcSec" style="font-size:22px;font-weight:600;color:rgba(255,255,255,.45);font-variant-numeric:tabular-nums;line-height:1;margin-bottom:4px">:00</div>
-        </div>
-        <!-- ماوەی بانگ -->
-        <div id="cdLabel" style="font-size:12px;color:rgba(255,255,255,.5);font-family:'Cairo',sans-serif;direction:rtl;line-height:1">—</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
+        <!-- ماوەی بانگ — گەورە -->
+        <div id="cdPrayerName" style="font-size:12px;color:rgba(255,255,255,.45);font-family:'Cairo',sans-serif;direction:rtl;line-height:1">—</div>
+        <div id="cdCountdown" style="font-size:32px;font-weight:900;color:var(--green-light);font-family:'Cairo',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:1px;line-height:1">—</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         <div id="dayName" style="font-size:14px;font-weight:800;color:#fff;text-align:right">—</div>
@@ -1591,14 +1588,8 @@ let lastAzanMinute = -1;
 function tick(){
   const c=CITIES[CUR],now=new Date(),times=c.t,ni=findNext(times),nxt=times[ni];
 
-  // کاتژمێری زیندوو — ٢٤ کاتژمێری
+  // کاتژمێری
   const hh=now.getHours(), mm=now.getMinutes(), ss=now.getSeconds();
-  const gcT=document.getElementById('gcTime');
-  const gcS=document.getElementById('gcSec');
-  const h12 = hh%12||12;
-  const ampm = hh<12 ? 'ب' : 'ئ';
-  if(gcT) gcT.textContent=String(h12).padStart(2,'0')+':'+String(mm).padStart(2,'0');
-  if(gcS) gcS.textContent=':'+String(ss).padStart(2,'0')+' '+ampm;
 
   // widget header — نوێژی داهاتوو
   const wnn=document.getElementById('wNextName');
@@ -1611,14 +1602,18 @@ function tick(){
   const diff=Math.max(0,Math.floor((pd-now)/1e3));
   const dh=Math.floor(diff/3600),dm=Math.floor((diff%3600)/60),ds=diff%60;
 
-  // ماوەی بانگ لە خوارەوەی کاتژمێر
-  const cdLabel=document.getElementById('cdLabel');
-  if(cdLabel){
+  // ماوەی بانگ — دوو هێڵ
+  const cdName = document.getElementById('cdPrayerName');
+  const cdTime = document.getElementById('cdCountdown');
+  if(cdName) cdName.textContent = '⏳ تا ' + PM[ni].ku + ' ' + fmt(nxt.h, nxt.m);
+  if(cdTime){
     const parts=[];
     if(dh>0) parts.push(dh+'س');
     parts.push(String(dm).padStart(2,'0')+'خ');
     parts.push(String(ds).padStart(2,'0')+'چ');
-    cdLabel.textContent = '⏱ '+parts.join(' ')+'  ├  '+PM[ni].ku+' '+fmt(nxt.h,nxt.m);
+    cdTime.textContent = parts.join(' : ');
+    // کاتی نزیک — رەنگی زەرد
+    cdTime.style.color = (dh===0 && dm < 15) ? '#f1c40f' : 'var(--green-light)';
   }
 
   // progress bar
@@ -3171,56 +3166,76 @@ function calcQiblaAngle(lat,lng){
 }
 
 function updateCompassDisplay(){
-  // compassRing بەپێی heading ی مۆبایل دەگەڕێتەوە
+  // Ring بەپێی heading ی مۆبایل دەگەڕێتەوە (N هەمیشە باکوورە)
   const ring = document.getElementById('compassRing');
   if(ring) ring.style.transform = `rotate(${-deviceHeading}deg)`;
 
-  // qiblaNeedle بەپێی ئاراستەی قیبلە دەگەڕێتەوە
+  // Needle بەپێی ئاراستەی قیبلە دەگەڕێتەوە — سەربەخۆ لە ring
   const needle = document.getElementById('qiblaNeedle');
-  if(needle) needle.style.transform = `rotate(${qiblaAngle - deviceHeading}deg)`;
+  if(needle){
+    const angle = qiblaAngle - deviceHeading;
+    needle.style.transform = `rotate(${angle}deg)`;
+  }
 
+  // دۆخی هاوئاراستەبوون
   const diff = ((qiblaAngle - deviceHeading) % 360 + 360) % 360;
-  const aligned = diff < 10 || diff > 350;
+  const aligned = diff < 8 || diff > 352;
   const st = document.getElementById('compassStatus');
+  const ring2 = document.getElementById('compassRing');
 
   if(aligned){
-    if(st) st.innerHTML = '<span style="color:#2ecc71;font-size:15px">✅ ڕووی کەعبەتەوەیە!</span>';
-    if(ring) ring.style.boxShadow = '0 0 0 2px rgba(46,204,113,.4),0 0 40px rgba(46,204,113,.2),inset 0 0 60px rgba(0,0,0,.4)';
+    if(st) st.innerHTML = '<span style="color:#2ecc71;font-size:15px;font-weight:700">✅ ڕووی کەعبەتەوەیە!</span>';
+    if(ring2) ring2.style.boxShadow = '0 0 0 3px rgba(46,204,113,.5),0 0 30px rgba(46,204,113,.3),inset 0 0 60px rgba(0,0,0,.4)';
   } else {
     if(st) st.textContent = '🧭 چالاکە — ' + Math.round(deviceHeading) + '°';
-    if(ring) ring.style.boxShadow = '0 0 0 2px rgba(46,204,113,.15),0 0 40px rgba(0,0,0,.6),inset 0 0 60px rgba(0,0,0,.4)';
+    if(ring2) ring2.style.boxShadow = '0 0 0 2px rgba(46,204,113,.15),0 0 40px rgba(0,0,0,.6),inset 0 0 60px rgba(0,0,0,.4)';
   }
 }
 
 function handleOrientation(e){
-  // iOS — webkitCompassHeading ڕاستەقینەترە
-  if(e.webkitCompassHeading!=null){
-    deviceHeading = e.webkitCompassHeading;
-    updateCompassDisplay();
-    return;
+  let heading = null;
+
+  // iOS — webkitCompassHeading باشترە
+  if(e.webkitCompassHeading != null){
+    heading = e.webkitCompassHeading;
   }
-  // Android absolute — e.absolute===true
-  if(e.absolute===true && e.alpha!=null){
-    lastAbsolute=true;
-    deviceHeading = (360 - e.alpha + 360) % 360;
-    updateCompassDisplay();
-    return;
+  // Android — deviceorientationabsolute
+  else if(e.isTrusted && e.alpha != null){
+    heading = (360 - e.alpha) % 360;
   }
-  // Android non-absolute — تەنها ئەگەر absolute نەبووین
-  if(!lastAbsolute && e.alpha!=null){
-    deviceHeading = (360 - e.alpha + 360) % 360;
-    updateCompassDisplay();
-  }
+
+  if(heading == null) return;
+
+  // Smoothing — ئەگەر گۆڕانکاری زۆر بچووکبوو پشکنین ناکەین
+  const diff = Math.abs(heading - deviceHeading);
+  if(diff < 0.5 && diff !== 0) return;
+
+  deviceHeading = heading;
+  updateCompassDisplay();
 }
 
 function listenOrientation(){
-  compassActive=true;
-  const st=document.getElementById('compassStatus');
-  if(st) st.textContent='✅ چالاکە';
-  // deviceorientationabsolute باشترە بۆ Android
-  window.addEventListener('deviceorientationabsolute', handleOrientation, true);
-  // deviceorientation بۆ iOS و فالبەک
-  window.addEventListener('deviceorientation', handleOrientation, true);
+  compassActive = true;
+  const st = document.getElementById('compassStatus');
+  if(st) st.textContent = '✅ چالاکە';
+
+  // deviceorientationabsolute باشترە بۆ Android (heading ی ڕاستەقینە)
+  let hasAbsolute = false;
+  window.addEventListener('deviceorientationabsolute', e=>{
+    hasAbsolute = true;
+    handleOrientation(e);
+  }, true);
+
+  // deviceorientation بۆ iOS + فالبەک بۆ Android
+  window.addEventListener('deviceorientation', e=>{
+    // iOS webkitCompassHeading هەیەتی — هەمیشە بەکاربهێنە
+    if(e.webkitCompassHeading != null){
+      handleOrientation(e);
+      return;
+    }
+    // Android — تەنها ئەگەر absolute نەبووین
+    if(!hasAbsolute) handleOrientation(e);
+  }, true);
 }
 
 function startCompass(){
@@ -3680,6 +3695,13 @@ function sendPrayerTimesToSW(){
   });
 }
 
+// KEEPALIVE — هەر ٢٠ چرکەیەک SW زیندوو دەهێڵێت
+setInterval(()=>{
+  if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+    navigator.serviceWorker.controller.postMessage({ type: 'KEEPALIVE' });
+  }
+}, 20000);
+
 function fetchTodayTimes(cityKey){
   const now = new Date();
   const dayIdx = (now.getMonth()===2 && now.getFullYear()===2026)
@@ -3749,6 +3771,17 @@ function showToast(msg){
   if(location.hash==='#widgets'){
     switchPage('widgets');
   }
+
+  // دوگمەی بەرگەڕانی مۆبایل — پەیامی دڵنیابوون
+  history.pushState({app:true}, '');
+  window.addEventListener('popstate', ()=>{
+    const confirmed = confirm('دڵنیای لەم بەرنامەیە دەردەچیت؟');
+    if(confirmed){
+      history.back();
+    } else {
+      history.pushState({app:true}, '');
+    }
+  });
 })();
 
 // PWA Service Worker
