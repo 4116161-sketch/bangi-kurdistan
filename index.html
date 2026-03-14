@@ -29,205 +29,326 @@
 </style>
 <style>
 :root{
-  --green:#1B8A4E;--green-light:#2ECC71;--green-dark:#0D5C33;
-  --white:#fff;--white-dim:rgba(255,255,255,.75);--white-faint:rgba(255,255,255,.45);
+  --green:#1a9456;--green-light:#2ECC71;--green-dark:#0c4d2a;
+  --gold:#C9A84C;--gold-light:#E8C96A;--gold-dim:rgba(201,168,76,.3);
+  --white:#fff;--white-dim:rgba(255,255,255,.75);--white-faint:rgba(255,255,255,.35);
+  --glass:rgba(255,255,255,.06);--glass-border:rgba(255,255,255,.1);
+  --surface:rgba(5,18,10,.85);
+  --radius-xl:24px;--radius-lg:18px;--radius-md:14px;--radius-sm:10px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color:#fff;background:#0a2015}
+body{
+  font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;
+  color:#fff;
+  background:#020c07;
+}
 
+/* ── پاشزەمینی دەروازەی بهەشت ── */
 .bg-mosque{
   position:fixed;inset:0;z-index:0;
   background:
-    linear-gradient(180deg,
-      rgba(0,0,0,.82) 0%,
-      rgba(0,5,2,.5) 25%,
-      rgba(0,8,3,.3) 50%,
-      rgba(0,0,0,.75) 100%
-    ),
-    radial-gradient(ellipse at 50% 55%, #0d3d1e 0%, #061a0d 35%, #020a05 70%, #000 100%);
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(20,90,45,.55) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 60%, rgba(10,60,25,.3) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 80% 70%, rgba(15,70,35,.25) 0%, transparent 55%),
+    linear-gradient(180deg, #010704 0%, #020e07 40%, #031208 70%, #010704 100%);
+}
+/* ستێرەی تایبەتی — CSS بەتەنها */
+.bg-mosque::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 8% 12%, rgba(255,255,255,.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 22% 7%, rgba(255,255,255,.5) 0%, transparent 100%),
+    radial-gradient(2px 2px at 38% 5%, rgba(255,255,255,.8) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 9%, rgba(255,255,255,.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 72% 6%, rgba(255,255,255,.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 14%, rgba(255,255,255,.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 22%, rgba(255,255,255,.35) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 64% 18%, rgba(255,255,255,.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 92% 25%, rgba(255,255,255,.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 45% 3%, rgba(201,168,76,.5) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 78% 8%, rgba(201,168,76,.35) 0%, transparent 100%);
+}
+.bg-mosque::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;height:45%;
+  background:linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%);
 }
 
 .app{position:relative;z-index:1;max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column}
 
-/* HEADER */
-.hdr{background:rgba(10,30,16,.88);padding:10px 14px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0}
+/* ── HEADER ── */
+.hdr{
+  background:rgba(2,12,7,.92);
+  padding:10px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(46,204,113,.12);
+  flex-shrink:0;
+  backdrop-filter:blur(20px);
+}
 .hdr-date{text-align:center;flex:1;line-height:1.4}
-.hdr-day{font-size:13px;font-weight:700;color:#fff}
-.hdr-hijri{font-family:'Amiri',serif;font-size:13px;color:var(--green-light)}
-.hdr-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
-.hdr-btn:active{background:rgba(255,255,255,.25)}
+.hdr-day{font-size:13px;font-weight:700;color:#fff;letter-spacing:.3px}
+.hdr-hijri{font-family:'Amiri',serif;font-size:13px;color:var(--gold-light)}
+.hdr-btn{
+  width:38px;height:38px;border-radius:12px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  color:#fff;font-size:17px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .2s;
+}
+.hdr-btn:active{background:rgba(255,255,255,.18);transform:scale(.93)}
+
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes salahFadeIn{
-  from{opacity:0;transform:translateY(12px)}
-  to{opacity:1;transform:translateY(0)}
-}
+@keyframes salahFadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 12px rgba(46,204,113,.3)}50%{box-shadow:0 0 28px rgba(46,204,113,.6)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-/* TOP ROW: شار چەپ + کاتژمێری شوشەیی ڕاست */
+/* TOP ROW */
 .top-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 4px;gap:10px;flex-shrink:0}
-.city-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:30px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);font-size:18px;font-weight:700;color:#fff;cursor:pointer;text-shadow:0 1px 4px rgba(0,0,0,.5);flex-shrink:0}
-.city-pill:active{background:rgba(255,255,255,.3)}
-
-/* TOP WIDGET */
-.top-widget{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:8px 12px;
-  margin:6px 10px 0;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:22px;
+.city-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:30px;
+  background:linear-gradient(135deg,rgba(46,204,113,.18),rgba(46,204,113,.08));
+  border:1px solid rgba(46,204,113,.3);
   backdrop-filter:blur(12px);
+  font-size:16px;font-weight:800;color:#fff;cursor:pointer;
+  box-shadow:0 2px 12px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.1);
+  transition:all .2s;flex-shrink:0;
 }
-.tw-clock-block{
-  display:flex;align-items:baseline;gap:2px;
+.city-pill:active{transform:scale(.95);background:rgba(46,204,113,.28)}
+
+/* TOP WIDGET — ساعات شوشە */
+.top-widget{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;margin:6px 10px 0;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--radius-xl);backdrop-filter:blur(14px);
 }
+.tw-clock-block{display:flex;align-items:baseline;gap:2px}
 .tw-time{
   font-size:32px;font-weight:900;color:#fff;
   letter-spacing:1px;font-variant-numeric:tabular-nums;
-  text-shadow:0 0 20px rgba(46,204,113,.3);
+  text-shadow:0 0 24px rgba(46,204,113,.4);
 }
-.tw-sec{
-  font-size:14px;font-weight:600;color:rgba(255,255,255,.45);
-  font-variant-numeric:tabular-nums;
-}
+.tw-sec{font-size:14px;font-weight:600;color:rgba(255,255,255,.4);font-variant-numeric:tabular-nums}
+
+/* glass clock */
+.glass-clock{
   flex:1;
-  background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.06) 100%);
-  border:1px solid rgba(255,255,255,.35);
-  border-radius:22px;
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  padding:7px 12px;
-  display:flex;flex-direction:row;align-items:center;justify-content:center;
-  box-shadow:0 4px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.3);
+  background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:var(--radius-xl);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  padding:7px 12px;display:flex;flex-direction:row;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.25);
   position:relative;overflow:hidden;
 }
 .glass-clock::before{
   content:'';position:absolute;top:0;left:0;right:0;height:50%;
-  background:linear-gradient(180deg,rgba(255,255,255,.12),transparent);
-  border-radius:22px 22px 0 0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.1),transparent);
+  border-radius:var(--radius-xl) var(--radius-xl) 0 0;pointer-events:none;
 }
-.gc-time{
-  font-size:28px;font-weight:900;color:#fff;
-  letter-spacing:1px;line-height:1;
-  text-shadow:0 2px 12px rgba(0,0,0,.4),0 0 20px rgba(46,204,113,.3);
-  font-variant-numeric:tabular-nums;
-  font-family:'Cairo',sans-serif;
-}
-.gc-seconds{
-  font-size:13px;font-weight:600;color:rgba(255,255,255,.5);
-  letter-spacing:1px;
-  font-variant-numeric:tabular-nums;
-}
+.gc-time{font-size:28px;font-weight:900;color:#fff;letter-spacing:1px;line-height:1;text-shadow:0 0 20px rgba(46,204,113,.35);font-variant-numeric:tabular-nums;font-family:'Cairo',sans-serif}
+.gc-seconds{font-size:13px;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:1px;font-variant-numeric:tabular-nums}
 .gc-ampm{display:none}
-/* دوگمەی ١٢/٢٤ — شاراوە، تەنها لە ڕێکخستن */
 .gc-toggle{display:none}
 .gc-btn{display:none}
 
-/* COUNTDOWN */
-.cd-wrap{display:flex;align-items:center;gap:8px;padding:4px 16px;flex-shrink:0}
-.cd-tag{font-size:11px;color:var(--white-dim);background:rgba(0,0,0,.32);padding:3px 10px;border-radius:20px;backdrop-filter:blur(6px);flex-shrink:0}
-.cd-bar{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:10px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.3)}
-.cd-fill{height:100%;background:linear-gradient(90deg,var(--green-dark),var(--green-light),#a8f0c6);border-radius:10px;transition:width 1s linear;box-shadow:0 0 8px rgba(46,204,113,.4)}
-.cd-timer{font-size:13px;font-weight:700;color:var(--green-light);background:rgba(0,0,0,.32);padding:3px 10px;border-radius:20px;backdrop-filter:blur(6px);flex-shrink:0;font-variant-numeric:tabular-nums}
+/* ── COUNTDOWN BAR ── */
+.cd-wrap{display:flex;align-items:center;gap:8px;padding:4px 14px;flex-shrink:0}
+.cd-tag{
+  font-size:10px;font-weight:700;color:rgba(255,255,255,.6);
+  background:rgba(0,0,0,.4);padding:3px 10px;border-radius:20px;
+  backdrop-filter:blur(6px);flex-shrink:0;letter-spacing:.5px;
+}
+.cd-bar{
+  flex:1;height:5px;
+  background:rgba(255,255,255,.07);
+  border-radius:10px;overflow:hidden;
+}
+.cd-fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--green-dark), var(--green-light), #a8f0c6);
+  border-radius:10px;
+  transition:width 1s linear;
+  box-shadow:0 0 10px rgba(46,204,113,.5);
+}
+.cd-timer{
+  font-size:12px;font-weight:800;color:var(--green-light);
+  background:rgba(0,0,0,.4);padding:3px 10px;border-radius:20px;
+  backdrop-filter:blur(6px);flex-shrink:0;font-variant-numeric:tabular-nums;
+  letter-spacing:.3px;
+}
 
-/* PRAYER LIST TOGGLE */
+/* ── PRAYER LIST TOGGLE ── */
 .plist-toggle{
   display:flex;align-items:center;justify-content:center;
-  padding:6px 12px;cursor:pointer;
-  background:rgba(46,204,113,.08);
-  border-top:1px solid rgba(46,204,113,.15);
-  border-bottom:1px solid rgba(46,204,113,.15);
-  gap:8px;
-  flex-shrink:0;
+  padding:7px 14px;cursor:pointer;
+  background:rgba(46,204,113,.06);
+  border-top:1px solid rgba(46,204,113,.1);
+  border-bottom:1px solid rgba(46,204,113,.1);
+  gap:7px;flex-shrink:0;transition:background .2s;
 }
-.plist-toggle-txt{font-size:13px;color:var(--green-light);font-family:'Cairo',sans-serif;font-weight:700}
-.plist-toggle-arrow{font-size:12px;color:var(--green-light);transition:transform .3s}
+.plist-toggle:active{background:rgba(46,204,113,.14)}
+.plist-toggle-txt{font-size:12px;color:rgba(46,204,113,.85);font-family:'Cairo',sans-serif;font-weight:700;letter-spacing:.3px}
+.plist-toggle-arrow{font-size:11px;color:rgba(46,204,113,.7);transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
 .plist-toggle-arrow.open{transform:rotate(180deg)}
-.plist-wrap{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 12px 2px;overflow:hidden;transition:max-height .4s ease;max-height:600px}
+
+/* ── PRAYER ROWS ── */
+.plist-wrap{
+  flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:5px 10px 3px;overflow:hidden;
+  transition:max-height .45s cubic-bezier(.4,0,.2,1);max-height:600px;
+}
 .plist-wrap.collapsed{max-height:0;padding:0}
-.prow{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 10px 14px;border-radius:40px;margin-bottom:5px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(6px);transition:all .2s}
-.prow.is-active{background:rgba(30,155,80,.92);border-color:var(--green-light);box-shadow:0 4px 20px rgba(46,204,113,.35)}
-.prow.is-passed{opacity:.45}
+
+.prow{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 16px 9px 12px;
+  border-radius:50px;margin-bottom:5px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.09);
+  backdrop-filter:blur(10px);
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+}
+.prow::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:rgba(255,255,255,.12);border-radius:0 2px 2px 0;
+  transition:background .3s;
+}
+.prow.is-active{
+  background:linear-gradient(135deg, rgba(26,148,86,.9), rgba(10,80,40,.95));
+  border-color:rgba(46,204,113,.5);
+  box-shadow:0 4px 24px rgba(46,204,113,.28), 0 0 0 1px rgba(46,204,113,.15);
+  animation:glowPulse 3s ease-in-out infinite;
+}
+.prow.is-active::before{background:rgba(255,255,255,.4)}
+.prow.is-passed{opacity:.35;filter:grayscale(.3)}
+
+/* نوێژی زیندوو */
 .prayer-live-dot{
   display:inline-flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,.2);
-  border:1px solid rgba(255,255,255,.4);
-  border-radius:20px;
-  padding:3px 8px 3px 6px;
-  font-family:'Cairo',sans-serif;
-  font-size:10px;
-  color:#fff;
-  font-weight:700;
-  letter-spacing:.5px;
-  flex-shrink:0;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:20px;padding:3px 9px 3px 7px;
+  font-family:'Cairo',sans-serif;font-size:10px;
+  color:#fff;font-weight:800;flex-shrink:0;
 }
 .prayer-live-dot::before{
-  content:'';
-  display:block;
-  width:7px;height:7px;
-  border-radius:50%;
-  background:#f1c40f;
-  box-shadow:0 0 0 0 rgba(241,196,15,1);
-  animation:prayerPulse 1.2s ease-out infinite;
+  content:'';display:block;width:7px;height:7px;border-radius:50%;
+  background:#f1c40f;animation:prayerPulse 1.2s ease-out infinite;
 }
 @keyframes prayerPulse{
   0%{box-shadow:0 0 0 0 rgba(241,196,15,.9)}
   70%{box-shadow:0 0 0 6px rgba(241,196,15,0)}
   100%{box-shadow:0 0 0 0 rgba(241,196,15,0)}
 }
-.prow-left{display:flex;align-items:center;gap:10px}
-.p-vol{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.p-name{font-family:'Amiri',serif;font-size:20px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4)}
-.p-time{font-size:26px;font-weight:900;color:#fff;letter-spacing:-.5px;text-shadow:0 1px 6px rgba(0,0,0,.35)}
 
-/* MUTE BUTTON */
-.mute-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-.mute-btn:active{transform:scale(.9)}
-.mute-btn.muted{background:rgba(255,0,0,.15);border-color:rgba(255,80,80,.3)}
-/* ANDROID WIDGET */
-.android-widget{
-  background:linear-gradient(160deg,rgba(30,40,35,.92) 0%,rgba(15,25,18,.95) 100%);
+.prow-left{display:flex;align-items:center;gap:10px}
+.p-vol{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,.1);
   border:1px solid rgba(255,255,255,.12);
-  border-radius:24px;
-  padding:18px 16px 14px;
-  backdrop-filter:blur(20px);
-  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+  transition:all .2s;
+}
+.prow.is-active .p-vol{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3)}
+.p-name{
+  font-family:'Amiri',serif;font-size:20px;font-weight:700;color:#fff;
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
+}
+.p-time{
+  font-size:25px;font-weight:900;color:#fff;
+  letter-spacing:-.5px;text-shadow:0 1px 8px rgba(0,0,0,.4);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ── MUTE BUTTON ── */
+.mute-btn{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);
+  color:#fff;font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .2s;
+}
+.mute-btn:active{transform:scale(.88)}
+.mute-btn.muted{background:rgba(231,76,60,.18);border-color:rgba(231,76,60,.4)}
+
+/* ── ANDROID WIDGET ── */
+.android-widget{
+  background:linear-gradient(145deg,rgba(10,30,18,.95) 0%,rgba(4,14,8,.98) 100%);
+  border:1px solid rgba(46,204,113,.18);
+  border-radius:var(--radius-xl);padding:18px 16px 14px;
+  backdrop-filter:blur(24px);
+  box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.07);
   direction:rtl;
 }
-/* سەرەوە */
 .aw-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .aw-next-label{font-size:16px;font-weight:700;color:#fff;font-family:'Cairo',sans-serif}
 .aw-right{display:flex;align-items:center;gap:8px}
 .aw-cur-prayer{font-size:16px;font-weight:700;color:var(--green-light);font-family:'Amiri',serif}
 .aw-refresh{font-size:18px;color:rgba(255,255,255,.4);cursor:pointer}
-/* ناوەڕاست */
 .aw-mid{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .aw-dates{}
 .aw-date-row{font-size:13px;font-weight:700;color:rgba(255,255,255,.85);line-height:1.7;font-family:'Cairo',sans-serif}
 .aw-big-num{font-size:72px;font-weight:900;color:#fff;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(46,204,113,.3)}
-/* خوارەوە */
 .aw-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
 .aw-prayers{display:flex;justify-content:space-between;align-items:flex-end;gap:4px}
 .aw-p{text-align:center;flex:1}
-.aw-p-name{font-size:11px;color:rgba(255,255,255,.55);margin-bottom:3px;font-family:'Cairo',sans-serif}
+.aw-p-name{font-size:11px;color:rgba(255,255,255,.5);margin-bottom:3px;font-family:'Cairo',sans-serif}
 .aw-p-time{font-size:13px;font-weight:700;color:rgba(255,255,255,.8);font-variant-numeric:tabular-nums;font-family:'Cairo',sans-serif}
 .aw-p.active .aw-p-name{color:var(--green-light)}
 .aw-p.active .aw-p-time{color:var(--green-light);font-size:15px}
-/* BOTTOM BAR */
-.bottom-bar{background:rgba(10,30,18,.95);border-top:1px solid rgba(46,204,113,.2);padding:8px 16px;text-align:center;flex-shrink:0}
-.bbar-txt{font-size:14px;font-weight:600;color:rgba(255,255,255,.8);letter-spacing:.5px}
-.bbar-txt span{color:var(--green-light);font-weight:800;font-size:15px}
 
-/* BOTTOM NAV */
+/* ── BOTTOM BAR ── */
+.bottom-bar{
+  background:rgba(2,10,5,.95);
+  border-top:1px solid rgba(46,204,113,.15);
+  padding:8px 16px;text-align:center;flex-shrink:0;
+  backdrop-filter:blur(20px);
+}
+.bbar-txt{font-size:13px;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.3px}
+.bbar-txt span{color:var(--green-light);font-weight:800;font-size:14px}
+
+/* ── BOTTOM NAV ── */
 .smitem{padding:14px 20px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:600;color:#fff;cursor:pointer;direction:rtl;transition:background .2s}
-.smitem:active{background:rgba(46,204,113,.15)}
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(8,22,13,.96);border-top:1px solid rgba(255,255,255,.08);padding:7px 0 18px;display:flex;justify-content:space-around;flex-shrink:0;z-index:300}
-.nbtn{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:5px 14px;border:none;background:none;color:rgba(255,255,255,.4);transition:all .2s}
-.nbtn.active{color:var(--green-light)}
-.nicon{font-size:21px}
-.nlabel{font-size:9px;font-weight:600;font-family:'Cairo',sans-serif}
+.smitem:active{background:rgba(46,204,113,.12)}
+.bnav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;
+  background:rgba(2,8,4,.97);
+  border-top:1px solid rgba(46,204,113,.12);
+  padding:8px 8px 20px;
+  display:flex;justify-content:space-around;
+  flex-shrink:0;z-index:300;
+  backdrop-filter:blur(24px);
+}
+.nbtn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;padding:6px 12px;border:none;background:none;
+  color:rgba(255,255,255,.3);transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  border-radius:14px;position:relative;
+}
+.nbtn.active{
+  color:var(--green-light);
+  background:rgba(46,204,113,.1);
+}
+.nbtn.active::before{
+  content:'';position:absolute;bottom:-8px;
+  width:18px;height:3px;background:var(--green-light);
+  border-radius:3px 3px 0 0;
+  box-shadow:0 0 8px rgba(46,204,113,.6);
+}
+.nbtn:active{transform:scale(.9)}
+.nicon{font-size:20px;transition:transform .25s}
+.nbtn.active .nicon{transform:translateY(-1px)}
+.nlabel{font-size:9px;font-weight:700;font-family:'Cairo',sans-serif;letter-spacing:.3px}
 
 /* PAGES */
 .pg{display:none;flex:1;overflow-y:auto;padding-bottom:100px;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;min-height:0}
@@ -235,17 +356,34 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .pg.active{display:flex;flex-direction:column}
 ::-webkit-scrollbar{width:0}
 
-/* CITY MODAL */
-.city-modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}
-.city-sheet{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:linear-gradient(180deg,#0c2418,#060f0a);border-radius:24px 24px 0 0;border-top:1px solid rgba(46,204,113,.2);padding:14px 12px 36px;max-height:82vh;overflow-y:auto}
-.sheet-handle{width:38px;height:4px;background:rgba(255,255,255,.18);border-radius:2px;margin:0 auto 12px}
-.sheet-title{font-family:'Amiri',serif;font-size:17px;color:var(--green-light);text-align:center;margin-bottom:12px}
+/* ── PAGES ── */
+.pg{display:none;flex:1;overflow-y:auto;padding-bottom:100px;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;min-height:0}
+.pg.fullscreen{position:fixed;top:0;left:0;width:100%;height:100dvh;z-index:300;background:linear-gradient(180deg,#020c07 0%,#010704 100%);display:flex;flex-direction:column;padding-bottom:100px;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0}
+.pg.active{display:flex;flex-direction:column}
+::-webkit-scrollbar{width:0}
+
+/* ── CITY MODAL ── */
+.city-modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.82);backdrop-filter:blur(12px)}
+.city-sheet{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;
+  background:linear-gradient(180deg,#081810,#030c06);
+  border-radius:28px 28px 0 0;
+  border-top:1px solid rgba(46,204,113,.2);
+  padding:14px 12px 36px;max-height:82vh;overflow-y:auto;
+}
+.sheet-handle{width:40px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 auto 14px}
+.sheet-title{font-family:'Amiri',serif;font-size:17px;color:var(--gold-light);text-align:center;margin-bottom:14px}
 .cities-grid{display:flex;flex-direction:column;gap:7px}
-.city-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;cursor:pointer;overflow:hidden;transition:all .25s}
-.city-card.sel{background:rgba(27,138,78,.22);border-color:rgba(46,204,113,.4)}
+.city-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius-md);cursor:pointer;overflow:hidden;transition:all .25s;
+}
+.city-card.sel{background:rgba(26,148,86,.18);border-color:rgba(46,204,113,.35);box-shadow:0 0 16px rgba(46,204,113,.1)}
 .city-card-header{display:flex;align-items:center;justify-content:space-between;padding:11px 14px}
 .city-card-left{display:flex;align-items:center;gap:10px}
-.city-check{width:19px;height:19px;border-radius:50%;border:1.5px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all .3s}
+.city-check{width:19px;height:19px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all .3s}
 .city-card.sel .city-check{background:var(--green);border-color:var(--green-light);color:#fff}
 .ccname{font-family:'Amiri',serif;font-size:17px;color:#fff;font-weight:700}
 .ccdist{font-size:10px;color:var(--green-light);margin-top:1px}
@@ -254,62 +392,87 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .city-times-panel{max-height:0;overflow:hidden;transition:max-height .35s ease}
 .city-card.sel .city-times-panel{max-height:150px}
 .city-times-inner{padding:0 10px 10px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
-.ct-item{background:rgba(0,0,0,.25);border-radius:9px;padding:6px 3px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+.ct-item{background:rgba(0,0,0,.3);border-radius:9px;padding:6px 3px;text-align:center;border:1px solid rgba(255,255,255,.06)}
 .ct-lbl{font-size:9px;color:var(--white-faint);margin-bottom:2px}
 .ct-val{font-size:12px;font-weight:700;color:#fff}
-.ct-item.nx{border-color:rgba(46,204,113,.4);background:rgba(27,138,78,.2)}
+.ct-item.nx{border-color:rgba(46,204,113,.35);background:rgba(26,148,86,.2)}
 .ct-item.nx .ct-val{color:var(--green-light)}
 
-/* SETTINGS */
+/* ── SETTINGS ── */
 .spage{padding:14px}
-.sec-lbl{font-size:10px;color:var(--white-faint);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;font-weight:300}
-.srow{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.sec-lbl{font-size:10px;color:var(--white-faint);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;font-weight:700}
+.srow{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius-md);
+  padding:13px 15px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:7px;transition:background .2s;
+}
+.srow:active{background:rgba(255,255,255,.1)}
 .sinfo{display:flex;align-items:center;gap:10px}
 .sico{font-size:17px;width:28px;text-align:center}
-.slbl{font-size:13px;font-weight:600;color:#fff}
+.slbl{font-size:13px;font-weight:700;color:#fff}
 .sdesc{font-size:10px;color:var(--white-faint);margin-top:1px}
-.toggle{width:42px;height:24px;background:rgba(255,255,255,.1);border-radius:12px;position:relative;cursor:pointer;transition:background .3s;border:1px solid rgba(255,255,255,.1);flex-shrink:0}
-.toggle.on{background:linear-gradient(135deg,var(--green-dark),var(--green));border-color:var(--green-light)}
-.toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 5px rgba(0,0,0,.3)}
-.toggle.on::after{transform:translateX(18px)}
+.toggle{width:44px;height:25px;background:rgba(255,255,255,.1);border-radius:13px;position:relative;cursor:pointer;transition:background .3s;border:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.toggle.on{background:linear-gradient(135deg,var(--green-dark),var(--green));border-color:var(--green-light);box-shadow:0 0 10px rgba(46,204,113,.3)}
+.toggle::after{content:'';position:absolute;width:19px;height:19px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.toggle.on::after{transform:translateX(19px)}
 
-/* CALENDAR */
-.ccal{margin:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:14px}
+/* ── CALENDAR ── */
+.ccal{
+  margin:12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--radius-lg);padding:14px;
+  backdrop-filter:blur(10px);
+}
 .calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.calmonth{font-family:'Amiri',serif;font-size:15px;color:var(--green-light)}
+.calmonth{font-family:'Amiri',serif;font-size:16px;color:var(--gold-light);font-weight:700}
 .calnavs{display:flex;gap:7px}
-.calnav{width:27px;height:27px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.calnav{
+  width:28px;height:28px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;transition:all .2s;
+}
+.calnav:active{background:rgba(255,255,255,.18)}
 .dlbls,.dgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.dlbl{text-align:center;font-size:10px;color:var(--white-faint);padding:3px 0}
-.dcell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;padding:2px 0}
-.dcell-mil{font-size:12px;font-weight:700;color:var(--white-faint)}
-.dcell-hij{font-size:8px;color:rgba(46,204,113,.8)}
-.dcell-kur{font-size:8px;color:rgba(255,200,80,.7)}
+.dlbl{text-align:center;font-size:10px;color:var(--white-faint);padding:3px 0;font-weight:700}
+.dcell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:9px;cursor:pointer;padding:2px 0;transition:background .2s}
+.dcell:active{background:rgba(255,255,255,.12)}
+.dcell-mil{font-size:12px;font-weight:700;color:rgba(255,255,255,.5)}
+.dcell-hij{font-size:7.5px;color:rgba(46,204,113,.75)}
+.dcell-kur{font-size:7.5px;color:rgba(201,168,76,.7)}
 .dcell.today .dcell-mil{color:#fff}
-.dcell.today .dcell-hij,.dcell.today .dcell-kur{color:rgba(255,255,255,.85)}
-.dcell.today{background:linear-gradient(135deg,var(--green-dark),var(--green));font-weight:700}
+.dcell.today .dcell-hij,.dcell.today .dcell-kur{color:rgba(255,255,255,.8)}
+.dcell.today{background:linear-gradient(135deg,var(--green-dark),var(--green));box-shadow:0 2px 10px rgba(46,204,113,.3)}
 .dcell.fri .dcell-mil{color:var(--green-light)}
-.ramcard{margin:0 12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:13px}
+.ramcard{
+  margin:0 12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--radius-md);padding:13px;
+}
 .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.ritem{text-align:center;padding:9px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07)}
-.rlbl{font-size:11px;color:var(--white-faint);margin-bottom:2px}
+.ritem{text-align:center;padding:10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.rlbl{font-size:11px;color:var(--white-faint);margin-bottom:3px}
 .rval{font-family:'Amiri',serif;font-size:19px;color:var(--green-light)}
 
-/* QIBLA COMPASS */
+/* ── QIBLA ── */
 .qwrap{padding:14px;text-align:center}
-.compass-wrap{
-  width:220px;height:220px;margin:0 auto;
-  position:relative;display:flex;align-items:center;justify-content:center;
-}
+.compass-wrap{width:220px;height:220px;margin:0 auto;position:relative;display:flex;align-items:center;justify-content:center}
 .compass-ring{
   position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,255,.06) 0%,rgba(0,0,0,.3) 100%);
-  border:2px solid rgba(46,204,113,.35);
-  box-shadow:0 0 30px rgba(46,204,113,.1),inset 0 0 20px rgba(0,0,0,.4);
+  background:radial-gradient(circle,rgba(255,255,255,.05) 0%,rgba(0,0,0,.3) 100%);
+  border:2px solid rgba(46,204,113,.3);
+  box-shadow:0 0 30px rgba(46,204,113,.08),inset 0 0 20px rgba(0,0,0,.4);
   transition:transform .1s linear;
 }
 .cdir{position:absolute;font-size:13px;font-weight:700;color:var(--green-light)}
-.ctick{position:absolute;width:2px;background:rgba(255,255,255,.2);left:50%;transform-origin:bottom center}
+.ctick{position:absolute;width:2px;background:rgba(255,255,255,.18);left:50%;transform-origin:bottom center}
 .ctick.n{height:14px;top:4px;transform:translateX(-50%)}
 .ctick.ne{height:8px;top:18px;right:18px;transform:rotate(45deg)}
 .ctick.e{height:14px;right:4px;top:50%;transform:translateY(-50%) rotate(90deg)}
@@ -320,60 +483,35 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 .ctick.nw{height:8px;top:18px;left:18px;transform:rotate(-45deg)}
 
 .qibla-needle-wrap{
-  position:absolute;
-  width:6px;height:180px;
-  left:50%;top:50%;
-  transform:translateX(-50%) translateY(-50%);
+  position:absolute;width:6px;height:180px;
+  left:50%;top:50%;transform:translateX(-50%) translateY(-50%);
   transform-origin:center center;
   display:flex;flex-direction:column;align-items:center;
-  transition:transform .3s ease;
-  z-index:10;
+  transition:transform .3s ease;z-index:10;
 }
 .qn-top{font-size:22px;line-height:1;filter:drop-shadow(0 0 8px rgba(201,168,76,.8))}
 .qn-line{flex:1;width:3px;background:linear-gradient(180deg,#c9a84c,rgba(201,168,76,.2));border-radius:2px;margin:2px 0;box-shadow:0 0 6px rgba(201,168,76,.4)}
 .qn-bottom{width:8px;height:8px;border-radius:50%;background:rgba(201,168,76,.3);border:1px solid rgba(201,168,76,.5)}
-.compass-center{
-  position:absolute;width:14px;height:14px;border-radius:50%;
-  background:var(--green-light);z-index:20;
-  box-shadow:0 0 12px var(--green-light);
-}
-.qinfo-box{margin:8px 12px 0;background:rgba(255,255,255,.07);border-radius:13px;padding:13px;display:flex;flex-direction:column;gap:8px}
+.compass-center{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--green-light);z-index:20;box-shadow:0 0 12px var(--green-light)}
+.qinfo-box{margin:8px 12px 0;background:rgba(255,255,255,.06);border-radius:var(--radius-md);padding:13px;display:flex;flex-direction:column;gap:8px}
 .qrow{display:flex;justify-content:space-between;font-size:13px}
 .qrow-lbl{color:var(--white-faint)}
 .qrow-val{color:var(--green-light);font-weight:700}
 
 /* قیبلەنمای نوێ */
 .nq-compass{
-  position:relative;
-  width:min(75vw, 320px);height:min(75vw, 320px);
-  border-radius:50%;
-  background:radial-gradient(circle, #5a2d4a 0%, #3d1f35 50%, #2a1525 100%);
-  box-shadow:0 8px 32px rgba(0,0,0,.5), inset 0 0 40px rgba(0,0,0,.3);
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
+  position:relative;width:min(75vw,320px);height:min(75vw,320px);border-radius:50%;
+  background:radial-gradient(circle,#0e2d18 0%,#071508 50%,#030b04 100%);
+  box-shadow:0 8px 40px rgba(0,0,0,.6),inset 0 0 40px rgba(0,0,0,.4),0 0 0 2px rgba(46,204,113,.15);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.nq-ring{
-  position:absolute;
-  width:100%;height:100%;
-  border-radius:50%;
-  border:2px solid rgba(255,255,255,.1);
-  transition:transform .1s linear;
-}
-.nq-dir{
-  position:absolute;
-  font-size:13px;font-weight:700;
-  color:rgba(255,255,255,.5);
-}
+.nq-ring{position:absolute;width:100%;height:100%;border-radius:50%;border:1px solid rgba(46,204,113,.15);transition:transform .1s linear}
+.nq-dir{position:absolute;font-size:13px;font-weight:700;color:rgba(255,255,255,.45)}
 .nq-kaaba-wrap{
-  position:absolute;
-  width:4px;
-  height:120px;
-  top:10px;left:50%;
-  transform:translateX(-50%);
-  transform-origin:bottom center;
+  position:absolute;width:4px;height:120px;top:10px;left:50%;
+  transform:translateX(-50%);transform-origin:bottom center;
   display:flex;flex-direction:column;align-items:center;
-  transition:transform .3s ease;
-  z-index:10;
+  transition:transform .3s ease;z-index:10;
 }
 .nq-kaaba{font-size:28px;line-height:1}
 .nq-needle-line{
@@ -409,170 +547,137 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
   transform:translate(-50%,-50%);
   box-shadow:0 0 8px rgba(126,200,240,.6);
 }
-/* WIDGET HEADER */
+/* ── WIDGET HEADER ── */
 .widget-hdr{
-  background:linear-gradient(180deg,rgba(10,35,18,.97) 0%,rgba(5,20,10,.95) 100%);
-  border-bottom:1px solid rgba(46,204,113,.15);
+  background:linear-gradient(180deg,rgba(2,14,8,.98) 0%,rgba(1,8,4,.96) 100%);
+  border-bottom:1px solid rgba(46,204,113,.1);
   padding:10px 14px 8px;
   flex-shrink:0;
+  backdrop-filter:blur(20px);
 }
-.wh-top{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:6px;
-}
+.wh-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .wh-label{display:flex;align-items:center;gap:6px}
-.wh-refresh{
-  font-size:16px;color:var(--green-light);cursor:pointer;
-  font-style:normal;
-}
-.wh-next-name{
-  font-size:16px;font-weight:700;color:var(--green-light);
-}
-.wh-next-info{
-  font-size:13px;color:rgba(255,255,255,.6);direction:rtl;
-}
-.wh-mid{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:10px;
-}
+.wh-refresh{font-size:16px;color:var(--green-light);cursor:pointer;font-style:normal;transition:transform .3s}
+.wh-refresh:active{transform:rotate(180deg)}
+.wh-next-name{font-size:16px;font-weight:700;color:var(--green-light)}
+.wh-next-info{font-size:13px;color:rgba(255,255,255,.55);direction:rtl}
+.wh-mid{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .wh-clock{
   font-size:56px;font-weight:900;color:#fff;
-  font-variant-numeric:tabular-nums;
-  letter-spacing:2px;
-  text-shadow:0 0 30px rgba(46,204,113,.2);
+  font-variant-numeric:tabular-nums;letter-spacing:2px;
+  text-shadow:0 0 30px rgba(46,204,113,.25),0 2px 8px rgba(0,0,0,.5);
   line-height:1;
 }
-.wh-dates{
-  text-align:right;display:flex;flex-direction:column;gap:3px;
-}
+.wh-dates{text-align:right;display:flex;flex-direction:column;gap:3px}
 .wh-prayers{
   display:flex;justify-content:space-between;
-  border-top:1px solid rgba(255,255,255,.08);
+  border-top:1px solid rgba(255,255,255,.07);
   padding-top:8px;
 }
-.wh-p{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  flex:1;
-}
-.wh-p-name{font-size:12px;color:rgba(255,255,255,.5)}
-.wh-p-time{font-size:16px;font-weight:700;color:rgba(255,255,255,.85);font-variant-numeric:tabular-nums}
+.wh-p{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.wh-p-name{font-size:11px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif}
+.wh-p-time{font-size:15px;font-weight:700;color:rgba(255,255,255,.8);font-variant-numeric:tabular-nums}
 .wh-p.active .wh-p-name{color:var(--green-light)}
-.wh-p.active .wh-p-time{color:var(--green-light);font-size:18px}
+.wh-p.active .wh-p-time{color:var(--green-light);font-size:17px;text-shadow:0 0 10px rgba(46,204,113,.4)}
 
-/* قورئان پەڕە */
+/* ── قورئان پەڕە ── */
 .quran-page-wrap{display:flex;flex-direction:column;height:100%}
-.quran-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(0,0,0,.3);border-bottom:1px solid rgba(46,204,113,.2);flex-shrink:0}
-.quran-hdr-title{font-size:17px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif}
-.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.quran-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;
+  background:rgba(0,0,0,.4);
+  border-bottom:1px solid rgba(46,204,113,.15);
+  flex-shrink:0;backdrop-filter:blur(14px);
+}
+.quran-hdr-title{font-size:16px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif}
+.back-btn{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);
+  color:#fff;font-size:17px;width:36px;height:36px;
+  border-radius:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.back-btn:active{background:rgba(255,255,255,.2)}
 .quran-flow{
   font-family:'Scheherazade New','Amiri Quran','Amiri',serif;
-  font-size:26px;
-  line-height:2.4;
-  color:#2c1810;
-  text-align:center;
-  direction:rtl;
+  font-size:26px;line-height:2.4;color:#2c1810;
+  text-align:center;direction:rtl;
   background:linear-gradient(135deg,#fdf8ee,#f5edcf);
-  border-radius:16px;
-  padding:20px 16px;
+  border-radius:16px;padding:20px 16px;
   border:1px solid rgba(180,140,60,.3);
   box-shadow:inset 0 0 30px rgba(180,140,60,.08);
 }
-.ayah-line{
-  display:block;
-  padding:8px 6px;
-  border-bottom:1px solid rgba(180,140,60,.15);
-  text-align:center;
-  border-radius:10px;
-  transition:background .3s, box-shadow .3s;
-}
-.ayah-line:last-child{ border-bottom:none; }
-.ayah-line.ayah-active{
-  background:rgba(46,204,113,.15);
-  box-shadow:0 0 0 2px rgba(46,204,113,.4);
-  border-bottom:1px solid transparent;
-}
-.ayah-num-circle{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:32px;height:32px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#c9a84c,#8B6914);
-  color:#fff;
-  font-size:14px;
-  font-family:'Scheherazade New',serif;
-  margin-right:4px;
-  vertical-align:middle;
-  box-shadow:0 2px 6px rgba(139,105,20,.3);
-}
-.bismillah{
-  font-family:'Scheherazade New','Amiri Quran','Amiri',serif;
-  font-size:28px;
-  color:#6B4C11;
-  text-align:center;
-  direction:rtl;
-  margin-bottom:16px;
-  padding:14px;
-  background:linear-gradient(135deg,#fdf8ee,#f0e6c0);
-  border-radius:12px;
-  border:1px solid rgba(180,140,60,.25);
-}
-.sura-text-wrap{
-  font-family:'Scheherazade New','Amiri Quran','Amiri',serif;
-  direction:rtl;
-}
+.ayah-line{display:block;padding:8px 6px;border-bottom:1px solid rgba(180,140,60,.15);text-align:center;border-radius:10px;transition:background .3s,box-shadow .3s}
+.ayah-line:last-child{border-bottom:none}
+.ayah-line.ayah-active{background:rgba(46,204,113,.15);box-shadow:0 0 0 2px rgba(46,204,113,.4);border-bottom:1px solid transparent}
+.ayah-num-circle{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#8B6914);color:#fff;font-size:14px;font-family:'Scheherazade New',serif;margin-right:4px;vertical-align:middle;box-shadow:0 2px 6px rgba(139,105,20,.3)}
+.bismillah{font-family:'Scheherazade New','Amiri Quran','Amiri',serif;font-size:28px;color:#6B4C11;text-align:center;direction:rtl;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,#fdf8ee,#f0e6c0);border-radius:12px;border:1px solid rgba(180,140,60,.25)}
+.sura-text-wrap{font-family:'Scheherazade New','Amiri Quran','Amiri',serif;direction:rtl}
 
-/* قورئان کارد */
+/* ── قورئان کارد ── */
 .quran-card{
   display:flex;align-items:center;gap:12px;
-  background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.15);
-  border-radius:14px;padding:14px;cursor:pointer;transition:all .2s;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(46,204,113,.12);
+  border-radius:var(--radius-md);padding:13px;cursor:pointer;transition:all .2s;
 }
-.quran-card:active{background:rgba(46,204,113,.15);}
+.quran-card:active{background:rgba(46,204,113,.14)}
 .quran-num{font-size:13px;font-weight:700;color:var(--green-light);width:36px;text-align:center;font-family:'Amiri',serif}
 .quran-info{flex:1}
 .quran-name{font-size:15px;font-weight:700;color:#fff;font-family:'Amiri',serif}
-.quran-sub{font-size:11px;color:rgba(255,255,255,.45)}
-.quran-arrow{color:rgba(255,255,255,.3);font-size:14px}
+.quran-sub{font-size:11px;color:rgba(255,255,255,.4)}
+.quran-arrow{color:rgba(255,255,255,.25);font-size:14px}
 
-/* زیکر کارد */
-.zikr-card{
-  background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.15);
-  border-radius:14px;padding:16px;
-}
+/* ── زیکر کارد ── */
+.zikr-card{background:rgba(255,255,255,.05);border:1px solid rgba(46,204,113,.12);border-radius:var(--radius-md);padding:16px}
 .zikr-arabic{font-family:'Amiri',serif;font-size:20px;color:#fff;text-align:right;direction:rtl;line-height:1.8;margin-bottom:8px}
-.zikr-kurdish{font-size:12px;color:rgba(255,255,255,.55);text-align:right;direction:rtl;margin-bottom:8px}
+.zikr-kurdish{font-size:12px;color:rgba(255,255,255,.5);text-align:right;direction:rtl;margin-bottom:8px}
 .zikr-count{font-size:11px;color:var(--green-light);font-weight:700}
-.hisn-item{background:rgba(255,255,255,.06);border:1px solid rgba(46,204,113,.12);border-radius:14px;padding:16px;direction:rtl}
+.hisn-item{background:rgba(255,255,255,.05);border:1px solid rgba(46,204,113,.1);border-radius:var(--radius-md);padding:16px;direction:rtl}
 .hisn-ar{font-family:'Amiri Quran','Amiri',serif;font-size:20px;color:#f5f0e8;line-height:2;margin-bottom:8px;text-align:justify}
-.hisn-ku{font-size:12px;color:rgba(255,255,255,.55);line-height:1.8;margin-bottom:6px}
+.hisn-ku{font-size:12px;color:rgba(255,255,255,.5);line-height:1.8;margin-bottom:6px}
 .hisn-count{font-size:11px;color:var(--green-light);font-weight:700}
 
-/* قورئان و زیکر */
-.qz-grid{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:10px;padding:10px 12px 16px;
-}
+/* ── QZ GRID — کارتە ناوازەکان ── */
+.qz-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:10px 10px 16px}
 .qz-card{
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(46,204,113,.2);
-  border-radius:18px;
+  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
   padding:18px 12px;
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  cursor:pointer;
-  transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);
   text-align:center;
 }
-.qz-card:active{transform:scale(.97);background:rgba(46,204,113,.15);}
-.qz-icon{font-size:34px;line-height:1}
-.qz-title{font-size:15px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif}
-.qz-sub{font-size:11px;color:rgba(255,255,255,.45);font-family:'Cairo',sans-serif}
-
-/* TOAST */
-.toast{position:fixed;top:-110px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--green-dark),var(--green));border:1px solid rgba(46,204,113,.4);border-radius:16px;padding:11px 18px;display:flex;align-items:center;gap:10px;z-index:400;transition:top .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 24px rgba(27,138,78,.5);min-width:230px}
+.qz-card::before{
+  content:'';position:absolute;
+  top:-30%;left:-30%;width:80%;height:80%;
+  background:radial-gradient(circle, rgba(46,204,113,.08) 0%, transparent 70%);
+  transition:opacity .3s;opacity:0;
+}
+.qz-card:active{
+  transform:scale(.95);
+  background:rgba(46,204,113,.12);
+  border-color:rgba(46,204,113,.25);
+}
+.qz-card:active::before{opacity:1}
+.qz-icon{font-size:32px;line-height:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
+.qz-title{font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif;line-height:1.3}
+.qz-sub{font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif}
+/* ── TOAST ── */
+.toast{
+  position:fixed;top:-110px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,rgba(10,60,30,.98),rgba(5,35,18,.98));
+  border:1px solid rgba(46,204,113,.35);
+  border-radius:20px;padding:11px 20px;
+  display:flex;align-items:center;gap:10px;z-index:400;
+  transition:top .5s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 0 1px rgba(46,204,113,.1);
+  min-width:230px;backdrop-filter:blur(20px);
+}
 .toast.show{top:58px}
 .ticon{font-size:20px}
-.ttext{font-family:'Amiri',serif;font-size:14px;color:#fff}
+.ttext{font-family:'Amiri',serif;font-size:14px;color:#fff;font-weight:700}
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.7/hls.min.js"></script>
 </head>
@@ -580,121 +685,154 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
 
 <div class="bg-mosque"></div>
 
-<!-- SVG Mosque Background -->
+<!-- SVG Mosque Background — نوێ و جوانتر -->
 <svg style="position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none" viewBox="0 0 430 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-  <!-- Sky gradient -->
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#000000" stop-opacity="1"/>
-      <stop offset="40%" stop-color="#000000" stop-opacity="0.5"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.85"/>
+      <stop offset="35%" stop-color="#000000" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.9"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="52%" r="45%">
-      <stop offset="0%" stop-color="#0a3018" stop-opacity="0.8"/>
-      <stop offset="60%" stop-color="#020e06" stop-opacity="0.5"/>
+    <radialGradient id="glow" cx="50%" cy="55%" r="48%">
+      <stop offset="0%" stop-color="#0c3d1e" stop-opacity="0.75"/>
+      <stop offset="55%" stop-color="#041206" stop-opacity="0.4"/>
       <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="domeGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1a5530"/>
-      <stop offset="50%" stop-color="#0d3d1e"/>
-      <stop offset="100%" stop-color="#061508"/>
+      <stop offset="0%" stop-color="#1d6635"/>
+      <stop offset="50%" stop-color="#0d4020"/>
+      <stop offset="100%" stop-color="#051508"/>
     </linearGradient>
     <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0a2e14"/>
+      <stop offset="0%" stop-color="#0b2e16"/>
       <stop offset="100%" stop-color="#020a04"/>
     </linearGradient>
+    <linearGradient id="minGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0a3018"/>
+      <stop offset="50%" stop-color="#145a28"/>
+      <stop offset="100%" stop-color="#0a3018"/>
+    </linearGradient>
+    <filter id="gf"><feGaussianBlur stdDeviation="2.5"/></filter>
+    <filter id="gf2"><feGaussianBlur stdDeviation="1.5"/></filter>
   </defs>
 
-  <!-- Background glow -->
+  <!-- Atmospheric glow -->
   <rect width="430" height="900" fill="url(#glow)"/>
+  <!-- Horizon glow -->
+  <ellipse cx="215" cy="540" rx="200" ry="80" fill="rgba(20,80,35,.18)" filter="url(#gf)"/>
 
-  <!-- Stars -->
-  <circle cx="60" cy="80" r="1.2" fill="white" opacity=".6"/>
-  <circle cx="120" cy="50" r="1" fill="white" opacity=".5"/>
-  <circle cx="200" cy="30" r="1.5" fill="white" opacity=".7"/>
-  <circle cx="310" cy="60" r="1" fill="white" opacity=".5"/>
-  <circle cx="380" cy="90" r="1.2" fill="white" opacity=".6"/>
-  <circle cx="40" cy="140" r="1" fill="white" opacity=".4"/>
-  <circle cx="390" cy="130" r="1.3" fill="white" opacity=".5"/>
-  <circle cx="260" cy="45" r="1" fill="white" opacity=".6"/>
-  <circle cx="160" cy="110" r="0.8" fill="white" opacity=".4"/>
+  <!-- Stars — زیاتر و جوانتر -->
+  <circle cx="28" cy="45" r="1.2" fill="white" opacity=".7"/>
+  <circle cx="58" cy="78" r="0.9" fill="white" opacity=".5"/>
+  <circle cx="90" cy="32" r="1.5" fill="white" opacity=".75"/>
+  <circle cx="130" cy="55" r="0.8" fill="white" opacity=".5"/>
+  <circle cx="168" cy="22" r="1.2" fill="white" opacity=".65"/>
+  <circle cx="205" cy="38" r="1" fill="white" opacity=".6"/>
+  <circle cx="248" cy="18" r="1.4" fill="white" opacity=".7"/>
+  <circle cx="290" cy="48" r="0.9" fill="white" opacity=".5"/>
+  <circle cx="328" cy="28" r="1.1" fill="white" opacity=".6"/>
+  <circle cx="370" cy="60" r="1.3" fill="white" opacity=".55"/>
+  <circle cx="405" cy="38" r="0.8" fill="white" opacity=".45"/>
+  <circle cx="45" cy="130" r="0.7" fill="white" opacity=".4"/>
+  <circle cx="395" cy="110" r="0.9" fill="white" opacity=".4"/>
+  <circle cx="155" cy="95" r="0.7" fill="white" opacity=".38"/>
+  <circle cx="330" cy="100" r="0.8" fill="white" opacity=".42"/>
+  <!-- ستێرەی زەرد — نیشانی سعادەت -->
+  <circle cx="215" cy="28" r="1.8" fill="#E8C96A" opacity=".85"/>
+  <circle cx="72" cy="58" r="1.3" fill="#E8C96A" opacity=".5"/>
+  <circle cx="360" cy="42" r="1.2" fill="#E8C96A" opacity=".5"/>
 
-  <!-- Crescent moon top right -->
-  <g transform="translate(360,55)">
-    <path d="M18 2 Q28 12 18 22 Q10 24 4 18 Q12 18 16 12 Q20 6 18 2Z" fill="#c9a84c" opacity=".85"/>
-    <circle cx="21" cy="4" r="2.5" fill="#c9a84c" opacity=".6"/>
+  <!-- Crescent moon — مانگی جوانتر -->
+  <g transform="translate(356,44)" opacity=".9">
+    <path d="M20 2 Q32 14 20 26 Q10 28 3 20 Q13 20 18 14 Q23 8 20 2Z" fill="#C9A84C"/>
+    <circle cx="24" cy="4" r="3" fill="#C9A84C" opacity=".55"/>
+    <circle cx="21" cy="14" r="8" fill="none" stroke="#C9A84C" stroke-width=".5" opacity=".25"/>
   </g>
 
-  <!-- Far background minarets (left) -->
-  <rect x="30" y="320" width="18" height="200" fill="#0d3d1e" opacity=".6" rx="2"/>
-  <ellipse cx="39" cy="320" rx="11" ry="18" fill="#0d3d1e" opacity=".6"/>
-  <rect x="36" y="296" width="6" height="26" fill="#0a3018" opacity=".6"/>
-  <polygon points="39,282 43,296 35,296" fill="#c9a84c" opacity=".4"/>
+  <!-- بەرزترین مانارەکانی دووری — چەپ -->
+  <rect x="18" y="350" width="14" height="190" fill="#0a2e14" opacity=".55" rx="2"/>
+  <ellipse cx="25" cy="350" rx="9" ry="14" fill="#0a2e14" opacity=".55"/>
+  <rect x="22" y="333" width="5" height="20" fill="#071f0c" opacity=".6"/>
+  <polygon points="25,320 29,333 21,333" fill="#C9A84C" opacity=".45"/>
 
-  <!-- Far background minarets (right) -->
-  <rect x="382" y="310" width="18" height="210" fill="#0d3d1e" opacity=".6" rx="2"/>
-  <ellipse cx="391" cy="310" rx="11" ry="18" fill="#0d3d1e" opacity=".6"/>
-  <rect x="388" y="286" width="6" height="26" fill="#0a3018" opacity=".6"/>
-  <polygon points="391,272 395,286 387,286" fill="#c9a84c" opacity=".4"/>
+  <!-- بەرزترین مانارەکانی دووری — ڕاست -->
+  <rect x="398" y="340" width="14" height="200" fill="#0a2e14" opacity=".55" rx="2"/>
+  <ellipse cx="405" cy="340" rx="9" ry="14" fill="#0a2e14" opacity=".55"/>
+  <rect x="402" y="323" width="5" height="20" fill="#071f0c" opacity=".6"/>
+  <polygon points="405,310 409,323 401,323" fill="#C9A84C" opacity=".45"/>
 
-  <!-- Main building walls -->
-  <rect x="60" y="480" width="310" height="420" fill="url(#wallGrad)" opacity=".75" rx="4"/>
+  <!-- دیواری سەرەکی -->
+  <rect x="55" y="490" width="320" height="410" fill="url(#wallGrad)" opacity=".8" rx="3"/>
 
-  <!-- Side minarets (main) -->
-  <!-- Left minaret -->
-  <rect x="72" y="280" width="32" height="300" fill="#124d28" opacity=".85" rx="3"/>
-  <ellipse cx="88" cy="280" rx="20" ry="28" fill="#124d28" opacity=".85"/>
-  <rect x="84" y="246" width="8" height="36" fill="#0e3d20" opacity=".85"/>
-  <polygon points="88,228 94,246 82,246" fill="#2ECC71" opacity=".7"/>
-  <ellipse cx="88" cy="274" rx="22" ry="8" fill="#1a6b35" opacity=".5"/>
-  <!-- Balcony details left -->
-  <rect x="77" y="340" width="22" height="5" fill="#0a3018" rx="2" opacity=".7"/>
-  <rect x="77" y="390" width="22" height="5" fill="#0a3018" rx="2" opacity=".7"/>
+  <!-- دەروازەی سەرەکی — جوانتر -->
+  <rect x="180" y="575" width="70" height="90" fill="#030c05" rx="35" opacity=".9"/>
+  <rect x="183" y="578" width="64" height="85" fill="#040e07" rx="32" opacity=".6"/>
+  <!-- تەزیینی دەروازە -->
+  <rect x="178" y="574" width="74" height="4" fill="#C9A84C" opacity=".25" rx="2"/>
 
-  <!-- Right minaret -->
-  <rect x="326" y="280" width="32" height="300" fill="#124d28" opacity=".85" rx="3"/>
-  <ellipse cx="342" cy="280" rx="20" ry="28" fill="#124d28" opacity=".85"/>
-  <rect x="338" y="246" width="8" height="36" fill="#0e3d20" opacity=".85"/>
-  <polygon points="342,228 348,246 336,246" fill="#2ECC71" opacity=".7"/>
-  <ellipse cx="342" cy="274" rx="22" ry="8" fill="#1a6b35" opacity=".5"/>
-  <!-- Balcony details right -->
-  <rect x="331" y="340" width="22" height="5" fill="#0a3018" rx="2" opacity=".7"/>
-  <rect x="331" y="390" width="22" height="5" fill="#0a3018" rx="2" opacity=".7"/>
+  <!-- پەنجەرەکانی دیوار -->
+  <rect x="90" y="518" width="22" height="32" fill="#020804" rx="11" opacity=".8"/>
+  <rect x="130" y="518" width="22" height="32" fill="#020804" rx="11" opacity=".8"/>
+  <rect x="170" y="515" width="26" height="38" fill="#020804" rx="13" opacity=".8"/>
+  <rect x="234" y="515" width="26" height="38" fill="#020804" rx="13" opacity=".8"/>
+  <rect x="278" y="518" width="22" height="32" fill="#020804" rx="11" opacity=".8"/>
+  <rect x="318" y="518" width="22" height="32" fill="#020804" rx="11" opacity=".8"/>
 
-  <!-- Main dome base -->
-  <rect x="145" y="440" width="140" height="60" fill="#1a6b35" opacity=".9" rx="4"/>
+  <!-- مانارەکانی لای -- ناوەکی چەپ -->
+  <rect x="68" y="290" width="30" height="310" fill="url(#minGrad)" opacity=".88" rx="4"/>
+  <ellipse cx="83" cy="290" rx="20" ry="28" fill="#145a28" opacity=".88"/>
+  <!-- بالکۆنی مانارە — چەپ -->
+  <rect x="64" y="310" width="38" height="6" fill="#0a3018" rx="3" opacity=".8"/>
+  <rect x="64" y="355" width="38" height="6" fill="#0a3018" rx="3" opacity=".7"/>
+  <rect x="64" y="400" width="38" height="6" fill="#0a3018" rx="3" opacity=".6"/>
+  <!-- نووکی مانارە چەپ -->
+  <rect x="80" y="254" width="7" height="40" fill="#0e3d20" opacity=".9"/>
+  <polygon points="83,238 89,254 77,254" fill="#2ECC71" opacity=".75"/>
+  <ellipse cx="83" cy="284" rx="22" ry="7" fill="#1a6b35" opacity=".5"/>
+  <!-- درخشانی سەرەوە -->
+  <circle cx="83" cy="238" r="3" fill="#2ECC71" opacity=".5" filter="url(#gf2)"/>
 
-  <!-- Main dome (green) -->
-  <ellipse cx="215" cy="420" rx="88" ry="76" fill="url(#domeGrad)" opacity=".92"/>
-  <ellipse cx="215" cy="420" rx="88" ry="76" fill="none" stroke="#2ECC71" stroke-width="1.5" opacity=".3"/>
-  <!-- Dome shine -->
-  <ellipse cx="195" cy="390" rx="30" ry="22" fill="white" opacity=".07"/>
-  <!-- Dome top spire -->
-  <rect x="212" y="336" width="6" height="40" fill="#1a5530" opacity=".9"/>
-  <!-- Crescent on dome -->
-  <g transform="translate(215,330)">
-    <path d="M0,-10 Q8,-4 0,10 Q-6,6 -4,0 Q-2,-6 0,-10Z" fill="#c9a84c" opacity=".9"/>
-    <circle cx="4" cy="-6" r="2" fill="#c9a84c" opacity=".6"/>
+  <!-- مانارەکانی لای -- ناوەکی ڕاست -->
+  <rect x="332" y="290" width="30" height="310" fill="url(#minGrad)" opacity=".88" rx="4"/>
+  <ellipse cx="347" cy="290" rx="20" ry="28" fill="#145a28" opacity=".88"/>
+  <rect x="328" y="310" width="38" height="6" fill="#0a3018" rx="3" opacity=".8"/>
+  <rect x="328" y="355" width="38" height="6" fill="#0a3018" rx="3" opacity=".7"/>
+  <rect x="328" y="400" width="38" height="6" fill="#0a3018" rx="3" opacity=".6"/>
+  <rect x="344" y="254" width="7" height="40" fill="#0e3d20" opacity=".9"/>
+  <polygon points="347,238 353,254 341,254" fill="#2ECC71" opacity=".75"/>
+  <ellipse cx="347" cy="284" rx="22" ry="7" fill="#1a6b35" opacity=".5"/>
+  <circle cx="347" cy="238" r="3" fill="#2ECC71" opacity=".5" filter="url(#gf2)"/>
+
+  <!-- بەرزیی ناوەڕاست بۆ گومبەزی گەورە -->
+  <rect x="138" y="452" width="154" height="55" fill="#1a6b35" opacity=".92" rx="4"/>
+
+  <!-- گومبەزی گەورە — پرۆفایلی کوردتر -->
+  <ellipse cx="215" cy="428" rx="90" ry="78" fill="url(#domeGrad)" opacity=".94"/>
+  <!-- چرکەی گومبەز -->
+  <ellipse cx="215" cy="428" rx="90" ry="78" fill="none" stroke="rgba(46,204,113,.2)" stroke-width="1.5"/>
+  <!-- درەوشەی گومبەز -->
+  <ellipse cx="195" cy="395" rx="28" ry="20" fill="white" opacity=".06"/>
+  <!-- ستونی گومبەز -->
+  <rect x="212" y="342" width="7" height="44" fill="#1a5530" opacity=".92"/>
+  <!-- مانگی سەر گومبەز -->
+  <g transform="translate(215,334)">
+    <path d="M0,-12 Q10,-5 0,12 Q-7,8 -5,0 Q-3,-8 0,-12Z" fill="#C9A84C" opacity=".92"/>
+    <circle cx="5" cy="-7" r="2.5" fill="#C9A84C" opacity=".65"/>
   </g>
+  <!-- درخشانی مانگ -->
+  <circle cx="215" cy="326" r="5" fill="#C9A84C" opacity=".2" filter="url(#gf2)"/>
 
-  <!-- Smaller front domes -->
-  <ellipse cx="140" cy="468" rx="40" ry="32" fill="#155c28" opacity=".8"/>
-  <ellipse cx="290" cy="468" rx="40" ry="32" fill="#155c28" opacity=".8"/>
-  <rect x="100" y="468" width="80" height="40" fill="#124d22" opacity=".8"/>
-  <rect x="250" y="468" width="80" height="40" fill="#124d22" opacity=".8"/>
+  <!-- گومبەزە بچووکەکان -->
+  <ellipse cx="138" cy="472" rx="38" ry="30" fill="#145824" opacity=".85"/>
+  <ellipse cx="292" cy="472" rx="38" ry="30" fill="#145824" opacity=".85"/>
+  <rect x="100" y="472" width="76" height="38" fill="#103d1b" opacity=".85"/>
+  <rect x="254" y="472" width="76" height="38" fill="#103d1b" opacity=".85"/>
+  <!-- مانگی گومبەزە بچووکەکان -->
+  <polygon points="138,455 141,462 135,462" fill="#C9A84C" opacity=".4"/>
+  <polygon points="292,455 295,462 289,462" fill="#C9A84C" opacity=".4"/>
 
-  <!-- Arched windows on wall -->
-  <rect x="100" y="510" width="24" height="35" fill="#041408" rx="12" opacity=".7"/>
-  <rect x="140" y="510" width="24" height="35" fill="#041408" rx="12" opacity=".7"/>
-  <rect x="200" y="510" width="30" height="40" fill="#041408" rx="15" opacity=".7"/>
-  <rect x="266" y="510" width="24" height="35" fill="#041408" rx="12" opacity=".7"/>
-  <rect x="306" y="510" width="24" height="35" fill="#041408" rx="12" opacity=".7"/>
-
-  <!-- Main entrance arch -->
-  <rect x="185" y="560" width="60" height="80" fill="#041408" rx="30" opacity=".8"/>
-
-  <!-- Foreground overlay -->
-  <rect width="430" height="900" fill="url(#sky)" opacity=".75"/>
+  <!-- ئەستێرە لە خوارەوەی ئاسمان -->
+  <rect width="430" height="900" fill="url(#sky)" opacity=".72"/>
 </svg>
 
 <div class="toast" id="toast">
@@ -1138,36 +1276,35 @@ body{font-family:'Cairo','Tahoma','Arial Unicode MS','Segoe UI',sans-serif;color
         <div style="width:36px"></div>
       </div>
 
-      <!-- پلەیەری دەنگ — 📖 بەخوێندن (سەوز) -->
-      <div id="audioBar" style="background:rgba(0,30,15,.6);border-bottom:2px solid rgba(46,204,113,.3);padding:10px 14px;display:flex;flex-direction:column;gap:8px">
-        <!-- هەڵبژاردنی قارئ -->
-        <select onchange="changeReader(this.value)" id="suraReaderSelect"
-          style="width:100%;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.25);border-radius:8px;padding:6px 10px;color:#fff;font-family:'Cairo',sans-serif;font-size:11px;outline:none;appearance:none;-webkit-appearance:none;text-align:center">
-          <option value="ar.alafasy">🎙 مصطفى العفاسي</option>
-          <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
-          <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
-          <option value="ar.husary">🎙 محمود خليل الحصري</option>
-          <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
-          <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
-        </select>
-        <!-- ئۆتۆ-نێکست -->
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 2px">
-          <span style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.5)">▶▶ تەواو بوو بچە سووڕەتی دواتر</span>
-          <div id="autoNextToggle" onclick="toggleAutoNext()" class="toggle"></div>
+      <!-- پلەیەری دەنگ — کۆمپاکت مینی پلەیەر -->
+      <div id="audioBar" style="background:rgba(0,20,10,.75);border-bottom:1px solid rgba(46,204,113,.2);padding:7px 12px;backdrop-filter:blur(12px)">
+        <!-- هێڵی یەکەم: قارئ + ئۆتۆ-نێکست -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px">
+          <select onchange="changeReader(this.value)" id="suraReaderSelect"
+            style="flex:1;background:rgba(46,204,113,.07);border:1px solid rgba(46,204,113,.18);border-radius:8px;padding:4px 8px;color:rgba(255,255,255,.8);font-family:'Cairo',sans-serif;font-size:10px;outline:none;appearance:none;-webkit-appearance:none">
+            <option value="ar.alafasy">🎙 مصطفى العفاسي</option>
+            <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
+            <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
+            <option value="ar.husary">🎙 محمود خليل الحصري</option>
+            <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
+            <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
+          </select>
+          <!-- ئۆتۆ-نێکست -->
+          <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
+            <span style="font-family:'Cairo',sans-serif;font-size:9px;color:rgba(255,255,255,.4)">▶▶</span>
+            <div id="autoNextToggle" onclick="toggleAutoNext()" class="toggle" style="width:32px;height:18px"></div>
+          </div>
         </div>
-        <!-- دوگمەکان -->
-        <div style="display:flex;align-items:center;justify-content:center;gap:12px">
-          <button onclick="audioSkip(-10)" style="background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.2);color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px">⏪</button>
-          <button id="playBtn" onclick="toggleAudio()" style="background:linear-gradient(135deg,#1b8a4e,#2ecc71);border:none;color:#fff;width:52px;height:52px;border-radius:50%;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(46,204,113,.4)">▶</button>
-          <button onclick="audioSkip(10)" style="background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.2);color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px">⏩</button>
-        </div>
-        <!-- progress bar -->
+        <!-- هێڵی دووەم: دوگمەکان + progress + کات — هەمووی یەک هێڵ -->
         <div style="display:flex;align-items:center;gap:8px">
-          <span id="audioTime" style="font-size:10px;color:rgba(46,204,113,.7);min-width:32px;font-variant-numeric:tabular-nums">0:00</span>
-          <div onclick="audioSeek(event)" style="flex:1;height:5px;background:rgba(46,204,113,.15);border-radius:3px;cursor:pointer;position:relative">
+          <button onclick="audioSkip(-10)" style="background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.18);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:13px;flex-shrink:0">⏪</button>
+          <button id="playBtn" onclick="toggleAudio()" style="background:linear-gradient(135deg,#1b8a4e,#2ecc71);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(46,204,113,.35);flex-shrink:0">▶</button>
+          <button onclick="audioSkip(10)" style="background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.18);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:13px;flex-shrink:0">⏩</button>
+          <span id="audioTime" style="font-size:9px;color:rgba(46,204,113,.65);min-width:26px;font-variant-numeric:tabular-nums;flex-shrink:0">0:00</span>
+          <div onclick="audioSeek(event)" style="flex:1;height:4px;background:rgba(46,204,113,.12);border-radius:3px;cursor:pointer;position:relative">
             <div id="audioProgress" style="height:100%;width:0%;background:linear-gradient(90deg,#1b8a4e,#2ecc71);border-radius:3px;transition:width .5s linear"></div>
           </div>
-          <span id="audioDur" style="font-size:10px;color:rgba(46,204,113,.7);min-width:32px;text-align:right;font-variant-numeric:tabular-nums">0:00</span>
+          <span id="audioDur" style="font-size:9px;color:rgba(46,204,113,.65);min-width:26px;text-align:right;font-variant-numeric:tabular-nums;flex-shrink:0">0:00</span>
         </div>
       </div>
 
@@ -2747,42 +2884,62 @@ function playGlobalSura(id){
   if(globalAudio){ globalAudio.pause(); globalAudio.src=''; globalAudio=null; }
   if(globalHighlightInterval){ clearInterval(globalHighlightInterval); globalHighlightInterval=null; }
 
-  const num = String(id).padStart(3,'0');
-  globalAudio = new Audio(`https://archive.org/download/quraninkurdish/Saad_Al_Ghamedi_with_Kurdish_Translation_${num}.ogg`);
+  // سێرڤەری دڵنیا: AlQuran Cloud
+  const n = id;
+  const globalUrls = [
+    `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${n}.mp3`,
+    `https://server8.mp3quran.net/afs/${String(id).padStart(3,'0')}.mp3`,
+  ];
+  let globalFallbackIdx = 0;
 
-  globalAudio.onloadedmetadata = ()=>{
-    const dm=Math.floor(globalAudio.duration/60), ds=Math.floor(globalAudio.duration%60);
-    document.getElementById('globalAudioDur').textContent = dm+':'+String(ds).padStart(2,'0');
-  };
+  const gPlayBtn = document.getElementById('globalPlayBtn');
+  if(gPlayBtn) gPlayBtn.textContent = '⏳';
 
-  globalAudio.ontimeupdate = ()=>{
-    if(!globalAudio.duration) return;
-    const pct = (globalAudio.currentTime/globalAudio.duration)*100;
-    document.getElementById('globalAudioProgress').style.width = pct+'%';
-    const m=Math.floor(globalAudio.currentTime/60), s=Math.floor(globalAudio.currentTime%60);
-    document.getElementById('globalAudioTime').textContent = m+':'+String(s).padStart(2,'0');
-  };
+  function tryGlobal(url){
+    globalAudio = new Audio(url);
+    globalAudio.preload = 'auto';
 
-  globalAudio.onended = ()=>{
-    globalPlaying = false;
-    document.getElementById('globalPlayBtn').textContent = '▶';
-    if(icon) icon.textContent = '▶';
-    // سووڕەتی دواتر ئۆتۆماتیک
-    const nextId = id < 114 ? id+1 : 1;
-    playGlobalSura(nextId);
-  };
+    globalAudio.onloadedmetadata = ()=>{
+      const dm=Math.floor(globalAudio.duration/60), ds=Math.floor(globalAudio.duration%60);
+      document.getElementById('globalAudioDur').textContent = dm+':'+String(ds).padStart(2,'0');
+    };
 
-  globalAudio.onerror = ()=>{
-    showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
-    globalPlaying = false;
-    document.getElementById('globalPlayBtn').textContent = '▶';
-    if(icon) icon.textContent = '▶';
-  };
+    globalAudio.ontimeupdate = ()=>{
+      if(!globalAudio.duration) return;
+      const pct = (globalAudio.currentTime/globalAudio.duration)*100;
+      document.getElementById('globalAudioProgress').style.width = pct+'%';
+      const m=Math.floor(globalAudio.currentTime/60), s=Math.floor(globalAudio.currentTime%60);
+      document.getElementById('globalAudioTime').textContent = m+':'+String(s).padStart(2,'0');
+    };
 
-  globalAudio.play().then(()=>{
-    globalPlaying = true;
-    document.getElementById('globalPlayBtn').textContent = '⏸';
-  }).catch(()=>{});
+    globalAudio.onended = ()=>{
+      globalPlaying = false;
+      if(gPlayBtn) gPlayBtn.textContent = '▶';
+      if(icon) icon.textContent = '▶';
+      const nextId = id < 114 ? id+1 : 1;
+      playGlobalSura(nextId);
+    };
+
+    globalAudio.onerror = ()=>{
+      globalFallbackIdx++;
+      if(globalFallbackIdx < globalUrls.length){
+        globalAudio.pause(); globalAudio.src=''; globalAudio=null;
+        tryGlobal(globalUrls[globalFallbackIdx]);
+        return;
+      }
+      showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
+      globalPlaying = false;
+      if(gPlayBtn) gPlayBtn.textContent = '▶';
+      if(icon) icon.textContent = '▶';
+    };
+
+    globalAudio.play().then(()=>{
+      globalPlaying = true;
+      if(gPlayBtn) gPlayBtn.textContent = '⏸';
+    }).catch(()=>{ if(gPlayBtn) gPlayBtn.textContent = '▶'; });
+  }
+
+  tryGlobal(globalUrls[0]);
 }
 
 function toggleGlobalAudio(){
@@ -2839,25 +2996,26 @@ let ayahTimings = [];
 let highlightInterval = null;
 
 function getAudioUrl(suraId){
-  const num = String(suraId).padStart(3,'0');
-  // everyayah.com — CORS هەیەتی، باوەڕپێکراو
-  const reciters = {
-    'alafasy':           `https://everyayah.com/data/Alafasy_128kbps/${num}001.mp3`,
-    'abdurrahmaansudais':`https://everyayah.com/data/Abdul_Basit_Murattal_192kbps/${num}001.mp3`,
-    'minshawi':          `https://everyayah.com/data/Minshawy_Murattal_128kbps/${num}001.mp3`,
-    'husary':            `https://everyayah.com/data/Husary_128kbps/${num}001.mp3`,
-    'abdullahbasfar':    `https://everyayah.com/data/Abdullah_Basfar_192kbps/${num}001.mp3`,
-    'mahermuaiqly':      `https://everyayah.com/data/Maher_Al_Muaiqly_128kbps/${num}001.mp3`,
-  };
-  const key = curReader.replace('ar.','');
-  // سووڕەت بار بکە — بەپێی ژمارەی ئایەتی سووڕەتی یەکەم
-  return reciters[key] || reciters['alafasy'];
+  return getSurahAudioUrl(suraId);
 }
 
-function getSurahAudioUrl(suraId){
-  // بۆ بارکردنی تەواوی سووڕەت — mp3quran سێرڤەر
+// سێرڤەری دووەم — فالبەک
+function getSurahAudioUrl(suraId, useFallback){
   const num = String(suraId).padStart(3,'0');
-  const servers = {
+  const n   = suraId;
+
+  // سێرڤەری سەرەکی: AlQuran Cloud CDN — دڵنیاترین
+  const primary = {
+    'alafasy':           `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${n}.mp3`,
+    'abdurrahmaansudais':`https://cdn.islamic.network/quran/audio-surah/128/ar.abdurrahmaansudais/${n}.mp3`,
+    'minshawi':          `https://cdn.islamic.network/quran/audio-surah/128/ar.minshawi/${n}.mp3`,
+    'husary':            `https://cdn.islamic.network/quran/audio-surah/128/ar.husary/${n}.mp3`,
+    'abdullahbasfar':    `https://cdn.islamic.network/quran/audio-surah/128/ar.abdullahbasfar/${n}.mp3`,
+    'mahermuaiqly':      `https://cdn.islamic.network/quran/audio-surah/128/ar.mahermuaiqly/${n}.mp3`,
+  };
+
+  // فالبەک: mp3quran
+  const fallback = {
     'alafasy':           `https://server8.mp3quran.net/afs/${num}.mp3`,
     'abdurrahmaansudais':`https://server11.mp3quran.net/sds/${num}.mp3`,
     'minshawi':          `https://server13.mp3quran.net/minsh/${num}.mp3`,
@@ -2865,8 +3023,11 @@ function getSurahAudioUrl(suraId){
     'abdullahbasfar':    `https://server7.mp3quran.net/basit/${num}.mp3`,
     'mahermuaiqly':      `https://server12.mp3quran.net/maher/${num}.mp3`,
   };
+
   const key = curReader.replace('ar.','');
-  return servers[key] || servers['alafasy'];
+  return useFallback
+    ? (fallback[key] || fallback['alafasy'])
+    : (primary[key] || primary['alafasy']);
 }
 
 // ── هایلایتی ئایەت بەپێی کاتی دەنگ ──────────────────
@@ -2912,42 +3073,59 @@ function loadSuraAudio(suraId, autoplay){
   if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
   document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
 
-  quranAudio = new Audio(getSurahAudioUrl(suraId));
+  const playBtn = document.getElementById('playBtn');
+  if(playBtn) playBtn.textContent = '⏳';
 
-  quranAudio.onloadedmetadata = ()=>{
-    const ayahEls = document.querySelectorAll('.ayah-line');
-    buildAyahTimings(quranAudio.duration, ayahEls.length);
-    document.getElementById('audioDur').textContent =
-      Math.floor(quranAudio.duration/60)+':'+String(Math.floor(quranAudio.duration%60)).padStart(2,'0');
-  };
+  let usedFallback = false;
 
-  quranAudio.onended = ()=>{
-    audioPlaying = false;
-    document.getElementById('playBtn').textContent = '▶';
-    document.getElementById('audioProgress').style.width = '0%';
-    document.getElementById('audioTime').textContent = '0:00';
-    document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
-    if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
-    // ئۆتۆ-نێکست
-    if(autoNext && curSuraId < 114){
-      setTimeout(()=>{ showSura(curSuraId + 1); }, 1000);
+  function tryLoad(url){
+    quranAudio = new Audio(url);
+    quranAudio.preload = 'auto';
+
+    quranAudio.onloadedmetadata = ()=>{
+      const ayahEls = document.querySelectorAll('.ayah-line');
+      buildAyahTimings(quranAudio.duration, ayahEls.length);
+      document.getElementById('audioDur').textContent =
+        Math.floor(quranAudio.duration/60)+':'+String(Math.floor(quranAudio.duration%60)).padStart(2,'0');
+    };
+
+    quranAudio.onended = ()=>{
+      audioPlaying = false;
+      if(playBtn) playBtn.textContent = '▶';
+      document.getElementById('audioProgress').style.width = '0%';
+      document.getElementById('audioTime').textContent = '0:00';
+      document.querySelectorAll('.ayah-line').forEach(el=>el.classList.remove('ayah-active'));
+      if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
+      if(autoNext && curSuraId < 114){
+        setTimeout(()=>{ showSura(curSuraId + 1); }, 1000);
+      }
+    };
+
+    quranAudio.onerror = ()=>{
+      if(!usedFallback){
+        usedFallback = true;
+        quranAudio.pause(); quranAudio.src=''; quranAudio=null;
+        tryLoad(getSurahAudioUrl(suraId, true));
+        return;
+      }
+      showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
+      audioPlaying = false;
+      if(playBtn) playBtn.textContent = '▶';
+      if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
+    };
+
+    if(autoplay){
+      quranAudio.play().then(()=>{
+        audioPlaying = true;
+        if(playBtn) playBtn.textContent = '⏸';
+        highlightInterval = setInterval(updateHighlight, 500);
+      }).catch(()=>{ if(playBtn) playBtn.textContent = '▶'; });
+    } else {
+      if(playBtn) playBtn.textContent = '▶';
     }
-  };
-
-  quranAudio.onerror = ()=>{
-    showToast('⚠️ دەنگەکە نەبارکرا — ئینتەرنێت پشکن');
-    audioPlaying = false;
-    document.getElementById('playBtn').textContent = '▶';
-    if(highlightInterval){ clearInterval(highlightInterval); highlightInterval=null; }
-  };
-
-  if(autoplay){
-    quranAudio.play().then(()=>{
-      audioPlaying = true;
-      document.getElementById('playBtn').textContent = '⏸';
-      highlightInterval = setInterval(updateHighlight, 500);
-    }).catch(()=>{});
   }
+
+  tryLoad(getSurahAudioUrl(suraId, false));
 }
 
 function toggleAudio(){
