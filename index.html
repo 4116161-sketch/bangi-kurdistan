@@ -3179,10 +3179,19 @@ function showSura(id){
 
   // سعد الغامدی لە API ی جیاوازدایە
   if(curReader === 'ar.saadalghamdi'){
-    // تەنها دەنگ — نه text API
-    const num2 = String(id).padStart(3,'0');
-    const audioUrl = `https://server10.mp3quran.net/sgmd/${num2}.mp3`;
+    // دەنگی سعد الغامدی + متنی قورئان لە API ی ئاسایی
     loadSuraAudio(id, true);
+    // متن لە ar.alafasy بارکە (تەنها متن، نه دەنگ)
+    fetch('https://api.alquran.cloud/v1/surah/'+id+'/ar.alafasy')
+      .then(r=>r.json())
+      .then(data=>{ if(data.code===200) renderAyat(data.data.ayahs); })
+      .catch(()=>{
+        const data = SURAS[id];
+        if(data){
+          const ayat = data.ayat.map((t,i)=>({text:t, numberInSurah:i+1}));
+          renderAyat(ayat);
+        }
+      });
     return;
   }
   fetch('https://api.alquran.cloud/v1/surah/'+id+'/'+curReader)
