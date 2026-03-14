@@ -1226,6 +1226,7 @@ body{
             <option value="ar.husary">🎙 محمود خليل الحصري</option>
             <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
             <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
+            <option value="ar.saadalghamdi">🎙 سعد الغامدي + كوردي</option>
           </select>
         </div>
         <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch" id="suraList"></div>
@@ -1250,14 +1251,6 @@ body{
             <span id="gaDur" style="font-size:10px;color:rgba(241,196,15,.7);min-width:30px;text-align:right">0:00</span>
           </div>
         </div>
-        <!-- گەڕان -->
-        <div style="padding:0 12px 6px;flex-shrink:0">
-          <input oninput="filterGaudioList(this.value)" type="search" placeholder="🔍 گەڕان..."
-            style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:8px 14px;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;outline:none">
-        </div>
-        <!-- لیستی سووڕەتەکان -->
-        <div id="gaudioList" style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch"></div>
-      </div>
     </div>
   </div>
 
@@ -1282,6 +1275,7 @@ body{
             <option value="ar.husary">🎙 محمود خليل الحصري</option>
             <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
             <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
+            <option value="ar.saadalghamdi">🎙 سعد الغامدي + كوردي</option>
           </select>
           <!-- ئۆتۆ-نێکست -->
           <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
@@ -1506,13 +1500,7 @@ body{
       <div class="sec-lbl">ڕێکخستنەکان</div>
       <div class="srow"><div class="sinfo"><div class="sico">🔔</div><div><div class="slbl">هەواڵی بانگ</div><div class="sdesc">ئاگادارکردنەوەی کاتی نوێژ</div></div></div><div class="toggle on" id="notifToggle" onclick="toggleNotifSetting()"></div></div>
 
-      <div class="srow" id="testAzanRow">
-        <div class="sinfo"><div class="sico">🎵</div><div><div class="slbl">تاقیکردنەوەی دەنگی بانگ</div><div class="sdesc">دەنگی بانگ بیبیستە</div></div></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="testAzanBtn" onclick="toggleTestAzan()" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.25);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">▶</button>
-          <button onclick="stopTestAzan()" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.25);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center">⏹</button>
-        </div>
-      </div>
+
 
       <div class="srow"><div class="sinfo"><div class="sico">🌙</div><div><div class="slbl">دۆخی رەمەزان</div><div class="sdesc">پیشاندانی ئیمساک و ئیفتار</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
       <div class="srow"><div class="sinfo"><div class="sico">⏰</div><div><div class="slbl">ئاگاداری پێشوەختە</div><div class="sdesc">١٠ خولەک پێش کاتی نوێژ</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
@@ -2975,6 +2963,7 @@ function getSurahAudioUrl(suraId, useFallback){
     'husary':            `https://cdn.islamic.network/quran/audio-surah/128/ar.husary/${n}.mp3`,
     'abdullahbasfar':    `https://cdn.islamic.network/quran/audio-surah/128/ar.abdullahbasfar/${n}.mp3`,
     'mahermuaiqly':      `https://cdn.islamic.network/quran/audio-surah/128/ar.mahermuaiqly/${n}.mp3`,
+    'saadalghamdi':      `https://server10.mp3quran.net/sgmd/${num}.mp3`,
   };
 
   // فالبەک: mp3quran
@@ -2985,6 +2974,7 @@ function getSurahAudioUrl(suraId, useFallback){
     'husary':            `https://server13.mp3quran.net/husr/${num}.mp3`,
     'abdullahbasfar':    `https://server7.mp3quran.net/basit/${num}.mp3`,
     'mahermuaiqly':      `https://server12.mp3quran.net/maher/${num}.mp3`,
+    'saadalghamdi':      `https://server10.mp3quran.net/sgmd/${num}.mp3`,
   };
 
   const key = curReader.replace('ar.','');
@@ -3187,6 +3177,14 @@ function showSura(id){
       `<div class="quran-flow">${lines}</div>`;
   }
 
+  // سعد الغامدی لە API ی جیاوازدایە
+  if(curReader === 'ar.saadalghamdi'){
+    // تەنها دەنگ — نه text API
+    const num2 = String(id).padStart(3,'0');
+    const audioUrl = `https://server10.mp3quran.net/sgmd/${num2}.mp3`;
+    loadSuraAudio(id, true);
+    return;
+  }
   fetch('https://api.alquran.cloud/v1/surah/'+id+'/'+curReader)
     .then(r=>r.json())
     .then(data=>{
