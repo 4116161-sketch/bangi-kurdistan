@@ -1220,13 +1220,13 @@ body{
         <div style="padding:4px 12px 8px">
           <select id="readerSelect" onchange="changeReader(this.value)"
             style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:8px 12px;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;outline:none;appearance:none;-webkit-appearance:none">
+            <option value="ar.saadalghamdi">🎙 سعد الغامدي + كوردي</option>
             <option value="ar.alafasy">🎙 مصطفى العفاسي</option>
             <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
             <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
             <option value="ar.husary">🎙 محمود خليل الحصري</option>
             <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
             <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
-            <option value="ar.saadalghamdi">🎙 سعد الغامدي + كوردي</option>
           </select>
         </div>
         <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch" id="suraList"></div>
@@ -1269,13 +1269,13 @@ body{
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px">
           <select onchange="changeReader(this.value)" id="suraReaderSelect"
             style="flex:1;background:rgba(46,204,113,.07);border:1px solid rgba(46,204,113,.18);border-radius:8px;padding:4px 8px;color:rgba(255,255,255,.8);font-family:'Cairo',sans-serif;font-size:10px;outline:none;appearance:none;-webkit-appearance:none">
+            <option value="ar.saadalghamdi">🎙 سعد الغامدي + كوردي</option>
             <option value="ar.alafasy">🎙 مصطفى العفاسي</option>
             <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
             <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
             <option value="ar.husary">🎙 محمود خليل الحصري</option>
             <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
             <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
-            <option value="ar.saadalghamdi">🎙 سعد الغامدي + كوردي</option>
           </select>
           <!-- ئۆتۆ-نێکست -->
           <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
@@ -2922,7 +2922,7 @@ function filterSuraList(q){
 
 
 let curSuraId = 1;
-let curReader = 'ar.alafasy';
+let curReader = 'ar.saadalghamdi';
 
 function changeReader(val){
   curReader = val;
@@ -2963,7 +2963,7 @@ function getSurahAudioUrl(suraId, useFallback){
     'husary':            `https://cdn.islamic.network/quran/audio-surah/128/ar.husary/${n}.mp3`,
     'abdullahbasfar':    `https://cdn.islamic.network/quran/audio-surah/128/ar.abdullahbasfar/${n}.mp3`,
     'mahermuaiqly':      `https://cdn.islamic.network/quran/audio-surah/128/ar.mahermuaiqly/${n}.mp3`,
-    'saadalghamdi':      `https://server10.mp3quran.net/sgmd/${num}.mp3`,
+    'saadalghamdi':      `https://cdn.islamic.network/quran/audio-surah/128/ar.saadalghamdi/${n}.mp3`,
   };
 
   // فالبەک: mp3quran
