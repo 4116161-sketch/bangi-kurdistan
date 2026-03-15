@@ -1071,6 +1071,24 @@ body{
 
     <div class="plist-wrap" id="plist"></div>
 
+    <!-- کارتی کەشوهەوا -->
+    <div id="weatherCard" style="margin:8px 10px 6px;background:linear-gradient(135deg,rgba(30,80,120,.6),rgba(10,40,80,.8));border:1px solid rgba(100,180,255,.2);border-radius:20px;padding:14px 16px;direction:rtl;cursor:pointer" onclick="refreshWeather()">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div id="weatherIcon" style="font-size:32px">⏳</div>
+          <div>
+            <div id="weatherTemp" style="font-size:24px;font-weight:900;color:#fff;font-family:'Cairo',sans-serif">—°</div>
+            <div id="weatherDesc" style="font-size:11px;color:rgba(255,255,255,.6);font-family:'Cairo',sans-serif">بارکردنی کەشوهەوا...</div>
+          </div>
+        </div>
+        <div style="text-align:left">
+          <div id="weatherCity" style="font-size:11px;color:rgba(100,200,255,.8);font-family:'Cairo',sans-serif;margin-bottom:3px">—</div>
+          <div id="weatherHumidity" style="font-size:10px;color:rgba(255,255,255,.45);font-family:'Cairo',sans-serif">—</div>
+          <div id="weatherWind" style="font-size:10px;color:rgba(255,255,255,.45);font-family:'Cairo',sans-serif">—</div>
+        </div>
+      </div>
+    </div>
+
     <!-- قورئان و زیکر -->
     <div class="qz-grid">
       <div class="qz-card" onclick="switchPage('quran')">
@@ -1534,18 +1552,19 @@ body{
   <div class="pg" id="pg-settings">
     <div class="spage">
       <div class="sec-lbl">ڕێکخستنەکان</div>
-      <div class="srow"><div class="sinfo"><div class="sico">🔔</div><div><div class="slbl">هەواڵی بانگ</div><div class="sdesc">ئاگادارکردنەوەی کاتی نوێژ</div></div></div><div class="toggle on" id="notifToggle" onclick="toggleNotifSetting()"></div></div>
 
-
+      <!-- بانگ بێژەکان -->
+      <div class="sec-lbl" style="margin-top:8px">🎙 دەنگی بانگ</div>
+      <div id="muezzinList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
 
       <div class="srow"><div class="sinfo"><div class="sico">🌙</div><div><div class="slbl">دۆخی رەمەزان</div><div class="sdesc">پیشاندانی ئیمساک و ئیفتار</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
       <div class="srow"><div class="sinfo"><div class="sico">⏰</div><div><div class="slbl">ئاگاداری پێشوەختە</div><div class="sdesc">١٠ خولەک پێش کاتی نوێژ</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
 
-      <!-- بانگ بێژەکان -->
-      <div class="sec-lbl" style="margin-top:18px">🎙 دەنگی بانگ</div>
+      <!-- دوگمەی بانگدان بۆ هەر نوێژێک -->
+      <div class="sec-lbl" style="margin-top:18px">🔔 دوگمەی بانگدان</div>
+      <div id="azanModeList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px"></div>
 
-      <!-- بانگ بێژەکان -->
-      <div id="muezzinList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+
 
     </div>
   </div>
@@ -1881,21 +1900,53 @@ function loadAzanFile(input){
 // ── بانگی ڕاستەقینە بە Web Audio API ─────────────
 // هەر بانگبێژێک دەنگی جیاوازی هەیە — بێ ئینتەرنێت کار دەکات
 
-function playAzan(){
-  // ئەگەر فایلی کەسیی ئەپلۆد کراوە — ئەوە یەکەمە
-  if(localStorage.getItem('azanBase64') && customAzanURL){
-    const a = new Audio(customAzanURL);
-    a.volume = 1.0;
-    a.play().catch(()=>{});
+function playAzan(prayerIdx){
+  // پشکنینی دوگمەی بانگدان بۆ ئەو نوێژە
+  const mode = (prayerIdx !== undefined) ? getPrayerMode(prayerIdx) : 'sound';
+  if(mode === 'silent'){
+    if('Notification' in window && Notification.permission === 'granted'){
+      new Notification('🕌 کاتی بانگە', {body: 'بێدەنگ', icon: './icon-192.png', silent: true});
+    }
     return;
   }
-  // بانگی ناوخۆیی — هەر جار Audio تازە دروست بکە
-  const url = getEmbeddedAzanURL();
-  if(url){
-    const a = new Audio(url);
-    a.volume = 1.0;
-    a.play().catch(e=>{ console.warn('azan play failed:', e); });
+  if(mode === 'vibrate'){
+    if(navigator.vibrate) navigator.vibrate([800,200,800,200,800,200,1000,200,1500]);
+    if('Notification' in window && Notification.permission === 'granted'){
+      new Notification('🕌 کاتی بانگە', {body: 'مۆبایلەکەت هەزدەدات', icon: './icon-192.png', silent: true});
+    }
     return;
+  }
+  // sound — بانگ بدە
+  const url = customAzanURL || getEmbeddedAzanURL();
+  if(!url) return;
+
+  // هەوڵی یەکەم: ڕاستەوخۆ
+  const a = new Audio(url);
+  a.volume = 1.0;
+  const p = a.play();
+  if(p !== undefined){
+    p.then(()=>{
+      // سەرکەوتوو بوو
+    }).catch(()=>{
+      // هەوڵی دووەم: AudioContext
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        ctx.resume().then(()=>{
+          const a2 = new Audio(url);
+          a2.volume = 1.0;
+          a2.play().catch(()=>{
+            // هەوڵی سێیەم: Notification
+            if('Notification' in window && Notification.permission === 'granted'){
+              new Notification('🕌 کاتی بانگە', {
+                body: 'ئەپەکەت بکەرەوە بۆ گوێگرتن',
+                icon: './icon-192.png',
+                silent: false
+              });
+            }
+          });
+        });
+      }catch(e){}
+    });
   }
 }
 
@@ -1904,6 +1955,51 @@ function playAzan(){
 function stopAzan(){
   if(azanAudio){ azanAudio.pause(); azanAudio.currentTime=0; }
 }
+
+// ── دوگمەی بانگدان بۆ هەر نوێژێک ──────────────────
+// modes: 'sound' | 'vibrate' | 'silent'
+const PRAYER_MODE_KEYS = ['fajr','sunrise','dhuhr','asr','maghrib','isha'];
+const PRAYER_MODE_NAMES = ['بەیانی','گزنگ','نیوەڕۆ','عەسر','ئێوارە','خەوتنان'];
+const PRAYER_MODE_ICONS = ['🌙','🌅','☀️','🌤','🌇','🌃'];
+
+function getPrayerMode(idx){
+  return localStorage.getItem('azanMode_'+idx) || 'sound';
+}
+function setPrayerMode(idx, mode){
+  localStorage.setItem('azanMode_'+idx, mode);
+  renderAzanModeList();
+}
+
+function renderAzanModeList(){
+  const el = document.getElementById('azanModeList');
+  if(!el) return;
+  let html = '';
+  const sq = String.fromCharCode(39);
+  PRAYER_MODE_KEYS.forEach(function(key, i){
+    if(key === 'sunrise') return;
+    const mode = getPrayerMode(i);
+    const sColor  = mode==='sound'   ? 'rgba(46,204,113,.25)'  : 'rgba(255,255,255,.04)';
+    const vColor  = mode==='vibrate' ? 'rgba(52,152,219,.25)'  : 'rgba(255,255,255,.04)';
+    const xColor  = mode==='silent'  ? 'rgba(255,255,255,.1)'  : 'rgba(255,255,255,.04)';
+    const sBorder = mode==='sound'   ? 'rgba(46,204,113,.6)'   : 'rgba(255,255,255,.12)';
+    const vBorder = mode==='vibrate' ? 'rgba(52,152,219,.5)'   : 'rgba(255,255,255,.12)';
+    const xBorder = mode==='silent'  ? 'rgba(255,255,255,.3)'  : 'rgba(255,255,255,.12)';
+    const modeLabel = mode==='sound' ? '🔔 بانگ' : mode==='vibrate' ? '📳 هەزاندن' : '🔕 بێدەنگ';
+    html += '<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 14px;direction:rtl">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    html += '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">' + PRAYER_MODE_ICONS[i] + '</span>';
+    html += '<span style="font-size:13px;font-weight:700;color:#fff">' + PRAYER_MODE_NAMES[i] + '</span></div>';
+    html += '<span style="font-size:10px;color:rgba(255,255,255,.45)">' + modeLabel + '</span></div>';
+    html += '<div style="display:flex;gap:5px">';
+    html += '<button onclick="setPrayerMode(' + i + ',' + sq + 'sound' + sq + ')" style="flex:1;padding:6px 2px;border-radius:9px;border:2px solid ' + sBorder + ';background:' + sColor + ';color:#fff;font-size:10px;font-weight:700;cursor:pointer">🔔 بانگ</button>';
+    html += '<button onclick="setPrayerMode(' + i + ',' + sq + 'vibrate' + sq + ')" style="flex:1;padding:6px 2px;border-radius:9px;border:2px solid ' + vBorder + ';background:' + vColor + ';color:#fff;font-size:10px;font-weight:700;cursor:pointer">📳 هەزاندن</button>';
+    html += '<button onclick="setPrayerMode(' + i + ',' + sq + 'silent' + sq + ')" style="flex:1;padding:6px 2px;border-radius:9px;border:2px solid ' + xBorder + ';background:' + xColor + ';color:#fff;font-size:10px;font-weight:700;cursor:pointer">🔕 بێدەنگ</button>';
+    html += '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+function updateAzanModeUI(){ renderAzanModeList(); }
 
 let testAzanAudio = null;
 let testAzanPlaying = false;
@@ -2033,7 +2129,7 @@ function tick(){
           // بانگ ندە ئەگەر: بێدەنگ کراوە یان nobell (گزنگ/خۆرهەڵاتن)
           const meta = PM[i];
           if(!mutedPrayers[i] && !meta.nobell){
-            playAzan();
+            playAzan(i);
           }
           showToast('🕌 کاتی بانگی '+meta.ku+'ە');
           showPlist();
@@ -4037,7 +4133,7 @@ function switchPage(p){
   
   }
   if(p==='zikr') renderZikr();
-  if(p==='settings') renderMuezzinList();
+  if(p==='settings'){ renderMuezzinList(); renderAzanModeList(); }
   if(p==='quran') renderSuraList();
   if(p==='hisn') renderHisn();
   if(p==='tv') renderTVChannels();
@@ -4247,6 +4343,93 @@ function fetchTodayTimes(cityKey){
     });
 }
 
+// ── کەشوهەوا ──────────────────────────────────────
+const WEATHER_ICONS = {
+  0:'☀️',1:'🌤',2:'⛅',3:'☁️',
+  45:'🌫',48:'🌫',
+  51:'🌦',53:'🌦',55:'🌧',
+  61:'🌧',63:'🌧',65:'🌧',
+  71:'❄️',73:'❄️',75:'❄️',
+  80:'🌦',81:'🌧',82:'⛈',
+  95:'⛈',96:'⛈',99:'⛈'
+};
+const WEATHER_DESCS = {
+  0:'ئاسمانی پاک',1:'نیم ئاسمان',2:'هەوری کەم',3:'هەوری پر',
+  45:'مێ',48:'مێ',
+  51:'باران بچووک',53:'باران',55:'باران زۆر',
+  61:'باران',63:'باران',65:'باران زۆر',
+  71:'بەفر بچووک',73:'بەفر',75:'بەفر زۆر',
+  80:'باران',81:'باران',82:'باران زۆر',
+  95:'هەورەباران',96:'هەورەباران',99:'هەورەباران'
+};
+
+function refreshWeather(){
+  const el = document.getElementById('weatherDesc');
+  if(el) el.textContent = 'بارکردنی کەشوهەوا...';
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(fetchWeather, fetchWeatherByCity, {timeout:8000});
+  } else {
+    fetchWeatherByCity();
+  }
+}
+
+function fetchWeather(pos){
+  const lat = pos.coords.latitude.toFixed(4);
+  const lon = pos.coords.longitude.toFixed(4);
+  fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto')
+    .then(r=>r.json())
+    .then(data=>{
+      const c = data.current;
+      updateWeatherUI(c.temperature_2m, c.weather_code, c.relative_humidity_2m, c.wind_speed_10m, '');
+    })
+    .catch(()=>{ fetchWeatherByCity(); });
+}
+
+function fetchWeatherByCity(){
+  const city = CITIES[CUR];
+  const coord = COORDS[CUR];
+  if(!coord) return;
+  fetch('https://api.open-meteo.com/v1/forecast?latitude='+coord.lat+'&longitude='+coord.lng+'&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto')
+    .then(r=>r.json())
+    .then(data=>{
+      const c = data.current;
+      updateWeatherUI(c.temperature_2m, c.weather_code, c.relative_humidity_2m, c.wind_speed_10m, city ? city.name : '');
+    })
+    .catch(()=>{
+      const el = document.getElementById('weatherDesc');
+      if(el) el.textContent = 'ئینتەرنێت پشکنە';
+    });
+}
+
+function updateWeatherUI(temp, code, humidity, wind, cityName){
+  const icon = WEATHER_ICONS[code] || '🌡';
+  const desc = WEATHER_DESCS[code] || '—';
+  const el_icon = document.getElementById('weatherIcon');
+  const el_temp = document.getElementById('weatherTemp');
+  const el_desc = document.getElementById('weatherDesc');
+  const el_city = document.getElementById('weatherCity');
+  const el_hum  = document.getElementById('weatherHumidity');
+  const el_wind = document.getElementById('weatherWind');
+  if(el_icon) el_icon.textContent = icon;
+  if(el_temp) el_temp.textContent = Math.round(temp) + '°C';
+  if(el_desc) el_desc.textContent = desc;
+  if(el_city) el_city.textContent = cityName || CITIES[CUR]?.name || '';
+  if(el_hum)  el_hum.textContent  = '💧 ' + humidity + '%';
+  if(el_wind) el_wind.textContent = '💨 ' + Math.round(wind) + ' km/h';
+  localStorage.setItem('weatherCache', JSON.stringify({temp, code, humidity, wind, cityName, time: Date.now()}));
+}
+
+function loadCachedWeather(){
+  try{
+    const cached = JSON.parse(localStorage.getItem('weatherCache'));
+    if(cached && Date.now() - cached.time < 30*60*1000){
+      updateWeatherUI(cached.temp, cached.code, cached.humidity, cached.wind, cached.cityName);
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
 function showToast(msg){
   document.getElementById('toastTxt').textContent=msg;
   const t=document.getElementById('toast');
@@ -4293,6 +4476,8 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
   document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
   document.getElementById('pg-home').classList.add('active');
   selectCity(CUR);
+  renderAzanModeList();
+  if(!loadCachedWeather()) refreshWeather();
   renderDate();renderCal();tick();renderWidgetPrayers();renderSalah();
   document.getElementById('plist').classList.add('collapsed');
   setInterval(tick,1000);
@@ -4304,6 +4489,16 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
 })();
 
 // PWA Service Worker
+// گوێگرتن بۆ TRIGGER_AZAN لە Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message', e => {
+    if(e.data && e.data.type === 'TRIGGER_AZAN'){
+      unlockAudio();
+      playAzan();
+    }
+  });
+}
+
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
     navigator.serviceWorker.register('./sw.js').then(reg=>{
