@@ -3279,9 +3279,10 @@ function showSura(id){
         if(timeEl){ const m=Math.floor(quranAudio.currentTime/60),s=Math.floor(quranAudio.currentTime%60); timeEl.textContent=m+':'+String(s).padStart(2,'0'); }
       };
       quranAudio.onended=()=>{ audioPlaying=false; document.getElementById('playBtn').textContent='▶'; };
-      quranAudio.play()
-        .then(()=>{ audioPlaying=true; document.getElementById('playBtn').textContent='⏸'; })
-        .catch(()=>{ trySgUrl(idx+1); });
+      // بار بکە بەبێ autoplay
+      quranAudio.load();
+      const playBtn2 = document.getElementById('playBtn');
+      if(playBtn2) playBtn2.textContent='▶';
     }
     trySgUrl(0);
     return;
