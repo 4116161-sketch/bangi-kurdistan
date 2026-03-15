@@ -77,7 +77,7 @@ body{
   background:linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%);
 }
 
-.app{position:relative;z-index:1;max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column}
+.app{position:relative;z-index:1;max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 
 /* ── HEADER ── */
 .hdr{
@@ -553,6 +553,9 @@ body{
   border-bottom:1px solid rgba(46,204,113,.1);
   padding:10px 14px 8px;
   flex-shrink:0;
+  position:sticky;
+  top:0;
+  z-index:10;
   backdrop-filter:blur(20px);
 }
 .wh-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
@@ -585,8 +588,8 @@ body{
 .quran-hdr{
   display:flex;align-items:center;justify-content:space-between;
   padding:12px 14px;
-  background:rgba(0,0,0,.4);
-  border-bottom:1px solid rgba(46,204,113,.15);
+  background:#120c04;
+  border-bottom:1px solid rgba(201,168,76,.2);
   flex-shrink:0;backdrop-filter:blur(14px);
 }
 .quran-hdr-title{font-size:16px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif}
@@ -599,18 +602,18 @@ body{
 .back-btn:active{background:rgba(255,255,255,.2)}
 .quran-flow{
   font-family:'Scheherazade New','Amiri Quran','Amiri',serif;
-  font-size:26px;line-height:2.4;color:#2c1810;
-  text-align:center;direction:rtl;
-  background:linear-gradient(135deg,#fdf8ee,#f5edcf);
-  border-radius:16px;padding:20px 16px;
-  border:1px solid rgba(180,140,60,.3);
-  box-shadow:inset 0 0 30px rgba(180,140,60,.08);
+  font-size:28px;line-height:2.6;color:#f0e6d0;
+  text-align:justify;direction:rtl;
+  background:#1a1008;
+  border-radius:0;padding:16px 20px 20px;
+  border:none;
+  box-shadow:none;
 }
-.ayah-line{display:block;padding:8px 6px;border-bottom:1px solid rgba(180,140,60,.15);text-align:center;border-radius:10px;transition:background .3s,box-shadow .3s}
+.ayah-line{display:inline;padding:2px 0;border-bottom:none;transition:background .3s,box-shadow .3s}
 .ayah-line:last-child{border-bottom:none}
-.ayah-line.ayah-active{background:rgba(46,204,113,.15);box-shadow:0 0 0 2px rgba(46,204,113,.4);border-bottom:1px solid transparent}
-.ayah-num-circle{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#8B6914);color:#fff;font-size:14px;font-family:'Scheherazade New',serif;margin-right:4px;vertical-align:middle;box-shadow:0 2px 6px rgba(139,105,20,.3)}
-.bismillah{font-family:'Scheherazade New','Amiri Quran','Amiri',serif;font-size:28px;color:#6B4C11;text-align:center;direction:rtl;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,#fdf8ee,#f0e6c0);border-radius:12px;border:1px solid rgba(180,140,60,.25)}
+.ayah-line.ayah-active{background:rgba(46,204,113,.25);border-radius:4px;box-shadow:none}
+.ayah-num-circle{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#8b6914,#c9a84c);color:#fff;font-size:11px;font-weight:700;font-family:'Cairo',sans-serif;margin:0 3px;vertical-align:middle;flex-shrink:0}
+.bismillah{font-family:'Scheherazade New','Amiri Quran','Amiri',serif;font-size:30px;color:#c9a84c;text-align:center;direction:rtl;margin:16px 0 8px;padding:14px;background:rgba(201,168,76,.08);border-radius:10px;border:1px solid rgba(201,168,76,.2)}
 .sura-text-wrap{font-family:'Scheherazade New','Amiri Quran','Amiri',serif;direction:rtl}
 
 /* ── قورئان کارد ── */
@@ -666,33 +669,54 @@ body{
 .qz-sub{font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif}
 /* ── LANDSCAPE MODE بۆ قورئان ── */
 @media screen and (orientation: landscape) {
+  .app {
+    max-width: 100vw !important;
+  }
+  .bnav { display: none !important; }
+  .hdr  { display: none !important; }
+  .widget-hdr { display: none !important; }
+
   #pg-sura {
     position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
+    top: 0 !important; left: 0 !important;
     width: 100vw !important;
-    height: 100vh !important;
+    height: 100dvh !important;
     max-width: 100vw !important;
-    z-index: 500 !important;
-    overflow-y: auto !important;
-    padding-bottom: 20px !important;
+    z-index: 600 !important;
+    overflow: hidden !important;
+    background: linear-gradient(180deg,#020c07 0%,#010704 100%) !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  #pg-sura .quran-page-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100dvh !important;
+    width: 100% !important;
+    overflow: hidden !important;
   }
   #pg-sura .quran-hdr {
-    padding: 6px 12px !important;
+    flex-shrink: 0 !important;
+    padding: 5px 16px !important;
+  }
+  #pg-sura #audioBar {
+    flex-shrink: 0 !important;
+    padding: 4px 16px !important;
+  }
+  #pg-sura #suraScroll {
+    flex: 1 1 0 !important;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+    min-height: 0 !important;
+    padding: 10px 20px !important;
+  }
+  #pg-sura .bismillah {
+    font-size: 30px !important;
+    margin-bottom: 8px !important;
   }
   #pg-sura .quran-flow {
     font-size: 28px !important;
     line-height: 2.2 !important;
-    padding: 10px 20px !important;
-  }
-  #pg-sura .bismillah {
-    font-size: 32px !important;
-  }
-  #pg-sura #audioBar {
-    padding: 4px 12px !important;
-  }
-  .bnav {
-    display: none !important;
   }
 }
 
@@ -1350,7 +1374,7 @@ body{
         </div>
       </div>
 
-      <div id="suraScroll" style="padding:16px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain"
+      <div id="suraScroll" style="padding:0;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#1a1008;"
         ontouchstart="suraTouchStart(event)"
         ontouchend="suraTouchEnd(event)">
         <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
@@ -3333,9 +3357,9 @@ function showSura(id){
     ] : curReader === 'raad' ? [
       `https://server6.mp3quran.net/kurdi/${sgNum}.mp3`,
     ] : [
-      `https://download.tvquran.com/download/recitations/343/266/${sgNum}.mp3`,
-      `https://server10.mp3quran.net/sgmd/${sgNum}.mp3`,
       `https://cdn.islamic.network/quran/audio-surah/128/ar.saadalghamdi/${id}.mp3`,
+      `https://server10.mp3quran.net/sgmd/${sgNum}.mp3`,
+      `https://server8.mp3quran.net/afs/${sgNum}.mp3`,
     ];
     function trySgUrl(idx){
       if(idx >= sgUrls.length){ showToast('⚠️ دەنگ نەبارکرا'); return; }
@@ -4095,6 +4119,14 @@ function renderWidgets(){
 }
 
 function switchPage(p){
+  // history بۆ دوگمەی Back ی مۆبایل
+  try{
+    if(p !== 'home'){
+      history.pushState({page: p}, '', '#' + p);
+    } else {
+      history.pushState({page: 'home'}, '', location.pathname);
+    }
+  }catch(e){}
   document.querySelectorAll('.pg').forEach(x=>{
     x.classList.remove('active');
     x.classList.remove('fullscreen');
@@ -4490,6 +4522,40 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
 
 // PWA Service Worker
 // گوێگرتن بۆ TRIGGER_AZAN لە Service Worker
+// دوگمەی Back ی مۆبایل
+window.addEventListener('popstate', function(e){
+  if(e.state && e.state.page){
+    // بە مستقیم switchPage بخوێنەوە بەبێ history.pushState
+    const p = e.state.page;
+    document.querySelectorAll('.pg').forEach(x=>{
+      x.classList.remove('active');
+      x.classList.remove('fullscreen');
+    });
+    const pg = document.getElementById('pg-'+p);
+    if(pg) pg.classList.add('active');
+    document.querySelectorAll('.nbtn').forEach(x=>x.classList.remove('active'));
+    const navBtn = document.getElementById('nav-'+p);
+    if(navBtn) navBtn.classList.add('active');
+    if(p==='zikr') renderZikr();
+    if(p==='settings'){ renderMuezzinList(); renderAzanModeList(); }
+    if(p==='quran') renderSuraList();
+    if(p==='hisn') renderHisn();
+    if(p==='tv') renderTVChannels();
+  } else {
+    // گەڕانەوە بۆ ماڵەوە
+    const p = 'home';
+    document.querySelectorAll('.pg').forEach(x=>{
+      x.classList.remove('active');
+      x.classList.remove('fullscreen');
+    });
+    const pg = document.getElementById('pg-home');
+    if(pg) pg.classList.add('active');
+    document.querySelectorAll('.nbtn').forEach(x=>x.classList.remove('active'));
+    const navBtn = document.getElementById('nav-home');
+    if(navBtn) navBtn.classList.add('active');
+  }
+});
+
 if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message', e => {
     if(e.data && e.data.type === 'TRIGGER_AZAN'){
