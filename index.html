@@ -1309,8 +1309,6 @@ body{
             <option value="ar.alafasy">🎙 مصطفى العفاسي</option>
             <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
             <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
-            <option value="ar.husary">🎙 محمود خليل الحصري</option>
-            <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
             <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
           </select>
           <!-- ئۆتۆ-نێکست -->
@@ -1534,18 +1532,19 @@ body{
   <div class="pg" id="pg-settings">
     <div class="spage">
       <div class="sec-lbl">ڕێکخستنەکان</div>
-      <div class="srow"><div class="sinfo"><div class="sico">🔔</div><div><div class="slbl">هەواڵی بانگ</div><div class="sdesc">ئاگادارکردنەوەی کاتی نوێژ</div></div></div><div class="toggle on" id="notifToggle" onclick="toggleNotifSetting()"></div></div>
 
-
+      <!-- بانگ بێژەکان -->
+      <div class="sec-lbl" style="margin-top:8px">🎙 دەنگی بانگ</div>
+      <div id="muezzinList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
 
       <div class="srow"><div class="sinfo"><div class="sico">🌙</div><div><div class="slbl">دۆخی رەمەزان</div><div class="sdesc">پیشاندانی ئیمساک و ئیفتار</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-      <div class="srow"><div class="sinfo"><div class="sico">⏰</div><div><div class="slbl">ئاگاداری پێشوەختە</div><div class="sdesc">١٠ خولەک پێش کاتی نوێژ</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+      <div class="srow"><div class="sinfo"><div class="sico">⏰</div><div><div class="slbl">ئاگاداری پێشوەختە</div><div class="sdesc">١٠ خولەک پێش کاتی نوێژ</div></div></div><div class="toggle" id="earlyNotifToggle" onclick="toggleEarlyNotif()"></div></div>
 
-      <!-- بانگ بێژەکان -->
-      <div class="sec-lbl" style="margin-top:18px">🎙 دەنگی بانگ</div>
+      <!-- دوگمەی بانگدان بۆ هەر نوێژێک -->
+      <div class="sec-lbl" style="margin-top:18px">🔔 دوگمەی بانگدان</div>
+      <div id="azanModeList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px"></div>
 
-      <!-- بانگ بێژەکان -->
-      <div id="muezzinList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+
 
     </div>
   </div>
@@ -1666,7 +1665,7 @@ function toHijri(date){
   const hm=Math.floor(24*l3/709);
   const hd=l3-Math.floor(709*hm/24);
   const hy=30*n+j-30;
-  return {y:hy, m:hm, d:hd};
+  return {y:hy, m:hm, d:hd-1};
 }
 
 // دەنگی بێدەنگکردن
@@ -1881,22 +1880,38 @@ function loadAzanFile(input){
 // ── بانگی ڕاستەقینە بە Web Audio API ─────────────
 // هەر بانگبێژێک دەنگی جیاوازی هەیە — بێ ئینتەرنێت کار دەکات
 
-function playAzan(){
-  // ئەگەر فایلی کەسیی ئەپلۆد کراوە — ئەوە یەکەمە
-  if(localStorage.getItem('azanBase64') && customAzanURL){
-    const a = new Audio(customAzanURL);
-    a.volume = 1.0;
-    a.play().catch(()=>{});
+function playAzan(prayerIdx){
+  const mode = (prayerIdx !== undefined) ? getPrayerMode(prayerIdx) : 'sound';
+  if(mode === 'silent'){
+    if('Notification' in window && Notification.permission === 'granted')
+      new Notification('🕌 کاتی بانگە', {body:'بێدەنگ', icon:'./icon-192.png', silent:true});
     return;
   }
-  // بانگی ناوخۆیی — هەر جار Audio تازە دروست بکە
-  const url = getEmbeddedAzanURL();
-  if(url){
+  if(mode === 'vibrate'){
+    if(navigator.vibrate) navigator.vibrate([800,200,800,200,800]);
+    if('Notification' in window && Notification.permission === 'granted')
+      new Notification('🕌 کاتی بانگە', {body:'هەزاندن', icon:'./icon-192.png', silent:true});
+    return;
+  }
+  // sound mode
+  const url = customAzanURL || getEmbeddedAzanURL();
+  if(!url) return;
+  function doPlay(){
     const a = new Audio(url);
     a.volume = 1.0;
-    a.play().catch(e=>{ console.warn('azan play failed:', e); });
-    return;
+    a.play().catch(()=>{
+      // هەوڵی دووەم بە AudioContext
+      try{
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        ctx.resume().then(()=>{
+          const a2 = new Audio(url);
+          a2.volume = 1.0;
+          a2.play().catch(()=>{});
+        });
+      }catch(e){}
+    });
   }
+  doPlay();
 }
 
 
@@ -2019,6 +2034,7 @@ function tick(){
   // دەنگی ئەزان
   // ئاگادارکردنەوەی بانگ — پشکنینی هەر چرکەیەک
   const curMin = hh*60 + mm;
+  checkEarlyNotif(times);
   if(curMin !== lastAzanMinute){
     times.forEach((t,i)=>{
       const pMin = t.h*60 + t.m;
@@ -2033,7 +2049,7 @@ function tick(){
           // بانگ ندە ئەگەر: بێدەنگ کراوە یان nobell (گزنگ/خۆرهەڵاتن)
           const meta = PM[i];
           if(!mutedPrayers[i] && !meta.nobell){
-            playAzan();
+            playAzan(i);
           }
           showToast('🕌 کاتی بانگی '+meta.ku+'ە');
           showPlist();
@@ -2146,18 +2162,19 @@ function renderDate(){
   const h=toHijri(now);
   const hijri = AR(h.d)+' '+HM[h.m-1]+' '+AR(h.y);
   // کوردی (ساڵنامەی کوردی — ساڵی کوردی = میلادی + 700 بەراورد)
-  const kurdishYear = now.getFullYear() + 700;
-  const kurdishMonths=['خاکەلێوە','گوڵان','جۆزەردان','پووشپەڕ','گەلاوێژ','خەرمانان','ڕەزبەر','گەڵاڕێزان','سەرماوەز','بەفرانبار','ڕێبەندان','نەورۆز'];
-  const kurdish = now.getDate()+' '+kurdishMonths[now.getMonth()]+' '+AR(kurdishYear);
+  // ساڵی کوردی = ساڵی زایینی + 700، بەڵام پێش نەورۆز (٢١ی ئازار) ساڵ ١ کەمترە
+  const _km = now.getMonth(), _kd = now.getDate(), _ky = now.getFullYear();
+  const kurdishYear = (_km > 2 || (_km === 2 && _kd >= 21)) ? _ky + 700 : _ky + 699;
+  // مانگ و ڕۆژی کوردی لە toKurdi بگرین
+  const _kobj = toKurdi(now);
+  const kurdishMonths=['خاکەلێوە','گوڵان','جۆزەردان','پووشپەڕ','گەلاوێژ','خەرمانان','ڕەزبەر','گەڵاڕێزان','سەرماوەز','بەفرانبار','ڕێبەندان','رەشەمە'];
+  const kurdish = _kobj.d+' '+kurdishMonths[_kobj.m]+' '+AR(kurdishYear);
   // هەتاوی (ساڵی ئیرانی — نزیک)
-  const hetawiYear = now.getFullYear() - 621;
-  const hetawiMonths=['خاکەلێوە','گوڵان','جۆزەردان','تیر','مرداد','شەهریوەر','مەهر','ئابان','ئازەر','دی','بەهمەن','ئەسفەند'];
-  // محاسبەی مانگی هەتاوی
-  const jd = Math.floor(now.getTime()/86400000) + 2440588;
-  const dep = jd - 2121446;
-  const hm = Math.floor((dep % 365.25) / 30.44);
-  const hd = now.getDate();
-  const hetawi = hd+' '+hetawiMonths[Math.min(hm,11)]+' '+AR(hetawiYear);
+  // هەتاوی — هەمان toKurdi بەکاربهێنین
+  const _hobj = toKurdi(now);
+  const hetawiYear = (_km > 2 || (_km === 2 && _kd >= 21)) ? now.getFullYear() - 621 : now.getFullYear() - 622;
+  const hetawiMonths=['خاکەلێوە','گوڵان','جۆزەردان','پووشپەڕ','گەلاوێژ','خەرمانان','ڕەزبەر','گەڵاڕێزان','سەرماوەز','بەفرانبار','ڕێبەندان','ئەسفەند'];
+  const hetawi = _hobj.d+' '+hetawiMonths[_hobj.m]+' '+AR(hetawiYear);
 
   document.getElementById('dayName').textContent = day;
   document.getElementById('miladi2').textContent = miladi;
@@ -2995,9 +3012,7 @@ function getSurahAudioUrl(suraId, useFallback){
   const primary = {
     'alafasy':           `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${n}.mp3`,
     'abdurrahmaansudais':`https://cdn.islamic.network/quran/audio-surah/128/ar.abdurrahmaansudais/${n}.mp3`,
-    'minshawi':          `https://cdn.islamic.network/quran/audio-surah/128/ar.minshawi/${n}.mp3`,
-    'husary':            `https://cdn.islamic.network/quran/audio-surah/128/ar.husary/${n}.mp3`,
-    'abdullahbasfar':    `https://cdn.islamic.network/quran/audio-surah/128/ar.abdullahbasfar/${n}.mp3`,
+    'minshawi':          `https://server13.mp3quran.net/minsh/${num}.mp3`,
     'mahermuaiqly':      `https://cdn.islamic.network/quran/audio-surah/128/ar.mahermuaiqly/${n}.mp3`,
     'saadalghamdi':      `https://cdn.islamic.network/quran/audio-surah/128/ar.saadalghamdi/${n}.mp3`,
     'peshawa':           `https://server16.mp3quran.net/download/peshawa/Rewayat-Hafs-A-n-Assem/${num}.mp3`,
@@ -3009,8 +3024,6 @@ function getSurahAudioUrl(suraId, useFallback){
     'alafasy':           `https://server8.mp3quran.net/afs/${num}.mp3`,
     'abdurrahmaansudais':`https://server11.mp3quran.net/sds/${num}.mp3`,
     'minshawi':          `https://server13.mp3quran.net/minsh/${num}.mp3`,
-    'husary':            `https://server13.mp3quran.net/husr/${num}.mp3`,
-    'abdullahbasfar':    `https://server7.mp3quran.net/basit/${num}.mp3`,
     'mahermuaiqly':      `https://server12.mp3quran.net/maher/${num}.mp3`,
     'saadalghamdi':      `https://server10.mp3quran.net/sgmd/${num}.mp3`,
     'peshawa':           `https://server16.mp3quran.net/download/peshawa/Rewayat-Hafs-A-n-Assem/${num}.mp3`,
@@ -3702,16 +3715,21 @@ function handleOrientation(e){
   if(e.webkitCompassHeading != null){
     heading = e.webkitCompassHeading;
   }
-  // Android — deviceorientationabsolute
-  else if(e.isTrusted && e.alpha != null){
-    heading = (360 - e.alpha) % 360;
+  // Android — deviceorientationabsolute یان deviceorientation
+  else if(e.alpha != null){
+    // e.absolute === true دەبێت بۆ heading ی ڕاستەقینە
+    if(e.absolute){
+      heading = (360 - e.alpha) % 360;
+    } else {
+      heading = (360 - e.alpha) % 360;
+    }
   }
 
   if(heading == null) return;
 
   // Smoothing — ئەگەر گۆڕانکاری زۆر بچووکبوو پشکنین ناکەین
   const diff = Math.abs(heading - deviceHeading);
-  if(diff < 0.5 && diff !== 0) return;
+  if(diff < 1 && diff !== 0) return;
 
   deviceHeading = heading;
   updateCompassDisplay();
@@ -3907,23 +3925,25 @@ function selectCity(k){
 const KMK=['خاکەلێوە','گوڵان','جۆزەردان','پووشپەڕ','گەلاوێژ','خەرمانان','ڕەزبەر','گەڵاڕێزان','سەرماوەز','بەفرانبار','ڕێبەندان','نەورۆز'];
 
 function toKurdi(date){
-  // ساڵی کوردی = ساڵی میلادی - 621، مانگ و ڕۆژ وەک میلادی
-  // ماوەی نەورۆز (٢١ی مارچ) دەست پێدەکات
-  const y=date.getFullYear(), m=date.getMonth(), d=date.getDate();
-  // مانگی کوردی دەست پێ دەکات لە ٢١ی مارچ (مانگ 2، ڕۆژ 21)
-  let ky, km, kd;
-  if(m>2||(m===2&&d>=21)){
-    ky=y-621;
-    const dayOfYear=Math.floor((date-new Date(y,2,21))/86400000);
-    km=Math.floor(dayOfYear/30);
-    kd=dayOfYear%30+1;
-  }else{
-    ky=y-622;
-    const dayOfYear=Math.floor((date-new Date(y-1,2,21))/86400000);
-    km=Math.floor(dayOfYear/30);
-    kd=dayOfYear%30+1;
+  // ئەلگۆریزمی ساڵنامەی هەتاوی/شمسی ڕاست
+  const gy=date.getFullYear(), gm=date.getMonth()+1, gd=date.getDate();
+  const gy2=gy-1600, gm2=gm-1, gd2=gd-1;
+  const gml=[31,28,31,30,31,30,31,31,30,31,30,31];
+  let gdn=365*gy2+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400);
+  for(let i=0;i<gm2;i++) gdn+=gml[i];
+  if(gm2>1&&((gy2+1600)%4===0&&((gy2+1600)%100!==0||(gy2+1600)%400===0))) gdn+=1;
+  gdn+=gd2;
+  let jdn=gdn-79;
+  const jnp=Math.floor(jdn/12053); jdn%=12053;
+  let jy=979+33*jnp+4*Math.floor(jdn/1461); jdn%=1461;
+  if(jdn>=366){jy+=Math.floor((jdn-1)/365);jdn=(jdn-1)%365;}
+  const jml=[31,31,31,31,31,31,30,30,30,30,30,29];
+  let jm=0,jd=0;
+  for(let i=0;i<12;i++){
+    if(jdn>=jml[i]){jdn-=jml[i];}
+    else{jm=i+1;jd=jdn+1;break;}
   }
-  return{y:ky, m:Math.min(km,11), d:Math.min(kd,30)};
+  return{y:jy, m:jm-1, d:jd};
 }
 
 function renderCal(){
@@ -4038,7 +4058,7 @@ function switchPage(p){
   
   }
   if(p==='zikr') renderZikr();
-  if(p==='settings') renderMuezzinList();
+  if(p==='settings'){ renderMuezzinList(); renderAzanModeList(); }
   if(p==='quran') renderSuraList();
   if(p==='hisn') renderHisn();
   if(p==='tv') renderTVChannels();
@@ -4257,6 +4277,76 @@ function fetchWeather(pos){ const lat=pos.coords.latitude.toFixed(4),lon=pos.coo
 function fetchWeatherByCity(){ const coord=COORDS[CUR]; if(!coord) return; fetch('https://api.open-meteo.com/v1/forecast?latitude='+coord.lat+'&longitude='+coord.lng+'&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto').then(r=>r.json()).then(data=>{ const c=data.current; const city=CITIES[CUR]; updateWeatherUI(c.temperature_2m,c.weather_code,c.relative_humidity_2m,c.wind_speed_10m,city?city.name:''); }).catch(()=>{ const el=document.getElementById('weatherDesc'); if(el) el.textContent='ئینتەرنێت پشکنە'; }); }
 function updateWeatherUI(temp,code,humidity,wind,cityName){ const icon=WEATHER_ICONS[code]||'🌡',desc=WEATHER_DESCS[code]||'—'; const wi=document.getElementById('weatherIcon'); const wt=document.getElementById('weatherTemp'); const wd=document.getElementById('weatherDesc'); const wc=document.getElementById('weatherCity'); const wh=document.getElementById('weatherHumidity'); const ww=document.getElementById('weatherWind'); if(wi) wi.textContent=icon; if(wt) wt.textContent=Math.round(temp)+'°C'; if(wd) wd.textContent=desc; if(wc) wc.textContent=cityName||CITIES[CUR]?.name||''; if(wh) wh.textContent='💧 '+humidity+'%'; if(ww) ww.textContent='💨 '+Math.round(wind)+' km/h'; localStorage.setItem('weatherCache',JSON.stringify({temp,code,humidity,wind,cityName,time:Date.now()})); }
 function loadCachedWeather(){ try{ const c=JSON.parse(localStorage.getItem('weatherCache')); if(c&&Date.now()-c.time<30*60*1000){ updateWeatherUI(c.temp,c.code,c.humidity,c.wind,c.cityName); return true; } }catch(e){} return false; }
+
+// ── دوگمەی بانگدان بۆ هەر نوێژێک ──────────────────
+function getPrayerMode(idx){ return localStorage.getItem('azanMode_'+idx)||'sound'; }
+function setPrayerMode(idx,mode){ localStorage.setItem('azanMode_'+idx,mode); renderAzanModeList(); }
+
+function renderAzanModeList(){
+  const el = document.getElementById('azanModeList');
+  if(!el) return;
+  const NAMES = ['بەیانی','گزنگ','نیوەڕۆ','عەسر','ئێوارە','خەوتنان'];
+  const ICONS = ['🌙','🌅','☀️','🌤','🌇','🌃'];
+  const KEYS  = ['fajr','sunrise','dhuhr','asr','maghrib','isha'];
+  let html = '';
+  const sq = String.fromCharCode(39);
+  KEYS.forEach(function(key, i){
+    if(key === 'sunrise') return;
+    const mode = getPrayerMode(i);
+    const sC = mode==='sound'   ? 'rgba(46,204,113,.25)'  : 'rgba(255,255,255,.04)';
+    const vC = mode==='vibrate' ? 'rgba(52,152,219,.25)'  : 'rgba(255,255,255,.04)';
+    const xC = mode==='silent'  ? 'rgba(255,255,255,.12)' : 'rgba(255,255,255,.04)';
+    const sB = mode==='sound'   ? 'rgba(46,204,113,.7)'   : 'rgba(255,255,255,.12)';
+    const vB = mode==='vibrate' ? 'rgba(52,152,219,.6)'   : 'rgba(255,255,255,.12)';
+    const xB = mode==='silent'  ? 'rgba(255,255,255,.35)' : 'rgba(255,255,255,.12)';
+    const lbl = mode==='sound' ? '🔔 بانگ' : mode==='vibrate' ? '📳 هەزاندن' : '🔕 بێدەنگ';
+    html += '<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 14px;direction:rtl">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    html += '<div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">'+ICONS[i]+'</span>';
+    html += '<span style="font-size:13px;font-weight:700;color:#fff">'+NAMES[i]+'</span></div>';
+    html += '<span style="font-size:10px;color:rgba(255,255,255,.5)">'+lbl+'</span></div>';
+    html += '<div style="display:flex;gap:5px">';
+    html += '<button onclick="setPrayerMode('+i+','+sq+'sound'+sq+')" style="flex:1;padding:6px 2px;border-radius:9px;border:2px solid '+sB+';background:'+sC+';color:#fff;font-size:11px;font-weight:700;cursor:pointer">🔔 بانگ</button>';
+    html += '<button onclick="setPrayerMode('+i+','+sq+'vibrate'+sq+')" style="flex:1;padding:6px 2px;border-radius:9px;border:2px solid '+vB+';background:'+vC+';color:#fff;font-size:11px;font-weight:700;cursor:pointer">📳 هەزاندن</button>';
+    html += '<button onclick="setPrayerMode('+i+','+sq+'silent'+sq+')" style="flex:1;padding:6px 2px;border-radius:9px;border:2px solid '+xB+';background:'+xC+';color:#fff;font-size:11px;font-weight:700;cursor:pointer">🔕 بێدەنگ</button>';
+    html += '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+// ── ئاگاداری پێشوەختە (١٠ خولەک) ──────────────────
+let earlyNotifEnabled = localStorage.getItem('earlyNotif') !== 'false';
+
+function toggleEarlyNotif(){
+  earlyNotifEnabled = !earlyNotifEnabled;
+  localStorage.setItem('earlyNotif', earlyNotifEnabled);
+  const btn = document.getElementById('earlyNotifToggle');
+  if(btn) btn.classList.toggle('on', earlyNotifEnabled);
+}
+
+function checkEarlyNotif(times){
+  if(!earlyNotifEnabled) return;
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  const now = new Date();
+  const hh = now.getHours();
+  const mm = now.getMinutes();
+  const ss = now.getSeconds();
+  if(ss > 5) return; // تەنها لە دەستپێکی خولەکدا
+  const curMin = hh * 60 + mm;
+  times.forEach((t, i) => {
+    const pMin = t.h * 60 + t.m;
+    const diff = pMin - curMin;
+    if(diff === 10){ // تەنها ١٠ خولەک پێشتر
+      const meta = PM[i];
+      if(meta.nobell) return; // گزنگ نەدەینە
+      new Notification('⏰ ١٠ خولەک مایەتەوە', {
+        body: 'کاتی بانگی ' + meta.ku + ' کاتی ' + fmt(t.h, t.m),
+        icon: './icon-192.png',
+        silent: false
+      });
+    }
+  });
+}
 function showToast(msg){
   document.getElementById('toastTxt').textContent=msg;
   const t=document.getElementById('toast');
@@ -4306,6 +4396,7 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
   document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
   document.getElementById('pg-home').classList.add('active');
   selectCity(CUR);
+  renderAzanModeList();
   if(!loadCachedWeather()) refreshWeather();
   renderDate();renderCal();tick();renderWidgetPrayers();renderSalah();
   document.getElementById('plist').classList.add('collapsed');
