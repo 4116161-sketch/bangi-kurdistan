@@ -664,33 +664,38 @@ body{
 .qz-icon{font-size:32px;line-height:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
 .qz-title{font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif;line-height:1.3}
 .qz-sub{font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif}
-
+/* ── LANDSCAPE MODE بۆ قورئان ── */
 @media screen and (orientation: landscape) {
-  .app { max-width:100vw !important; }
-  .bnav { display:none !important; }
-  .hdr  { display:none !important; }
   #pg-sura {
-    position:fixed !important; top:0 !important; left:0 !important;
-    width:100vw !important; height:100dvh !important;
-    max-width:100vw !important; z-index:600 !important;
-    overflow:hidden !important;
-    background:linear-gradient(180deg,#020c07 0%,#010704 100%) !important;
-    display:flex !important; flex-direction:column !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    z-index: 500 !important;
+    overflow-y: auto !important;
+    padding-bottom: 20px !important;
   }
-  #pg-sura .quran-page-wrap {
-    display:flex !important; flex-direction:column !important;
-    height:100dvh !important; width:100% !important; overflow:hidden !important;
+  #pg-sura .quran-hdr {
+    padding: 6px 12px !important;
   }
-  #pg-sura .quran-hdr { flex-shrink:0 !important; padding:5px 16px !important; }
-  #pg-sura #audioBar  { flex-shrink:0 !important; padding:4px 16px !important; }
-  #pg-sura #suraScroll {
-    flex:1 1 0 !important; overflow-y:scroll !important;
-    -webkit-overflow-scrolling:touch !important; min-height:0 !important;
-    padding:10px 20px !important;
+  #pg-sura .quran-flow {
+    font-size: 28px !important;
+    line-height: 2.2 !important;
+    padding: 10px 20px !important;
   }
-  #pg-sura .bismillah { font-size:30px !important; }
-  #pg-sura .quran-flow { font-size:28px !important; line-height:2.2 !important; }
+  #pg-sura .bismillah {
+    font-size: 32px !important;
+  }
+  #pg-sura #audioBar {
+    padding: 4px 12px !important;
+  }
+  .bnav {
+    display: none !important;
+  }
 }
+
 /* ── TOAST ── */
 .toast{
   position:fixed;top:-110px;left:50%;transform:translateX(-50%);
@@ -1265,14 +1270,15 @@ body{
         <div style="padding:4px 12px 8px">
           <select id="readerSelect" onchange="changeReader(this.value)"
             style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:8px 12px;color:#fff;font-family:'Cairo',sans-serif;font-size:12px;outline:none;appearance:none;-webkit-appearance:none">
+            <option value="ar.saadalghamdi">🎙 سعد الغامدي</option>
+            <option value="peshawa">🎙 پێشەوا قادر الکردی</option>
+            <option value="raad">🎙 رەعد محمد الکردی</option>
             <option value="ar.alafasy">🎙 مصطفى العفاسي</option>
             <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
             <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
             <option value="ar.husary">🎙 محمود خليل الحصري</option>
             <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
             <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
-            <option value="peshawa">🎙 پێشەوا قادر الکردی</option>
-            <option value="raad">🎙 رەعد محمد الکردی</option>
           </select>
         </div>
         <div style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch" id="suraList"></div>
@@ -1297,14 +1303,6 @@ body{
             <span id="gaDur" style="font-size:10px;color:rgba(241,196,15,.7);min-width:30px;text-align:right">0:00</span>
           </div>
         </div>
-        <!-- گەڕان -->
-        <div style="padding:0 12px 6px;flex-shrink:0">
-          <input oninput="filterGaudioList(this.value)" type="search" placeholder="🔍 گەڕان..."
-            style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:8px 14px;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;outline:none">
-        </div>
-        <!-- لیستی سووڕەتەکان -->
-        <div id="gaudioList" style="padding:0 12px 12px;overflow-y:scroll;flex:1;-webkit-overflow-scrolling:touch"></div>
-      </div>
     </div>
   </div>
 
@@ -1323,14 +1321,15 @@ body{
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:8px">
           <select onchange="changeReader(this.value)" id="suraReaderSelect"
             style="flex:1;background:rgba(46,204,113,.07);border:1px solid rgba(46,204,113,.18);border-radius:8px;padding:4px 8px;color:rgba(255,255,255,.8);font-family:'Cairo',sans-serif;font-size:10px;outline:none;appearance:none;-webkit-appearance:none">
+            <option value="ar.saadalghamdi">🎙 سعد الغامدي</option>
+            <option value="peshawa">🎙 پێشەوا قادر الکردی</option>
+            <option value="raad">🎙 رەعد محمد الکردی</option>
             <option value="ar.alafasy">🎙 مصطفى العفاسي</option>
             <option value="ar.abdurrahmaansudais">🎙 عبدالرحمن السديس</option>
             <option value="ar.minshawi">🎙 محمد صديق المنشاوي</option>
             <option value="ar.husary">🎙 محمود خليل الحصري</option>
             <option value="ar.abdullahbasfar">🎙 عبدالله بصفر</option>
             <option value="ar.mahermuaiqly">🎙 ماهر المعيقلي</option>
-            <option value="peshawa">🎙 پێشەوا قادر الکردی</option>
-            <option value="raad">🎙 رەعد محمد الکردی</option>
           </select>
           <!-- ئۆتۆ-نێکست -->
           <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
@@ -1553,22 +1552,13 @@ body{
   <div class="pg" id="pg-settings">
     <div class="spage">
       <div class="sec-lbl">ڕێکخستنەکان</div>
+      <div class="srow"><div class="sinfo"><div class="sico">🔔</div><div><div class="slbl">هەواڵی بانگ</div><div class="sdesc">ئاگادارکردنەوەی کاتی نوێژ</div></div></div><div class="toggle on" id="notifToggle" onclick="toggleNotifSetting()"></div></div>
 
 
-      <div class="srow" id="testAzanRow">
-        <div class="sinfo"><div class="sico">🎵</div><div><div class="slbl">تاقیکردنەوەی دەنگی بانگ</div><div class="sdesc">دەنگی بانگ بیبیستە</div></div></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="testAzanBtn" onclick="toggleTestAzan()" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.25);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">▶</button>
-          <button onclick="stopTestAzan()" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.25);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center">⏹</button>
-        </div>
-      </div>
 
       <div class="srow"><div class="sinfo"><div class="sico">🌙</div><div><div class="slbl">دۆخی رەمەزان</div><div class="sdesc">پیشاندانی ئیمساک و ئیفتار</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
       <div class="srow"><div class="sinfo"><div class="sico">⏰</div><div><div class="slbl">ئاگاداری پێشوەختە</div><div class="sdesc">١٠ خولەک پێش کاتی نوێژ</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
 
-      <!-- دوگمەی بانگدان -->
-      <div class="sec-lbl" style="margin-top:18px">🔔 دوگمەی بانگدان</div>
-      <div id="azanModeList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px"></div>
       <!-- بانگ بێژەکان -->
       <div class="sec-lbl" style="margin-top:18px">🎙 دەنگی بانگ</div>
 
@@ -1711,7 +1701,7 @@ let azanAudio = null;
 let customAzanURL = null;
 
 // ── بانگی ناوخۆیی — عبدالرحمن فتاح ─────────────────
-const EMBEDDED_AZAN_B64 = null;
+const EMBEDDED_AZAN_B64 = null; // لابراوە — فایلی دەنگ لە GitHub
 const EMBEDDED_AZAN_ID = 'abdulrahman_fattah';
 
 // بانگ بێژەکان بۆ لیست
@@ -1725,6 +1715,7 @@ let embeddedAzanURL = null;
 
 function getEmbeddedAzanURL(){
   if(embeddedAzanURL) return embeddedAzanURL;
+  // فایلی دەنگ لە GitHub — ئەوانەی لە هەمان ڕیپۆزیتۆری
   embeddedAzanURL = './azan.mp3';
   return embeddedAzanURL;
 }
@@ -1770,24 +1761,49 @@ let previewAudio = null;
 let previewCtx = null;
 
 function previewMuezzin(id){
+  // ئەگەر پێشوەخت پلەی دەکات، وەستێنێ
+  if(previewAudio && !previewAudio.paused){
+    previewAudio.pause();
+    previewAudio = null;
+    const btn = document.getElementById('pvBtn-embedded');
+    if(btn) btn.textContent = '▶';
+    return;
+  }
   if(previewAudio){ previewAudio.pause(); previewAudio = null; }
   const url = getEmbeddedAzanURL();
   if(!url){ showToast('⚠️ دەنگ بار نەبوو'); return; }
   const btn = document.getElementById('pvBtn-embedded');
-  previewAudio = new Audio(url);
+  
+  // AudioContext unlock پێش هەر شتێک
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    ctx.resume();
+  }catch(e){}
+  
+  previewAudio = new Audio();
   previewAudio.volume = 1.0;
-  const playPromise = previewAudio.play();
-  if(playPromise !== undefined){
-    playPromise
-      .then(()=>{
-        if(btn) btn.textContent = '⏸';
-        showToast('▶ عبدالرحمن فتاح');
-      })
-      .catch(e=>{
-        console.warn('preview failed:', e);
-        showToast('⚠️ دەنگ نەدەرچوو — دوگمەیەکی تر بکە');
-      });
-  }
+  previewAudio.src = url;
+  previewAudio.load();
+  
+  previewAudio.play()
+    .then(()=>{
+      if(btn) btn.textContent = '⏸';
+      showToast('🎵 عبدالرحمن فتاح');
+    })
+    .catch(e=>{
+      console.warn('preview failed:', e);
+      // تاقی کردنەوەی دووەم بە AudioContext
+      try{
+        const ctx2 = new (window.AudioContext || window.webkitAudioContext)();
+        ctx2.resume().then(()=>{
+          previewAudio = new Audio(url);
+          previewAudio.volume = 1.0;
+          previewAudio.play().then(()=>{
+            if(btn) btn.textContent = '⏸';
+          }).catch(()=>{ showToast('⚠️ دوگمەیەک دیکە بکە'); });
+        });
+      }catch(e2){ showToast('⚠️ دەنگ نەدەرچوو'); }
+    });
   previewAudio.onended = ()=>{ if(btn) btn.textContent = '▶'; };
 }
 
@@ -1883,10 +1899,7 @@ function loadAzanFile(input){
 // ── بانگی ڕاستەقینە بە Web Audio API ─────────────
 // هەر بانگبێژێک دەنگی جیاوازی هەیە — بێ ئینتەرنێت کار دەکات
 
-function playAzan(prayerIdx){
-  const mode=(prayerIdx!==undefined)?getPrayerMode(prayerIdx):'sound';
-  if(mode==='silent'){ if('Notification' in window&&Notification.permission==='granted') new Notification('🕌 کاتی بانگە',{body:'بێدەنگ',icon:'./icon-192.png',silent:true}); return; }
-  if(mode==='vibrate'){ if(navigator.vibrate) navigator.vibrate([800,200,800,200,800]); if('Notification' in window&&Notification.permission==='granted') new Notification('🕌 کاتی بانگە',{body:'هەزاندن',icon:'./icon-192.png',silent:true}); return; }
+function playAzan(){
   // ئەگەر فایلی کەسیی ئەپلۆد کراوە — ئەوە یەکەمە
   if(localStorage.getItem('azanBase64') && customAzanURL){
     const a = new Audio(customAzanURL);
@@ -2038,7 +2051,7 @@ function tick(){
           // بانگ ندە ئەگەر: بێدەنگ کراوە یان nobell (گزنگ/خۆرهەڵاتن)
           const meta = PM[i];
           if(!mutedPrayers[i] && !meta.nobell){
-            playAzan(i);
+            playAzan();
           }
           showToast('🕌 کاتی بانگی '+meta.ku+'ە');
           showPlist();
@@ -2963,7 +2976,7 @@ function filterSuraList(q){
 
 
 let curSuraId = 1;
-let curReader = 'ar.alafasy';
+let curReader = 'peshawa';
 
 function changeReader(val){
   curReader = val;
@@ -3004,6 +3017,7 @@ function getSurahAudioUrl(suraId, useFallback){
     'husary':            `https://cdn.islamic.network/quran/audio-surah/128/ar.husary/${n}.mp3`,
     'abdullahbasfar':    `https://cdn.islamic.network/quran/audio-surah/128/ar.abdullahbasfar/${n}.mp3`,
     'mahermuaiqly':      `https://cdn.islamic.network/quran/audio-surah/128/ar.mahermuaiqly/${n}.mp3`,
+    'saadalghamdi':      `https://cdn.islamic.network/quran/audio-surah/128/ar.saadalghamdi/${n}.mp3`,
     'peshawa':           `https://server16.mp3quran.net/download/peshawa/Rewayat-Hafs-A-n-Assem/${num}.mp3`,
     'raad':              `https://server6.mp3quran.net/kurdi/${num}.mp3`,
   };
@@ -3016,6 +3030,7 @@ function getSurahAudioUrl(suraId, useFallback){
     'husary':            `https://server13.mp3quran.net/husr/${num}.mp3`,
     'abdullahbasfar':    `https://server7.mp3quran.net/basit/${num}.mp3`,
     'mahermuaiqly':      `https://server12.mp3quran.net/maher/${num}.mp3`,
+    'saadalghamdi':      `https://server10.mp3quran.net/sgmd/${num}.mp3`,
     'peshawa':           `https://server16.mp3quran.net/download/peshawa/Rewayat-Hafs-A-n-Assem/${num}.mp3`,
     'raad':              `https://server6.mp3quran.net/kurdi/${num}.mp3`,
   };
@@ -3220,6 +3235,57 @@ function showSura(id){
       `<div class="quran-flow">${lines}</div>`;
   }
 
+  // سعد الغامدی لە API ی جیاوازدایە
+  if(curReader === 'ar.saadalghamdi' || curReader === 'peshawa' || curReader === 'raad'){
+    // متن لە ar.alafasy بارکە
+    fetch('https://api.alquran.cloud/v1/surah/'+id+'/ar.alafasy')
+      .then(r=>r.json())
+      .then(data=>{ if(data.code===200) renderAyat(data.data.ayahs); })
+      .catch(()=>{
+        const data = SURAS[id];
+        if(data){
+          const ayat = data.ayat.map((t,i)=>({text:t, numberInSurah:i+1}));
+          renderAyat(ayat);
+        }
+      });
+    // دەنگی سعد الغامدی ڕاستەوخۆ
+    const sgNum = String(id).padStart(3,'0');
+    const sgUrls = curReader === 'peshawa' ? [
+      `https://server16.mp3quran.net/download/peshawa/Rewayat-Hafs-A-n-Assem/${sgNum}.mp3`,
+    ] : curReader === 'raad' ? [
+      `https://server6.mp3quran.net/kurdi/${sgNum}.mp3`,
+    ] : [
+      `https://download.tvquran.com/download/recitations/343/266/${sgNum}.mp3`,
+      `https://server10.mp3quran.net/sgmd/${sgNum}.mp3`,
+      `https://cdn.islamic.network/quran/audio-surah/128/ar.saadalghamdi/${id}.mp3`,
+    ];
+    function trySgUrl(idx){
+      if(idx >= sgUrls.length){ showToast('⚠️ دەنگ نەبارکرا'); return; }
+      if(quranAudio){ quranAudio.pause(); quranAudio.src=''; quranAudio=null; }
+      quranAudio = new Audio(sgUrls[idx]);
+      quranAudio.preload = 'auto';
+      quranAudio.onerror = ()=>{ trySgUrl(idx+1); };
+      quranAudio.onloadedmetadata = ()=>{
+        const dm=Math.floor(quranAudio.duration/60), ds=Math.floor(quranAudio.duration%60);
+        const durEl=document.getElementById('audioDur');
+        if(durEl) durEl.textContent=dm+':'+String(ds).padStart(2,'0');
+      };
+      quranAudio.ontimeupdate = ()=>{
+        if(!quranAudio.duration) return;
+        const pct=(quranAudio.currentTime/quranAudio.duration)*100;
+        const prog=document.getElementById('audioProgress');
+        const timeEl=document.getElementById('audioTime');
+        if(prog) prog.style.width=pct+'%';
+        if(timeEl){ const m=Math.floor(quranAudio.currentTime/60),s=Math.floor(quranAudio.currentTime%60); timeEl.textContent=m+':'+String(s).padStart(2,'0'); }
+      };
+      quranAudio.onended=()=>{ audioPlaying=false; document.getElementById('playBtn').textContent='▶'; };
+      quranAudio.play()
+        .then(()=>{ audioPlaying=true; document.getElementById('playBtn').textContent='⏸'; })
+        .catch(()=>{ trySgUrl(idx+1); });
+    }
+    trySgUrl(0);
+    return;
+  }
   fetch('https://api.alquran.cloud/v1/surah/'+id+'/'+curReader)
     .then(r=>r.json())
     .then(data=>{
@@ -3951,7 +4017,6 @@ function renderWidgets(){
 }
 
 function switchPage(p){
-  try{ if(p!=='home') history.pushState({page:p},'','#'+p); else history.pushState({page:'home'},'',location.pathname); }catch(e){}
   document.querySelectorAll('.pg').forEach(x=>{
     x.classList.remove('active');
     x.classList.remove('fullscreen');
@@ -3990,7 +4055,7 @@ function switchPage(p){
   
   }
   if(p==='zikr') renderZikr();
-  if(p==='settings'){ renderMuezzinList(); renderAzanModeList(); }
+  if(p==='settings') renderMuezzinList();
   if(p==='quran') renderSuraList();
   if(p==='hisn') renderHisn();
   if(p==='tv') renderTVChannels();
@@ -4207,43 +4272,8 @@ const WEATHER_DESCS = {0:'ئاسمانی پاک',1:'نیم ئاسمان',2:'هە
 function refreshWeather(){ if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(fetchWeather, fetchWeatherByCity, {timeout:8000}); } else { fetchWeatherByCity(); } }
 function fetchWeather(pos){ const lat=pos.coords.latitude.toFixed(4),lon=pos.coords.longitude.toFixed(4); fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto').then(r=>r.json()).then(data=>{ const c=data.current; updateWeatherUI(c.temperature_2m,c.weather_code,c.relative_humidity_2m,c.wind_speed_10m,''); }).catch(()=>{ fetchWeatherByCity(); }); }
 function fetchWeatherByCity(){ const coord=COORDS[CUR]; if(!coord) return; fetch('https://api.open-meteo.com/v1/forecast?latitude='+coord.lat+'&longitude='+coord.lng+'&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto').then(r=>r.json()).then(data=>{ const c=data.current; const city=CITIES[CUR]; updateWeatherUI(c.temperature_2m,c.weather_code,c.relative_humidity_2m,c.wind_speed_10m,city?city.name:''); }).catch(()=>{ const el=document.getElementById('weatherDesc'); if(el) el.textContent='ئینتەرنێت پشکنە'; }); }
-function updateWeatherUI(temp,code,humidity,wind,cityName){ const icon=WEATHER_ICONS[code]||'🌡',desc=WEATHER_DESCS[code]||'—'; document.getElementById('weatherIcon').textContent=icon; document.getElementById('weatherTemp').textContent=Math.round(temp)+'°C'; document.getElementById('weatherDesc').textContent=desc; document.getElementById('weatherCity').textContent=cityName||CITIES[CUR]?.name||''; document.getElementById('weatherHumidity').textContent='💧 '+humidity+'%'; document.getElementById('weatherWind').textContent='💨 '+Math.round(wind)+' km/h'; localStorage.setItem('weatherCache',JSON.stringify({temp,code,humidity,wind,cityName,time:Date.now()})); }
+function updateWeatherUI(temp,code,humidity,wind,cityName){ const icon=WEATHER_ICONS[code]||'🌡',desc=WEATHER_DESCS[code]||'—'; const wi=document.getElementById('weatherIcon'); const wt=document.getElementById('weatherTemp'); const wd=document.getElementById('weatherDesc'); const wc=document.getElementById('weatherCity'); const wh=document.getElementById('weatherHumidity'); const ww=document.getElementById('weatherWind'); if(wi) wi.textContent=icon; if(wt) wt.textContent=Math.round(temp)+'°C'; if(wd) wd.textContent=desc; if(wc) wc.textContent=cityName||CITIES[CUR]?.name||''; if(wh) wh.textContent='💧 '+humidity+'%'; if(ww) ww.textContent='💨 '+Math.round(wind)+' km/h'; localStorage.setItem('weatherCache',JSON.stringify({temp,code,humidity,wind,cityName,time:Date.now()})); }
 function loadCachedWeather(){ try{ const c=JSON.parse(localStorage.getItem('weatherCache')); if(c&&Date.now()-c.time<30*60*1000){ updateWeatherUI(c.temp,c.code,c.humidity,c.wind,c.cityName); return true; } }catch(e){} return false; }
-
-// ── دوگمەی بانگدان بۆ هەر نوێژێک ──────────────────
-const PRAYER_MODE_KEYS = ['fajr','sunrise','dhuhr','asr','maghrib','isha'];
-const PRAYER_MODE_NAMES = ['بەیانی','گزنگ','نیوەڕۆ','عەسر','ئێوارە','خەوتنان'];
-const PRAYER_MODE_ICONS = ['🌙','🌅','☀️','🌤','🌇','🌃'];
-function getPrayerMode(idx){ return localStorage.getItem('azanMode_'+idx)||'sound'; }
-function setPrayerMode(idx,mode){ localStorage.setItem('azanMode_'+idx,mode); renderAzanModeList(); }
-function renderAzanModeList(){
-  const el=document.getElementById('azanModeList');
-  if(!el) return;
-  let html='';
-  const sq=String.fromCharCode(39);
-  PRAYER_MODE_KEYS.forEach(function(key,i){
-    if(key==='sunrise') return;
-    const mode=getPrayerMode(i);
-    const sC=mode==='sound'?'rgba(46,204,113,.25)':'rgba(255,255,255,.04)';
-    const vC=mode==='vibrate'?'rgba(52,152,219,.25)':'rgba(255,255,255,.04)';
-    const xC=mode==='silent'?'rgba(255,255,255,.1)':'rgba(255,255,255,.04)';
-    const sB=mode==='sound'?'rgba(46,204,113,.6)':'rgba(255,255,255,.12)';
-    const vB=mode==='vibrate'?'rgba(52,152,219,.5)':'rgba(255,255,255,.12)';
-    const xB=mode==='silent'?'rgba(255,255,255,.3)':'rgba(255,255,255,.12)';
-    const lbl=mode==='sound'?'🔔 بانگ':mode==='vibrate'?'📳 هەزاندن':'🔕 بێدەنگ';
-    html+='<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 14px;direction:rtl">';
-    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
-    html+='<div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">'+PRAYER_MODE_ICONS[i]+'</span>';
-    html+='<span style="font-size:13px;font-weight:700;color:#fff">'+PRAYER_MODE_NAMES[i]+'</span></div>';
-    html+='<span style="font-size:10px;color:rgba(255,255,255,.45)">'+lbl+'</span></div>';
-    html+='<div style="display:flex;gap:5px">';
-    html+='<button onclick="setPrayerMode('+i+','+sq+'sound'+sq+')" style="flex:1;padding:6px 2px;border-radius:9px;border:2px solid '+sB+';background:'+sC+';color:#fff;font-size:10px;font-weight:700;cursor:pointer">🔔 بانگ</button>';
-    html+='<button onclick="setPrayerMode('+i+','+sq+'vibrate'+sq+')" style="flex:1;padding:6px 2px;border-radius:9px;border:2px solid '+vB+';background:'+vC+';color:#fff;font-size:10px;font-weight:700;cursor:pointer">📳 هەزاندن</button>';
-    html+='<button onclick="setPrayerMode('+i+','+sq+'silent'+sq+')" style="flex:1;padding:6px 2px;border-radius:9px;border:2px solid '+xB+';background:'+xC+';color:#fff;font-size:10px;font-weight:700;cursor:pointer">🔕 بێدەنگ</button>';
-    html+='</div></div>';
-  });
-  el.innerHTML=html;
-}
 function showToast(msg){
   document.getElementById('toastTxt').textContent=msg;
   const t=document.getElementById('toast');
@@ -4291,7 +4321,6 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
   document.getElementById('pg-home').classList.add('active');
   selectCity(CUR);
   if(!loadCachedWeather()) refreshWeather();
-  renderAzanModeList();
   renderDate();renderCal();tick();renderWidgetPrayers();renderSalah();
   document.getElementById('plist').classList.add('collapsed');
   setInterval(tick,1000);
@@ -4303,33 +4332,6 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
 })();
 
 // PWA Service Worker
-window.addEventListener('popstate', function(e){
-  const p = (e.state && e.state.page) ? e.state.page : 'home';
-  document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
-  const pg = document.getElementById('pg-'+p);
-  if(pg) pg.classList.add('active');
-  document.querySelectorAll('.nbtn').forEach(x=>x.classList.remove('active'));
-  const nb = document.getElementById('nav-'+p); if(nb) nb.classList.add('active');
-  if(p==='zikr') renderZikr();
-  if(p==='settings'){ renderMuezzinList(); }
-  if(p==='quran') renderSuraList();
-  if(p==='hisn') renderHisn();
-  if(p==='tv') renderTVChannels();
-});
-
-window.addEventListener('popstate', function(e){
-  const p=(e.state&&e.state.page)?e.state.page:'home';
-  document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
-  const pg=document.getElementById('pg-'+p); if(pg) pg.classList.add('active');
-  document.querySelectorAll('.nbtn').forEach(x=>x.classList.remove('active'));
-  const nb=document.getElementById('nav-'+p); if(nb) nb.classList.add('active');
-  if(p==='zikr') renderZikr();
-  if(p==='settings'){ renderMuezzinList(); renderAzanModeList(); }
-  if(p==='quran') renderSuraList();
-  if(p==='hisn') renderHisn();
-  if(p==='tv') renderTVChannels();
-});
-
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
     navigator.serviceWorker.register('./sw.js').then(reg=>{
