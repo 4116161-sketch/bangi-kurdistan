@@ -3338,7 +3338,7 @@ document.addEventListener('visibilitychange', async ()=>{
   }
 });
 
-let autoNext = localStorage.getItem('autoNext') === 'true';
+let autoNext = false; localStorage.removeItem('autoNext');
 
 function toggleAutoNext(){
   autoNext = !autoNext;
@@ -4316,6 +4316,9 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
   // دامەزراندنی toggle بەپێی localStorage
   const nt = document.getElementById('notifToggle');
   if(nt && !notifEnabled) nt.classList.remove('on');
+  // autoNext هەمیشە off دەستپێبکات
+  const ant = document.getElementById('autoNextToggle');
+  if(ant) ant.classList.remove('on');
   // دەستپێک هەمیشە ماڵەوە
   document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
   document.getElementById('pg-home').classList.add('active');
