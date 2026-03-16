@@ -1,14 +1,16 @@
 {
-  "name": "کاتەکانی بانگ - کوردستان",
-  "short_name": "بانگ",
-  "description": "کاتەکانی نوێژ بۆ هەرێمی کوردستانی عێراق",
-  "start_url": "./index.html",
+  "name": "KatiBANG — بانگی کوردستان",
+  "short_name": "KatiBANG",
+  "description": "بەرنامەی نوێژ و قورئانی کوردی — کاتی بانگ، قورئانی پیرۆز، قیبلە و زیکر",
+  "start_url": "/bangi-kurdistan/",
+  "scope": "/bangi-kurdistan/",
   "display": "standalone",
-  "background_color": "#030f06",
-  "theme_color": "#1B8A4E",
   "orientation": "portrait",
+  "background_color": "#020c07",
+  "theme_color": "#0d2818",
   "lang": "ku",
   "dir": "rtl",
+  "categories": ["religion", "lifestyle", "utilities"],
   "icons": [
     {
       "src": "icon-192.png",
@@ -22,5 +24,22 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "قورئانی پیرۆز",
+      "short_name": "قورئان",
+      "url": "/bangi-kurdistan/#quran",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "قیبلە",
+      "short_name": "قیبلە",
+      "url": "/bangi-kurdistan/#qibla",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }
