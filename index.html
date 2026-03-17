@@ -106,6 +106,7 @@ body{
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 12px rgba(46,204,113,.3)}50%{box-shadow:0 0 28px rgba(46,204,113,.6)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes radioWave{0%,100%{height:6px}50%{height:18px}}
 
 /* TOP ROW */
 .top-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 4px;gap:10px;flex-shrink:0}
@@ -1072,7 +1073,7 @@ body{
     <div class="plist-wrap" id="plist"></div>
 
     <!-- کارتی کەشوهەوا -->
-    <div id="weatherCard" style="margin:8px 10px 6px;background:linear-gradient(135deg,rgba(30,80,120,.6),rgba(10,40,80,.8));border:1px solid rgba(100,180,255,.2);border-radius:20px;padding:14px 16px;direction:rtl;cursor:pointer" onclick="refreshWeather()">
+    <div id="weatherCard" style="margin:8px 10px 6px;background:linear-gradient(135deg,rgba(30,80,120,.6),rgba(10,40,80,.8));border:1px solid rgba(100,180,255,.2);border-radius:20px;padding:14px 16px;direction:rtl;cursor:pointer" onclick="showWeatherForecast()">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:10px">
           <div id="weatherIcon" style="font-size:32px">⏳</div>
@@ -1086,6 +1087,24 @@ body{
           <div id="weatherHumidity" style="font-size:10px;color:rgba(255,255,255,.45);font-family:'Cairo',sans-serif">—</div>
           <div id="weatherWind" style="font-size:10px;color:rgba(255,255,255,.45);font-family:'Cairo',sans-serif">—</div>
         </div>
+      </div>
+      <div style="margin-top:8px;border-top:1px solid rgba(100,180,255,.15);padding-top:7px;display:flex;align-items:center;justify-content:center;gap:5px">
+        <span style="font-size:10px;color:rgba(100,200,255,.6);font-family:'Cairo',sans-serif;font-weight:700">📅 کلیک بکە بۆ پێشبینی 5 ڕۆژ</span>
+      </div>
+    </div>
+
+    <!-- مۆدالی پێشبینی 5 ڕۆژ — فول شاشە -->
+    <div id="forecastModal" style="display:none;position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#020e07,#010704);flex-direction:column;overflow-y:auto">
+      <!-- هێدر -->
+      <div style="background:rgba(2,14,8,.98);border-bottom:1px solid rgba(46,204,113,.15);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:10;backdrop-filter:blur(20px)">
+        <button onclick="closeForecastModal()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;width:36px;height:36px;border-radius:12px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
+        <div style="font-size:16px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">📅 پێشبینی 5 ڕۆژ</div>
+        <div style="width:36px"></div>
+      </div>
+      <!-- ناوەڕۆک -->
+      <div style="padding:16px;flex:1">
+        <div id="forecastLoading" style="text-align:center;padding:60px 0;font-family:'Cairo',sans-serif;color:rgba(255,255,255,.5);font-size:14px">⏳ بارکردن...</div>
+        <div id="forecastList" style="display:flex;flex-direction:column;gap:10px"></div>
       </div>
     </div>
 
@@ -1112,17 +1131,20 @@ body{
         <div class="qz-title">پەخشی ڕاستەوخۆ</div>
         <div class="qz-sub" style="display:flex;align-items:center;justify-content:center;gap:4px"><span style="width:5px;height:5px;background:#e74c3c;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>LIVE</div>
       </div>
+      <div class="qz-card" onclick="switchPage('radio')">
+        <div class="qz-icon">📻</div>
+        <div class="qz-title">ڕادیۆ</div>
+        <div class="qz-sub" style="display:flex;align-items:center;justify-content:center;gap:4px"><span style="width:5px;height:5px;background:#e74c3c;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>LIVE</div>
+      </div>
       <div class="qz-card" onclick="switchPage('salah')">
         <div class="qz-icon">🕌</div>
         <div class="qz-title">چۆنیەتی نوێژ</div>
         <div class="qz-sub">هەموو نوێژەکان</div>
       </div>
-      <div class="qz-card" style="opacity:.75;cursor:default">
-        <div class="qz-icon">📚</div>
-        <div class="qz-title">کتێبخانە</div>
-        <div class="qz-sub" style="display:flex;align-items:center;justify-content:center;gap:4px">
-          <span style="width:5px;height:5px;background:#f39c12;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>بەزوودی دێت
-        </div>
+      <div class="qz-card" onclick="switchPage('tasbih')">
+        <div class="qz-icon">📿</div>
+        <div class="qz-title">تەسبیح</div>
+        <div class="qz-sub">ژمێرەری دیجیتاڵ</div>
       </div>
     </div>
 
@@ -1259,7 +1281,10 @@ body{
 
       <!-- تابی خوێندن -->
       <div id="panelRead" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
-        <div style="padding:0 12px 4px">
+        <div style="padding:8px 12px 4px;display:flex;flex-direction:column;gap:6px">
+          <!-- کارتی دوا خوێندراو -->
+          <div id="lastReadCard" style="display:none"></div>
+          <!-- سرچ -->
           <input id="suraSearch" oninput="filterSuraList(this.value)" type="search" placeholder="🔍 گەڕان بەدوای سووڕەت..."
             style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:9px 14px;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;outline:none">
         </div>
@@ -1347,7 +1372,96 @@ body{
         <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
         <div style="font-size:17px;font-weight:800;color:#fff">📿 زیکر و دوعا</div>
       </div>
+      <!-- دوگمەی تەسبیح دیجیتاڵ -->
+      <div onclick="switchPage('tasbih')" style="background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.08));border:1px solid rgba(201,168,76,.4);border-radius:16px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;margin-bottom:8px">
+        <div style="font-size:32px">📿</div>
+        <div style="flex:1">
+          <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff">تەسبیح دیجیتاڵ</div>
+          <div style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(201,168,76,.8);margin-top:2px">بە دەنگ و لەرزین — کلیک بکە بژمێرە</div>
+        </div>
+        <div style="color:rgba(255,255,255,.3);font-size:14px">❯</div>
+      </div>
+      <!-- سرچی زیکر -->
+      <input id="zikrSearch" oninput="filterZikr(this.value)" type="search" placeholder="🔍 گەڕان لە زیکر و دوعادا..."
+        style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.07);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:9px 14px;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;outline:none;margin-bottom:4px">
+      <!-- ئەنجامی سرچ -->
+      <div id="zikrSearchResults" style="display:none;flex-direction:column;gap:8px;margin-bottom:8px"></div>
       <div style="display:flex;flex-direction:column;gap:8px" id="zikrMenuGrid"></div>
+    </div>
+  </div>
+
+  <!-- TASBIH PAGE -->
+  <div class="pg fullscreen" id="pg-tasbih" style="overflow:hidden">
+    <div style="display:flex;flex-direction:column;height:100%;direction:rtl">
+
+      <!-- هێدەر -->
+      <div style="background:rgba(2,14,8,.98);border-bottom:1px solid rgba(201,168,76,.15);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+        <button onclick="switchPage('zikr')" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;width:36px;height:36px;border-radius:12px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">←</button>
+        <div style="font-size:16px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">📿 تەسبیح دیجیتاڵ</div>
+        <button onclick="tasbihReset()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);width:36px;height:36px;border-radius:12px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center" title="ڕیسێت">↺</button>
+      </div>
+
+      <!-- هەڵبژاردنی تەسبیح -->
+      <div style="padding:12px 14px 6px;flex-shrink:0">
+        <select id="tasbihSelect" onchange="tasbihChangeType()" style="width:100%;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;direction:rtl">
+          <option value="33|سُبْحَانَ اللَّهِ|سوبحان الله|٣٣">سوبحان الله — ٣٣ جار</option>
+          <option value="33|الْحَمْدُ لِلَّهِ|الحمد لله|٣٣">الحمد لله — ٣٣ جار</option>
+          <option value="34|اللَّهُ أَكْبَرُ|الله اکبر|٣٤">الله اکبر — ٣٤ جار</option>
+          <option value="100|لَا إِلَٰهَ إِلَّا اللَّهُ|لا اله الا الله|١٠٠">لا اله الا الله — ١٠٠ جار</option>
+          <option value="100|سُبْحَانَ اللَّهِ وَبِحَمْدِهِ|سبحان الله وبحمده|١٠٠">سبحان الله وبحمده — ١٠٠ جار</option>
+          <option value="40|لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ|دوعای یونس|٤٠">دوعای یونس — ٤٠ جار</option>
+          <option value="0|.|کەسی خۆت|∞">ژمێری کەسی — بێ سنور</option>
+        </select>
+      </div>
+
+      <!-- دیاردەکانی ئاماری -->
+      <div style="display:flex;gap:8px;padding:6px 14px;flex-shrink:0">
+        <div style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">ئێستا</div>
+          <div id="tasbihCount" style="font-size:28px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;line-height:1.2">٠</div>
+        </div>
+        <div style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">کۆی گشتی</div>
+          <div id="tasbihTotal" style="font-size:28px;font-weight:900;color:rgba(201,168,76,.9);font-variant-numeric:tabular-nums;line-height:1.2">٠</div>
+        </div>
+        <div style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">تەواو</div>
+          <div id="tasbihRounds" style="font-size:28px;font-weight:900;color:rgba(46,204,113,.9);font-variant-numeric:tabular-nums;line-height:1.2">٠</div>
+        </div>
+      </div>
+
+      <!-- دایرەی پیشرەفت -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px">
+        <!-- دوگمەی گەورەی کلیک -->
+        <div id="tasbihBtn" onclick="tasbihClick()"
+          style="width:min(72vw,300px);height:min(72vw,300px);border-radius:50%;
+                 background:radial-gradient(circle at 35% 35%, rgba(201,168,76,.35), rgba(100,70,10,.6));
+                 border:3px solid rgba(201,168,76,.5);
+                 display:flex;flex-direction:column;align-items:center;justify-content:center;
+                 cursor:pointer;user-select:none;-webkit-user-select:none;
+                 box-shadow:0 8px 40px rgba(0,0,0,.5), 0 0 0 8px rgba(201,168,76,.08), inset 0 2px 0 rgba(255,255,255,.15);
+                 transition:transform .08s, box-shadow .08s;
+                 position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.18),transparent 60%);pointer-events:none"></div>
+          <div id="tasbihAr" style="font-family:'Amiri',serif;font-size:20px;color:rgba(255,255,255,.9);text-align:center;padding:0 20px;line-height:1.7;pointer-events:none"></div>
+          <div id="tasbihBigNum" style="font-size:64px;font-weight:900;color:#fff;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 0 30px rgba(201,168,76,.6);pointer-events:none">٠</div>
+          <div id="tasbihTarget" style="font-size:13px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;margin-top:4px;pointer-events:none"></div>
+        </div>
+
+        <!-- بار پیشرەفت -->
+        <div style="width:min(72vw,300px);margin-top:16px">
+          <div style="background:rgba(255,255,255,.08);border-radius:10px;height:8px;overflow:hidden">
+            <div id="tasbihBar" style="height:100%;background:linear-gradient(90deg,rgba(201,168,76,.6),rgba(255,215,0,.9));border-radius:10px;width:0%;transition:width .2s"></div>
+          </div>
+        </div>
+
+        <!-- ڕێکخستنی دەنگ و لەرزین -->
+        <div style="display:flex;gap:12px;margin-top:14px">
+          <button id="tasbihSoundBtn" onclick="tasbihToggleSound()" style="padding:8px 16px;border-radius:20px;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:#fff;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔊 دەنگ</button>
+          <button id="tasbihVibrBtn" onclick="tasbihToggleVibr()" style="padding:8px 16px;border-radius:20px;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:#fff;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer">📳 لەرزین</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1517,6 +1631,65 @@ body{
     </div>
   </div>
 
+  <!-- RADIO PAGE -->
+  <div class="pg fullscreen" id="pg-radio" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
+    <div style="padding:16px 12px 100px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
+        <div style="font-size:17px;font-weight:800;color:#fff">📻 ڕادیۆی ئیسلامی</div>
+      </div>
+
+      <!-- پلەیەری ڕادیۆ -->
+      <div id="radioPlayerWrap" style="display:none;margin-bottom:16px;position:sticky;top:0;z-index:50;background:#041408;padding-bottom:8px">
+        <div style="background:linear-gradient(135deg,rgba(46,204,113,.15),rgba(10,40,20,.95));border:1px solid rgba(46,204,113,.3);border-radius:18px;padding:16px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div id="radioNowIcon" style="font-size:32px">📻</div>
+            <div style="flex:1">
+              <div id="radioNowTitle" style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff"></div>
+              <div id="radioNowSub" style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(46,204,113,.8);margin-top:2px"></div>
+            </div>
+            <button onclick="closeRadioPlayer()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px">✕</button>
+          </div>
+          <!-- دوگمەکان -->
+          <div style="display:flex;align-items:center;justify-content:center;gap:16px">
+            <button onclick="radioTogglePlay()" id="radioPlayBtn"
+              style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1b8a4e,#2ecc71);border:none;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(46,204,113,.4)">▶</button>
+          </div>
+          <!-- دەنگ -->
+          <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
+            <span style="font-size:14px">🔇</span>
+            <input type="range" id="radioVolume" min="0" max="1" step="0.05" value="1" oninput="radioSetVolume(this.value)"
+              style="flex:1;accent-color:#2ecc71">
+            <span style="font-size:14px">🔊</span>
+          </div>
+          <!-- لەرزاندنی دەنگ -->
+          <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px">
+            <div id="radioWave" style="display:flex;align-items:center;gap:3px;height:20px">
+              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite"></div>
+              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite 0.15s"></div>
+              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite 0.3s"></div>
+              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite 0.45s"></div>
+              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite 0.6s"></div>
+            </div>
+            <span style="font-size:10px;color:rgba(46,204,113,.7);font-family:'Cairo',sans-serif" id="radioStatus">دەنگ دەدات...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ڕادیۆی کوردی -->
+      <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:var(--green-light);margin:0 0 8px;display:flex;align-items:center;gap:6px">
+        <span style="width:3px;height:14px;background:var(--green-light);border-radius:2px;display:inline-block"></span>🇮🇶 ڕادیۆی کوردی
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px" id="radioListKu"></div>
+
+      <!-- ڕادیۆی عەرەبی -->
+      <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:#4fa3e0;margin:0 0 8px;display:flex;align-items:center;gap:6px">
+        <span style="width:3px;height:14px;background:#4fa3e0;border-radius:2px;display:inline-block"></span>🌍 ڕادیۆی عەرەبی
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px" id="radioListAr"></div>
+    </div>
+  </div>
+
   <!-- HISN DETAIL PAGE -->
   <div class="pg fullscreen" id="pg-hisn-detail">
     <div style="padding:16px 12px 30px">
@@ -1537,7 +1710,7 @@ body{
       <div class="sec-lbl" style="margin-top:8px">🎙 دەنگی بانگ</div>
       <div id="muezzinList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
 
-      <div class="srow"><div class="sinfo"><div class="sico">🌙</div><div><div class="slbl">دۆخی رەمەزان</div><div class="sdesc">پیشاندانی ئیمساک و ئیفتار</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="srow"><div class="sinfo"><div class="sico">🌙</div><div><div class="slbl">دۆخی رەمەزان</div><div class="sdesc">پیشاندانی ئیمساک و ئیفتار</div></div></div><div class="toggle on" id="ramadanToggle" onclick="toggleRamadan()"></div></div>
       <div class="srow"><div class="sinfo"><div class="sico">⏰</div><div><div class="slbl">ئاگاداری پێشوەختە</div><div class="sdesc">١٠ خولەک پێش کاتی نوێژ</div></div></div><div class="toggle" id="earlyNotifToggle" onclick="toggleEarlyNotif()"></div></div>
 
       <!-- دوگمەی بانگدان بۆ هەر نوێژێک -->
@@ -2072,8 +2245,10 @@ function toggleNotifSetting(){
     btn.classList.add('on');
     requestNotificationPermission();
     showToast('🔔 ئاگادارکردنەوە چالاک کرا');
+    setTimeout(startPersistentNotif, 1000);
   } else {
     btn.classList.remove('on');
+    if(persistentNotifInterval){ clearInterval(persistentNotifInterval); persistentNotifInterval=null; }
     showToast('🔕 ئاگادارکردنەوە ناچالاک کرا');
   }
 }
@@ -2625,6 +2800,138 @@ function chLogo(ch){
   return `<div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ch.icon}</div>`;
 }
 
+// ── داتای ڕادیۆ ──────────────────────────────────
+const RADIO_CHANNELS = {
+  ku: [
+    {name:'ڕادیۆی میحراب',     sub:'کوردی — ئیسلامی',    icon:'🕌', url:'http://bblserver.ddns.net:1935/live/mihrabfm/chunklist_w873257582.m3u8'},
+    {name:'ڕادیۆی سونە',       sub:'کوردی — سونەی پێغەمبەر',icon:'📿', url:'https://stream.zeno.fm/0r0xa792kwzuv'},
+    {name:'ڕادیۆی قورئان کوردی',sub:'تلاوەتی قورئانی پیرۆز',icon:'📖', url:'http://mmn.mypsx.net:1935/live/mmnhdquran/chunklist.m3u8'},
+    {name:'ڕادیۆی ئامۆژگاری',  sub:'کوردی — ئامۆژگاری',  icon:'📡', url:'https://stream.zeno.fm/4d809ab6pszuv'},
+    {name:'ڕادیۆی ئیمان',      sub:'کوردی — ئیسلامی',    icon:'🌟', url:'https://stream.zeno.fm/vn4uetgxkwzuv'},
+    {name:'ڕادیۆی نور',        sub:'کوردی — زانست و ئایین',icon:'💡', url:'https://stream.zeno.fm/r9qa9bbk9dzuv'},
+  ],
+  ar: [
+    {name:'ڕادیۆی قورئانی سعودی',sub:'إذاعة القرآن السعودية',icon:'📖', url:'https://stream.radiojar.com/0tpy1h0kxtzuv'},
+    {name:'ڕادیۆی سوننەی سعودی',sub:'إذاعة السنة السعودية', icon:'🕌', url:'https://stream.radiojar.com/snxcsk0kxtzuv'},
+    {name:'ڕادیۆ ئاخیرەت',     sub:'إذاعة الآخرة',         icon:'🌙', url:'https://stream.zeno.fm/yn4ta8kd3zzuv'},
+    {name:'ڕادیۆ نداء الإسلام', sub:'نداء الإسلام',         icon:'📿', url:'https://stream.zeno.fm/0r0xa8mfkwzuv'},
+    {name:'ڕادیۆ تجويد القرآن', sub:'تجویدی قورئانی پیرۆز',icon:'📖', url:'https://stream.zeno.fm/wrjg6d8kxtzuv'},
+  ]
+};
+
+let radioAudio = null;
+let radioPlaying = false;
+let radioCurCh = null;
+
+function renderRadioChannels(){
+  ['ku','ar'].forEach(lang=>{
+    const el = document.getElementById('radioList'+lang.charAt(0).toUpperCase()+lang.slice(1));
+    if(!el) return;
+    el.innerHTML = RADIO_CHANNELS[lang].map((ch,i)=>`
+      <div id="radioCh_${lang}_${i}" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;cursor:pointer;transition:all .2s" onclick="playRadio('${lang}',${i})">
+        <div style="font-size:26px;flex-shrink:0">${ch.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:#fff">${ch.name}</div>
+          <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">${ch.sub}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="width:6px;height:6px;background:#e74c3c;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>
+          <span style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">LIVE</span>
+        </div>
+      </div>`).join('');
+  });
+}
+
+function playRadio(lang, idx){
+  const ch = RADIO_CHANNELS[lang][idx];
+  if(!ch) return;
+
+  // هایلایتی کارتی چالاک
+  document.querySelectorAll('[id^="radioCh_"]').forEach(el=>{
+    el.style.background = 'rgba(255,255,255,.05)';
+    el.style.borderColor = 'rgba(255,255,255,.08)';
+  });
+  const activeCard = document.getElementById('radioCh_'+lang+'_'+idx);
+  if(activeCard){
+    activeCard.style.background = 'rgba(46,204,113,.12)';
+    activeCard.style.borderColor = 'rgba(46,204,113,.35)';
+  }
+
+  // ئەگەر هەمان کانەڵ — toggle
+  if(radioAudio && radioCurCh === lang+'_'+idx){
+    radioTogglePlay();
+    return;
+  }
+
+  radioCurCh = lang+'_'+idx;
+
+  // پیشاندانی پلەیەر
+  document.getElementById('radioPlayerWrap').style.display = 'block';
+  document.getElementById('radioPlayerWrap').scrollIntoView({behavior:'smooth'});
+  document.getElementById('radioNowIcon').textContent = ch.icon;
+  document.getElementById('radioNowTitle').textContent = ch.name;
+  document.getElementById('radioNowSub').textContent = ch.sub;
+  document.getElementById('radioStatus').textContent = '⏳ بارکردن...';
+  document.getElementById('radioPlayBtn').textContent = '⏳';
+
+  // وەستاندنی دەنگی کۆن
+  if(radioAudio){ radioAudio.pause(); radioAudio.src=''; radioAudio=null; }
+
+  radioAudio = new Audio(ch.url);
+  radioAudio.volume = parseFloat(document.getElementById('radioVolume').value)||1;
+
+  radioAudio.oncanplay = ()=>{
+    radioAudio.play().then(()=>{
+      radioPlaying = true;
+      document.getElementById('radioPlayBtn').textContent = '⏸';
+      document.getElementById('radioStatus').textContent = 'دەنگ دەدات...';
+    }).catch(()=>{
+      document.getElementById('radioStatus').textContent = '⚠️ نەیتوانرا بارکرێت';
+      document.getElementById('radioPlayBtn').textContent = '▶';
+    });
+  };
+
+  radioAudio.onerror = ()=>{
+    document.getElementById('radioStatus').textContent = '⚠️ کانەڵەکە بەردەست نییە';
+    document.getElementById('radioPlayBtn').textContent = '▶';
+    radioPlaying = false;
+    showToast('⚠️ '+ch.name+' — ئێستا بەردەست نییە');
+  };
+
+  radioAudio.load();
+}
+
+function radioTogglePlay(){
+  if(!radioAudio) return;
+  if(radioPlaying){
+    radioAudio.pause();
+    radioPlaying = false;
+    document.getElementById('radioPlayBtn').textContent = '▶';
+    document.getElementById('radioStatus').textContent = 'وەستاو';
+  } else {
+    radioAudio.play().then(()=>{
+      radioPlaying = true;
+      document.getElementById('radioPlayBtn').textContent = '⏸';
+      document.getElementById('radioStatus').textContent = 'دەنگ دەدات...';
+    }).catch(()=>{});
+  }
+}
+
+function radioSetVolume(v){
+  if(radioAudio) radioAudio.volume = parseFloat(v);
+}
+
+function closeRadioPlayer(){
+  if(radioAudio){ radioAudio.pause(); radioAudio.src=''; radioAudio=null; }
+  radioPlaying = false;
+  radioCurCh = null;
+  document.getElementById('radioPlayerWrap').style.display = 'none';
+  document.querySelectorAll('[id^="radioCh_"]').forEach(el=>{
+    el.style.background = 'rgba(255,255,255,.05)';
+    el.style.borderColor = 'rgba(255,255,255,.08)';
+  });
+}
+
 function renderTVChannels(){
   ['ku','fa','ar'].forEach(lang=>{
     const el = document.getElementById('tvList'+lang.charAt(0).toUpperCase()+lang.slice(1));
@@ -2946,6 +3253,78 @@ function renderSuraList(){
       <div class="quran-arrow">❯</div>
     </div>
   `).join('');
+  renderLastRead();
+}
+
+// ── دوا خوێندراو ──────────────────────────────────
+function renderLastRead(){
+  const card = document.getElementById('lastReadCard');
+  if(!card) return;
+  try{
+    const saved = JSON.parse(localStorage.getItem('lastReadSura'));
+    if(!saved) return;
+    const ago = Math.floor((Date.now() - saved.time) / 60000);
+    const agoStr = ago < 1 ? 'ئێستا' : ago < 60 ? ago + ' خولەک پێش' : Math.floor(ago/60) + ' کاتژمێر پێش';
+    card.style.display = 'block';
+    card.innerHTML = `
+      <div onclick="showSura(${saved.id})"
+        style="background:linear-gradient(135deg,rgba(46,204,113,.15),rgba(46,204,113,.05));
+               border:1px solid rgba(46,204,113,.35);border-radius:14px;
+               padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:12px;direction:rtl">
+        <div style="font-size:26px">📖</div>
+        <div style="flex:1">
+          <div style="font-size:10px;color:rgba(46,204,113,.7);font-family:'Cairo',sans-serif;font-weight:700;margin-bottom:2px">بەردەوامبوون لە دوا خوێندراو</div>
+          <div style="font-size:15px;font-weight:800;color:#fff;font-family:'Amiri',serif">${saved.name}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;margin-top:2px">${saved.ku} · ${agoStr}</div>
+        </div>
+        <div style="color:rgba(46,204,113,.6);font-size:18px">❯</div>
+      </div>`;
+  }catch(e){}
+}
+
+// ── سرچی زیکر ────────────────────────────────────
+function filterZikr(q){
+  const resultsEl = document.getElementById('zikrSearchResults');
+  const gridEl = document.getElementById('zikrMenuGrid');
+  const s = q.trim();
+  if(!s){
+    if(resultsEl){ resultsEl.style.display='none'; resultsEl.innerHTML=''; }
+    if(gridEl) gridEl.style.display='flex';
+    renderZikr(); // دووبارە نیشاندانی مەنیو
+    return;
+  }
+  if(gridEl) gridEl.style.display='none';
+  if(!resultsEl) return;
+  resultsEl.style.display='flex';
+
+  const sl = s.toLowerCase();
+  const found = ZIKRS.filter(z=>
+    !z.info && (
+      (z.ar && z.ar.includes(s)) ||
+      (z.ku && z.ku.toLowerCase().includes(sl)) ||
+      (z.cat && z.cat.toLowerCase().includes(sl))
+    )
+  );
+
+  if(!found.length){
+    resultsEl.innerHTML = `<div style="text-align:center;padding:20px;color:rgba(255,255,255,.3);font-family:'Cairo',sans-serif;font-size:13px">هیچ ئەنجامێک نەدۆزرایەوە</div>`;
+    return;
+  }
+
+  resultsEl.innerHTML = found.map(z=>{
+    const arEsc = (z.ar||'').replace(/`/g,'\\`');
+    return `<div class="zikr-card" style="margin:0">
+      <div style="font-size:10px;color:rgba(46,204,113,.7);font-family:'Cairo',sans-serif;font-weight:700;margin-bottom:6px">${z.cat}</div>
+      ${z.ar ? `
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
+        <div class="zikr-arabic" style="flex:1;margin-bottom:0">${z.ar}</div>
+        <button onclick="speakZikr(\`${arEsc}\`,this)"
+          style="flex-shrink:0;width:34px;height:34px;border-radius:50%;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center">🔊</button>
+      </div>` : ''}
+      <div class="zikr-kurdish">${z.ku}</div>
+      ${z.count ? `<div class="zikr-count">🔁 ${z.count}</div>` : ''}
+    </div>`;
+  }).join('');
 }
 
 
@@ -3066,6 +3445,7 @@ function updateHighlight(){
   }
 
   // progress bar
+  if(!quranAudio || !quranAudio.duration) return;
   const pct = (cur / quranAudio.duration) * 100;
   document.getElementById('audioProgress').style.width = pct + '%';
   const m = Math.floor(cur/60), s = Math.floor(cur%60);
@@ -3195,6 +3575,12 @@ function suraTouchEnd(e){
 
 function showSura(id){
   curSuraId = id;
+  // پاشەکەوتکردنی دوا خوێندراو
+  const meta2 = SURA_LIST.find(s=>s.id===id);
+  if(meta2){
+    localStorage.setItem('lastReadSura', JSON.stringify({id, name: meta2.name, ku: meta2.ku, time: Date.now()}));
+    renderLastRead();
+  }
   stopSuraAudio();
   const el = document.getElementById('suraScroll');
   if(el) el.scrollTop = 0;
@@ -3627,16 +4013,158 @@ function renderZikr(){
   }).join('');
 }
 
+// ── دەنگی زیکر (Web Speech API) ─────────────────
+let zikrSpeaking = false;
+let zikrCurrentBtn = null;
+
+function speakZikr(ar, btnEl){
+  if(!('speechSynthesis' in window)){
+    showToast('براوزەرەکەت پشتگیری دەنگ ناکات');
+    return;
+  }
+  // ئەگەر ئێستا دەخوێنێت — ده وەستێنە
+  if(zikrSpeaking){
+    window.speechSynthesis.cancel();
+    zikrSpeaking = false;
+    if(zikrCurrentBtn){
+      zikrCurrentBtn.textContent = '🔊';
+      zikrCurrentBtn.style.background = 'rgba(46,204,113,.15)';
+      zikrCurrentBtn.style.borderColor = 'rgba(46,204,113,.3)';
+    }
+    if(zikrCurrentBtn === btnEl) return;
+  }
+
+  const utt = new SpeechSynthesisUtterance(ar);
+  utt.lang = 'ar-SA';
+  utt.rate = 0.75;
+  utt.pitch = 1;
+
+  // هەڵبژاردنی دەنگی عەرەبی ئەگەر بوو
+  const voices = window.speechSynthesis.getVoices();
+  const arVoice = voices.find(v => v.lang.startsWith('ar'));
+  if(arVoice) utt.voice = arVoice;
+
+  utt.onstart = () => {
+    zikrSpeaking = true;
+    zikrCurrentBtn = btnEl;
+    btnEl.textContent = '⏹';
+    btnEl.style.background = 'rgba(231,76,60,.2)';
+    btnEl.style.borderColor = 'rgba(231,76,60,.5)';
+  };
+  utt.onend = utt.onerror = () => {
+    zikrSpeaking = false;
+    zikrCurrentBtn = null;
+    btnEl.textContent = '🔊';
+    btnEl.style.background = 'rgba(46,204,113,.15)';
+    btnEl.style.borderColor = 'rgba(46,204,113,.3)';
+  };
+  window.speechSynthesis.speak(utt);
+}
+
+// پلەی هەمووی زیکرەکانی بەشێک
+let zikrAutoIdx = -1;
+let zikrAutoItems = [];
+function playAllZikr(items, startIdx){
+  if(!('speechSynthesis' in window)){
+    showToast('براوزەرەکەت پشتگیری دەنگ ناکات'); return;
+  }
+  window.speechSynthesis.cancel();
+  zikrAutoItems = items.filter(z=>z.ar && !z.info);
+  zikrAutoIdx = startIdx || 0;
+
+  const btn = document.getElementById('zikrPlayAllBtn');
+  if(btn){ btn.textContent = '⏹ وەستان'; btn.onclick = ()=>{ window.speechSynthesis.cancel(); zikrAutoIdx=-1; btn.textContent='▶ هەمووی بیستن'; btn.onclick=()=>playAllZikr(zikrAutoItems,0); }; }
+
+  function playNext(){
+    if(zikrAutoIdx >= zikrAutoItems.length){ zikrAutoIdx=-1; if(btn){ btn.textContent='▶ هەمووی بیستن'; btn.onclick=()=>playAllZikr(zikrAutoItems,0); } return; }
+    const z = zikrAutoItems[zikrAutoIdx];
+    const utt = new SpeechSynthesisUtterance(z.ar);
+    utt.lang='ar-SA'; utt.rate=0.75;
+    const voices=window.speechSynthesis.getVoices();
+    const arV=voices.find(v=>v.lang.startsWith('ar'));
+    if(arV) utt.voice=arV;
+    // هایلایتی کارتی ئێستا
+    document.querySelectorAll('.zikr-card').forEach((el,i)=>{
+      el.style.border = i===zikrAutoIdx ? '1px solid rgba(46,204,113,.6)' : '';
+      el.style.background = i===zikrAutoIdx ? 'rgba(46,204,113,.1)' : '';
+    });
+    utt.onend = ()=>{ zikrAutoIdx++; setTimeout(playNext, 600); };
+    utt.onerror = ()=>{ zikrAutoIdx++; setTimeout(playNext, 300); };
+    window.speechSynthesis.speak(utt);
+  }
+  playNext();
+}
+
+// ── دۆخی رەمەزان ────────────────────────────────
+let ramadanMode = localStorage.getItem('ramadanMode') !== 'false';
+
+function toggleRamadan(){
+  ramadanMode = !ramadanMode;
+  localStorage.setItem('ramadanMode', ramadanMode);
+  const btn = document.getElementById('ramadanToggle');
+  if(btn) btn.classList.toggle('on', ramadanMode);
+  const ramCard = document.querySelector('.ramcard');
+  if(ramCard) ramCard.style.display = ramadanMode ? 'block' : 'none';
+  showToast(ramadanMode ? '🌙 دۆخی رەمەزان چالاک کرا' : '🌙 دۆخی رەمەزان ناچالاک کرا');
+}
+
+// ── کۆپیکردنی زیکر ──────────────────────────────
+function copyZikr(text, btnEl){
+  const full = text.trim();
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(full).then(()=>{
+      const orig = btnEl.textContent;
+      btnEl.textContent = '✅';
+      setTimeout(()=>{ btnEl.textContent = orig; }, 1500);
+    }).catch(()=>{});
+  } else {
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = full; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+      const orig = btnEl.textContent;
+      btnEl.textContent = '✅';
+      setTimeout(()=>{ btnEl.textContent = orig; }, 1500);
+    }catch(e){}
+  }
+}
+
 function openZikrCat(cat){
   const items = ZIKRS.filter(z=>z.cat===cat);
   document.getElementById('zikrDetailTitle').textContent = cat;
-  document.getElementById('zikrDetailList').innerHTML = items.map(z=>{
+
+  // دوگمەی پلەی هەمووی — بۆ زیکری بەیانی و ئێوارە
+  const showPlayAll = cat.includes('بەیانی') || cat.includes('ئێوارە') || cat.includes('ڕۆژانە');
+  let playAllBtn = '';
+  if(showPlayAll){
+    playAllBtn = `<div style="padding:0 0 10px">
+      <button id="zikrPlayAllBtn" onclick="playAllZikr(ZIKRS.filter(z=>z.cat===\`${cat}\`),0)"
+        style="width:100%;padding:10px;border-radius:14px;background:linear-gradient(135deg,rgba(46,204,113,.25),rgba(46,204,113,.1));border:1px solid rgba(46,204,113,.4);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        ▶ هەمووی بیستن بە دەنگ
+      </button>
+    </div>`;
+  }
+
+  document.getElementById('zikrDetailList').innerHTML = playAllBtn + items.map((z,i)=>{
     if(z.info){
       return `<div style="background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.25);border-radius:14px;padding:14px 16px;margin-bottom:8px;font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,220,100,.9);direction:rtl;line-height:1.9">${z.ku}</div>`;
     }
+    const arEscaped = z.ar ? z.ar.replace(/`/g,'\\`') : '';
+    const copyText = (z.ar ? z.ar + '\n' : '') + z.ku;
+    const copyEsc = copyText.replace(/`/g,'\\`');
     return `
     <div class="zikr-card">
-      ${z.ar ? `<div class="zikr-arabic">${z.ar}</div>` : ''}
+      ${z.ar ? `
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:6px">
+        <div class="zikr-arabic" style="flex:1;margin-bottom:0">${z.ar}</div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-top:4px">
+          <button onclick="speakZikr(\`${arEscaped}\`,this)"
+            style="width:32px;height:32px;border-radius:50%;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s">🔊</button>
+          <button onclick="copyZikr(\`${copyEsc}\`,this)"
+            style="width:32px;height:32px;border-radius:50%;background:rgba(100,150,255,.12);border:1px solid rgba(100,150,255,.25);color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s">📋</button>
+        </div>
+      </div>` : ''}
       <div class="zikr-kurdish">${z.ku}</div>
       ${z.count ? `<div class="zikr-count">🔁 ${z.count}</div>` : ''}
     </div>`;
@@ -3675,7 +4203,173 @@ function rotateAllahName(){
 rotateAllahName();
 setInterval(rotateAllahName, 4000);
 
-// ── QIBLA COMPASS ────────────────────────────────
+// ── تەسبیح دیجیتاڵ ──────────────────────────────
+let tasbihCount = 0;
+let tasbihTotalCount = parseInt(localStorage.getItem('tasbihTotal') || '0');
+let tasbihRoundsCount = parseInt(localStorage.getItem('tasbihRounds') || '0');
+let tasbihTarget = 33;
+let tasbihSoundOn = localStorage.getItem('tasbihSound') !== 'false';
+let tasbihVibrOn = localStorage.getItem('tasbihVibr') !== 'false';
+let tasbihAudioCtx = null;
+
+// دەنگی کلیک — تیک کورت
+function tasbihPlaySound(isDone){
+  try{
+    if(!tasbihAudioCtx) tasbihAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = tasbihAudioCtx;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    if(isDone){
+      // دەنگی تەواوبوون — بەرزتر
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
+    } else {
+      // دەنگی ئاسایی — تیک
+      osc.frequency.setValueAtTime(600, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.06);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.08);
+    }
+  }catch(e){}
+}
+
+function tasbihClick(){
+  tasbihCount++;
+  tasbihTotalCount++;
+  localStorage.setItem('tasbihTotal', tasbihTotalCount);
+  localStorage.setItem('tasbihCurrent', tasbihCount);
+
+  let isDone = false;
+  if(tasbihTarget > 0 && tasbihCount >= tasbihTarget){
+    tasbihCount = 0;
+    tasbihRoundsCount++;
+    localStorage.setItem('tasbihRounds', tasbihRoundsCount);
+    localStorage.setItem('tasbihCurrent', 0);
+    isDone = true;
+  }
+
+  // دەنگ
+  if(tasbihSoundOn) tasbihPlaySound(isDone);
+
+  // لەرزین
+  if(tasbihVibrOn && navigator.vibrate){
+    navigator.vibrate(isDone ? [100,50,100,50,200] : [30]);
+  }
+
+  // ئەنیمەیشنی دوگمە
+  const btn = document.getElementById('tasbihBtn');
+  if(btn){
+    btn.style.transform = 'scale(0.94)';
+    btn.style.boxShadow = '0 4px 20px rgba(0,0,0,.5), 0 0 0 12px rgba(201,168,76,.18), inset 0 2px 0 rgba(255,255,255,.15)';
+    setTimeout(()=>{
+      btn.style.transform = 'scale(1)';
+      btn.style.boxShadow = '0 8px 40px rgba(0,0,0,.5), 0 0 0 8px rgba(201,168,76,.08), inset 0 2px 0 rgba(255,255,255,.15)';
+    }, 80);
+  }
+
+  tasbihUpdateUI();
+}
+
+function tasbihUpdateUI(){
+  const toAr = n => n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  const el = id => document.getElementById(id);
+
+  if(el('tasbihCount')) el('tasbihCount').textContent = toAr(tasbihCount);
+  if(el('tasbihBigNum')) el('tasbihBigNum').textContent = toAr(tasbihCount);
+  if(el('tasbihTotal')) el('tasbihTotal').textContent = toAr(tasbihTotalCount);
+  if(el('tasbihRounds')) el('tasbihRounds').textContent = toAr(tasbihRoundsCount);
+
+  // بار پیشرەفت
+  const bar = el('tasbihBar');
+  if(bar && tasbihTarget > 0){
+    bar.style.width = Math.min((tasbihCount / tasbihTarget) * 100, 100) + '%';
+  }
+
+  // ڕەنگ کاتی تەواوبوون
+  const bigNum = el('tasbihBigNum');
+  if(bigNum){
+    bigNum.style.color = tasbihCount === 0 && tasbihRoundsCount > 0 ? 'rgba(46,204,113,.9)' : '#fff';
+  }
+}
+
+function tasbihReset(){
+  tasbihCount = 0;
+  tasbihUpdateUI();
+}
+
+function tasbihChangeType(){
+  const sel = document.getElementById('tasbihSelect');
+  if(!sel) return;
+  const parts = sel.value.split('|');
+  tasbihTarget = parseInt(parts[0]) || 0;
+  tasbihCount = 0;
+  tasbihRoundsCount = 0;
+  tasbihTotalCount = 0;
+  localStorage.setItem('tasbihRounds', 0);
+  localStorage.setItem('tasbihTotal', 0);
+
+  const arEl = document.getElementById('tasbihAr');
+  if(arEl) arEl.textContent = parts[1] || '';
+
+  const tgtEl = document.getElementById('tasbihTarget');
+  if(tgtEl) tgtEl.textContent = tasbihTarget > 0 ? '/ ' + parts[3] : '∞';
+
+  const bar = document.getElementById('tasbihBar');
+  if(bar) bar.style.width = tasbihTarget > 0 ? '0%' : '100%';
+
+  tasbihUpdateUI();
+}
+
+function tasbihToggleSound(){
+  tasbihSoundOn = !tasbihSoundOn;
+  localStorage.setItem('tasbihSound', tasbihSoundOn);
+  const btn = document.getElementById('tasbihSoundBtn');
+  if(btn){
+    btn.style.background = tasbihSoundOn ? 'rgba(46,204,113,.25)' : 'rgba(255,255,255,.05)';
+    btn.style.borderColor = tasbihSoundOn ? 'rgba(46,204,113,.5)' : 'rgba(255,255,255,.1)';
+    btn.textContent = tasbihSoundOn ? '🔊 دەنگ' : '🔇 بێدەنگ';
+  }
+}
+
+function tasbihToggleVibr(){
+  tasbihVibrOn = !tasbihVibrOn;
+  localStorage.setItem('tasbihVibr', tasbihVibrOn);
+  const btn = document.getElementById('tasbihVibrBtn');
+  if(btn){
+    btn.style.background = tasbihVibrOn ? 'rgba(46,204,113,.25)' : 'rgba(255,255,255,.05)';
+    btn.style.borderColor = tasbihVibrOn ? 'rgba(46,204,113,.5)' : 'rgba(255,255,255,.1)';
+    btn.textContent = tasbihVibrOn ? '📳 لەرزین' : '📴 بێلەرزین';
+  }
+}
+
+// دەستپێکی تەسبیح کاتی کرانەوەی پەڕە
+function initTasbih(){
+  // گەڕاندنەوەی ژمارەی پاشەکەوتکراو
+  tasbihCount = parseInt(localStorage.getItem('tasbihCurrent') || '0');
+  tasbihTotalCount = parseInt(localStorage.getItem('tasbihTotal') || '0');
+  tasbihRoundsCount = parseInt(localStorage.getItem('tasbihRounds') || '0');
+  tasbihChangeType();
+  // گەڕاندنەوەی ژمارەی ئێستا
+  tasbihCount = parseInt(localStorage.getItem('tasbihCurrent') || '0');
+  tasbihUpdateUI();
+  const sb = document.getElementById('tasbihSoundBtn');
+  const vb = document.getElementById('tasbihVibrBtn');
+  if(sb){
+    sb.style.background = tasbihSoundOn ? 'rgba(46,204,113,.25)' : 'rgba(255,255,255,.05)';
+    sb.style.borderColor = tasbihSoundOn ? 'rgba(46,204,113,.5)' : 'rgba(255,255,255,.1)';
+    sb.textContent = tasbihSoundOn ? '🔊 دەنگ' : '🔇 بێدەنگ';
+  }
+  if(vb){
+    vb.style.background = tasbihVibrOn ? 'rgba(46,204,113,.25)' : 'rgba(255,255,255,.05)';
+    vb.style.borderColor = tasbihVibrOn ? 'rgba(46,204,113,.5)' : 'rgba(255,255,255,.1)';
+    vb.textContent = tasbihVibrOn ? '📳 لەرزین' : '📴 بێلەرزین';
+  }
+}
 const MECCA={lat:21.4225,lng:39.8262};
 let deviceHeading=0, qiblaAngle=231, compassActive=false;
 let lastAbsolute=false;
@@ -4019,7 +4713,28 @@ function renderWidgets(){
   });
 }
 
-function switchPage(p){
+// ── مێژووی پەڕەکان بۆ دوگمەی گەڕانەوەی مۆبایل ─────────
+const PAGE_BACK_MAP = {
+  'sura':       'quran',
+  'zikr-detail':'zikr',
+  'hisn-detail':'hisn',
+  'salah-detail':'salah',
+  'tasbih':     'zikr',
+  'radio':      'home',
+  'quran':      'home',
+  'zikr':       'home',
+  'hisn':       'home',
+  'salah':      'home',
+  'tv':         'home',
+  'qibla':      'home',
+  'calendar':   'home',
+  'settings':   'home',
+  'widgets':    'home',
+};
+
+let _currentPage = 'home';
+
+function switchPage(p, fromPopstate){
   document.querySelectorAll('.pg').forEach(x=>{
     x.classList.remove('active');
     x.classList.remove('fullscreen');
@@ -4029,11 +4744,9 @@ function switchPage(p){
   const pg=document.getElementById('pg-'+p);
   if(!pg) return;
   pg.classList.add('active');
-  // هەموو بەشێک جگە لە home و widgets فول شاشە
   if(p !== 'home' && p !== 'widgets'){
     pg.classList.add('fullscreen');
   }
-  // سەرەوەی شاشە
   pg.scrollTop = 0;
   window.scrollTo(0,0);
   document.body.scrollTop = 0;
@@ -4045,24 +4758,63 @@ function switchPage(p){
     const tvWrap = document.getElementById('tvPlayerWrap');
     if(tvWrap) tvWrap.style.display = 'none';
   }
-  if(['quran','sura','zikr','zikr-detail','hisn','hisn-detail','qibla','settings','calendar','tv'].includes(p)){
+  if(p !== 'radio'){
+    if(radioAudio){ radioAudio.pause(); radioAudio.src=''; radioAudio=null; radioPlaying=false; radioCurCh=null; }
+    const rWrap = document.getElementById('radioPlayerWrap');
+    if(rWrap) rWrap.style.display = 'none';
+  }
+  if(['quran','sura','zikr','zikr-detail','hisn','hisn-detail','qibla','settings','calendar','tv','tasbih','radio'].includes(p)){
     pg.classList.add('fullscreen');
   }
   const navBtn = document.getElementById('nav-'+p);
   if(navBtn) navBtn.classList.add('active');
-  // دەنگی بەشی نووسین — تەنها دابگرە کاتی جێهێشتنی پەڕەی نووسین
-  if(p !== 'sura'){
-    stopSuraAudio();
-  }
-  if(p !== 'quran'){
-  
-  }
+  if(p !== 'sura') stopSuraAudio();
   if(p==='zikr') renderZikr();
+  if(p==='tasbih') initTasbih();
   if(p==='settings'){ renderMuezzinList(); renderAzanModeList(); }
   if(p==='quran') renderSuraList();
+  // پاک کردنەوەی سرچی قورئان کاتی چوونەدەرەوە
+  if(p!=='quran'){ const sq=document.getElementById('suraSearch'); if(sq) sq.value=''; }
   if(p==='hisn') renderHisn();
   if(p==='tv') renderTVChannels();
+  if(p==='radio') renderRadioChannels();
+
+  // history pushState — بۆ دوگمەی گەڕانەوەی مۆبایل
+  if(!fromPopstate){
+    try{
+      if(p === 'home'){
+        history.replaceState({page:'home'}, '');
+      } else {
+        history.pushState({page:p}, '');
+      }
+    }catch(e){}
+  }
+  _currentPage = p;
 }
+
+// گوێستن بە دوگمەی گەڕانەوەی مۆبایل
+window.addEventListener('popstate', function(e){
+  // داخستنی مۆدالی کەشوهەوا ئەگەر کراوەبوو
+  const fm = document.getElementById('forecastModal');
+  if(fm && fm.style.display === 'flex'){
+    closeForecastModal();
+    try{ history.pushState({page:_currentPage}, ''); }catch(e){}
+    return;
+  }
+  const page = (e.state && e.state.page) ? e.state.page : 'home';
+  const backPage = PAGE_BACK_MAP[_currentPage] || 'home';
+  // ئەگەر لە home بوو — بەرنامە دادەخات (رەفتاری ئاسایی)
+  if(_currentPage === 'home'){
+    return;
+  }
+  // وەستاندنی دەنگی زیکر
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+  switchPage(backPage, true);
+  try{ history.pushState({page:backPage}, ''); }catch(e){}
+});
+
+// دامەزراندنی دەستپێک
+try{ history.replaceState({page:'home'}, ''); }catch(e){}
 
 // ── کۆئۆردینەیتی شارەکان ──────────────────────
 const COORDS={
@@ -4217,6 +4969,63 @@ function sendPrayerTimesToSW(){
   });
 }
 
+// ── نۆتیفیکەیشنی بەردەوام — وەک ویجێت ─────────────
+let persistentNotifInterval = null;
+
+function startPersistentNotif(){
+  if(!notifEnabled) return;
+  if(!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return;
+  if(Notification.permission !== 'granted') return;
+  sendWidgetNotif();
+  if(persistentNotifInterval) clearInterval(persistentNotifInterval);
+  persistentNotifInterval = setInterval(sendWidgetNotif, 60000);
+}
+
+function sendWidgetNotif(){
+  if(!notifEnabled) return;
+  if(!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return;
+  const city = CITIES[CUR];
+  if(!city || !city.t) return;
+
+  const now = new Date();
+  const curMin = now.getHours()*60 + now.getMinutes();
+  const NAMES = ['بەیانی','گزنگ','نیوەڕۆ','عەسر','مەغریب','خەوتنان'];
+
+  // دیاریکردنی نوێژی داهاتوو
+  let nextIdx = -1, nextMin = 9999;
+  city.t.forEach((t,i)=>{
+    if(i===1) return; // گزنگ ناپێشبینێنرێت
+    const pMin = t.h*60+t.m;
+    if(pMin > curMin && pMin < nextMin){ nextMin=pMin; nextIdx=i; }
+  });
+  if(nextIdx===-1){ nextIdx=0; } // بەیانی ڕۆژی داهاتوو
+
+  const nxt = city.t[nextIdx];
+  const diffMin = nextMin - curMin;
+  const dh = Math.floor(diffMin/60), dm = diffMin%60;
+  const mawaStr = dh>0 ? `${dh} کاتژمێر ${dm} خولەک` : `${dm} خولەک`;
+
+  // جێگرتنی بانگەکان لە بەدی
+  const prayerLines = city.t.map((t,i)=>{
+    if(i===1) return '';
+    const mark = i===nextIdx ? '◀ ' : '   ';
+    return `${mark}${NAMES[i]}: ${fmt(t.h,t.m)}`;
+  }).filter(Boolean).join('\n');
+
+  navigator.serviceWorker.controller.postMessage({
+    type: 'WIDGET_NOTIF',
+    title: `🕌 ${NAMES[nextIdx]} — ${fmt(nxt.h,nxt.m)}`,
+    body: `⏳ ${mawaStr} مایەتەوە\n${prayerLines}`,
+    cityName: city.ku || CUR,
+    tag: 'prayer-widget'
+  });
+}
+
+// دەستپێکی نۆتیفیکەیشنی بەردەوام کاتی ئامادەبوونی SW
+navigator.serviceWorker && navigator.serviceWorker.ready.then(()=>{
+  setTimeout(()=>{ sendPrayerTimesToSW(); startPersistentNotif(); }, 3000);
+});
+
 // KEEPALIVE — هەر ٢٠ چرکەیەک SW زیندوو دەهێڵێت
 setInterval(()=>{
   if('serviceWorker' in navigator && navigator.serviceWorker.controller){
@@ -4277,6 +5086,75 @@ function fetchWeather(pos){ const lat=pos.coords.latitude.toFixed(4),lon=pos.coo
 function fetchWeatherByCity(){ const coord=COORDS[CUR]; if(!coord) return; fetch('https://api.open-meteo.com/v1/forecast?latitude='+coord.lat+'&longitude='+coord.lng+'&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto').then(r=>r.json()).then(data=>{ const c=data.current; const city=CITIES[CUR]; updateWeatherUI(c.temperature_2m,c.weather_code,c.relative_humidity_2m,c.wind_speed_10m,city?city.name:''); }).catch(()=>{ const el=document.getElementById('weatherDesc'); if(el) el.textContent='ئینتەرنێت پشکنە'; }); }
 function updateWeatherUI(temp,code,humidity,wind,cityName){ const icon=WEATHER_ICONS[code]||'🌡',desc=WEATHER_DESCS[code]||'—'; const wi=document.getElementById('weatherIcon'); const wt=document.getElementById('weatherTemp'); const wd=document.getElementById('weatherDesc'); const wc=document.getElementById('weatherCity'); const wh=document.getElementById('weatherHumidity'); const ww=document.getElementById('weatherWind'); if(wi) wi.textContent=icon; if(wt) wt.textContent=Math.round(temp)+'°C'; if(wd) wd.textContent=desc; if(wc) wc.textContent=cityName||CITIES[CUR]?.name||''; if(wh) wh.textContent='💧 '+humidity+'%'; if(ww) ww.textContent='💨 '+Math.round(wind)+' km/h'; localStorage.setItem('weatherCache',JSON.stringify({temp,code,humidity,wind,cityName,time:Date.now()})); }
 function loadCachedWeather(){ try{ const c=JSON.parse(localStorage.getItem('weatherCache')); if(c&&Date.now()-c.time<30*60*1000){ updateWeatherUI(c.temp,c.code,c.humidity,c.wind,c.cityName); return true; } }catch(e){} return false; }
+
+// ── پێشبینی 5 ڕۆژی کەشوهەوا ──────────────────────────
+const KU_DAYS = ['یەکشەممە','دووشەممە','سێشەممە','چوارشەممە','پێنجشەممە','هەینی','شەممە'];
+const KU_MONTHS = ['کانوونی دووەم','شوبات','ئازار','نیسان','ئایار','حوزەیران','تەمووز','ئاب','ئەیلوول','تشرینی یەکەم','تشرینی دووەم','کانوونی یەکەم'];
+
+function showWeatherForecast(){
+  const modal = document.getElementById('forecastModal');
+  modal.style.display = 'flex';
+  modal.style.flexDirection = 'column';
+  document.getElementById('forecastLoading').style.display = 'block';
+  document.getElementById('forecastList').innerHTML = '';
+
+  // کۆئۆردینەیتی ئامادە بکە
+  const coord = COORDS[CUR];
+  if(!coord){ document.getElementById('forecastLoading').textContent = 'شار نەدۆزرایەوە'; return; }
+  const lat = coord.lat, lon = coord.lng;
+
+  fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+
+    '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&timezone=auto&forecast_days=5')
+  .then(r=>r.json())
+  .then(data=>{
+    document.getElementById('forecastLoading').style.display = 'none';
+    const d = data.daily;
+    let html = '';
+    for(let i=0;i<5;i++){
+      const dateStr = d.time[i]; // YYYY-MM-DD
+      const dateObj = new Date(dateStr+'T12:00:00');
+      const dayName = i===0 ? 'ئەمڕۆ' : i===1 ? 'سبەی' : KU_DAYS[dateObj.getDay()];
+      const monthDay = dateObj.getDate() + ' ' + KU_MONTHS[dateObj.getMonth()];
+      const icon = WEATHER_ICONS[d.weather_code[i]] || '🌡';
+      const desc = WEATHER_DESCS[d.weather_code[i]] || '—';
+      const maxT = Math.round(d.temperature_2m_max[i]);
+      const minT = Math.round(d.temperature_2m_min[i]);
+      const rain = d.precipitation_sum[i] ? d.precipitation_sum[i].toFixed(1) : '0';
+      const wind = Math.round(d.wind_speed_10m_max[i]);
+      const isToday = i===0;
+      html += '<div style="background:'+(isToday?'linear-gradient(135deg,rgba(46,204,113,.18),rgba(46,204,113,.06))':'rgba(255,255,255,.05)')+';'
+        +'border:1px solid '+(isToday?'rgba(46,204,113,.35)':'rgba(255,255,255,.08)')+';'
+        +'border-radius:16px;padding:12px 14px;direction:rtl;display:flex;align-items:center;gap:12px">';
+      html += '<div style="font-size:28px;flex-shrink:0">'+icon+'</div>';
+      html += '<div style="flex:1">';
+      html += '<div style="display:flex;align-items:center;justify-content:space-between">';
+      html += '<div style="font-size:13px;font-weight:800;color:#fff;font-family:\'Cairo\',sans-serif">'+dayName+'</div>';
+      html += '<div style="font-size:20px;font-weight:900;color:'+(isToday?'#2ecc71':'#fff')+';font-family:\'Cairo\',sans-serif">'+maxT+'° <span style="font-size:13px;color:rgba(255,255,255,.4)">/ '+minT+'°</span></div>';
+      html += '</div>';
+      html += '<div style="font-size:10px;color:rgba(255,255,255,.4);font-family:\'Cairo\',sans-serif;margin-top:2px">'+monthDay+'</div>';
+      html += '<div style="display:flex;align-items:center;gap:10px;margin-top:5px">';
+      html += '<span style="font-size:10px;color:rgba(200,230,255,.7);font-family:\'Cairo\',sans-serif">'+desc+'</span>';
+      html += '<span style="font-size:10px;color:rgba(100,180,255,.6);font-family:\'Cairo\',sans-serif">💧 '+rain+' mm</span>';
+      html += '<span style="font-size:10px;color:rgba(200,230,255,.5);font-family:\'Cairo\',sans-serif">💨 '+wind+' km/h</span>';
+      html += '</div>';
+      html += '</div></div>';
+    }
+    document.getElementById('forecastList').innerHTML = html;
+  })
+  .catch(()=>{
+    document.getElementById('forecastLoading').style.display='none';
+    document.getElementById('forecastList').innerHTML = `
+      <div style="text-align:center;padding:40px 20px;font-family:'Cairo',sans-serif">
+        <div style="font-size:40px;margin-bottom:12px">📡</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.6)">ئینتەرنێت پشکنە</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px">پێشبینی کەشوهەوا پێویستی بە ئینتەرنێت هەیە</div>
+      </div>`;
+  });
+}
+
+function closeForecastModal(){
+  document.getElementById('forecastModal').style.display = 'none';
+}
 
 // ── دوگمەی بانگدان بۆ هەر نوێژێک ──────────────────
 function getPrayerMode(idx){ return localStorage.getItem('azanMode_'+idx)||'sound'; }
@@ -4392,6 +5270,11 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
   // autoNext هەمیشە off دەستپێبکات
   const ant = document.getElementById('autoNextToggle');
   if(ant) ant.classList.remove('on');
+  // دەستپێکی دۆخی رەمەزان
+  const ramBtn = document.getElementById('ramadanToggle');
+  if(ramBtn) ramBtn.classList.toggle('on', ramadanMode);
+  const ramCard = document.querySelector('.ramcard');
+  if(ramCard) ramCard.style.display = ramadanMode ? 'block' : 'none';
   // دەستپێک هەمیشە ماڵەوە
   document.querySelectorAll('.pg').forEach(x=>{x.classList.remove('active');x.classList.remove('fullscreen');});
   document.getElementById('pg-home').classList.add('active');
