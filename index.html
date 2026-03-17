@@ -1368,9 +1368,9 @@ body{
   <!-- ZIKR MENU PAGE -->
   <div class="pg" id="pg-zikr">
     <div style="padding:16px 12px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
         <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
-        <div style="font-size:17px;font-weight:800;color:#fff">📿 زیکر و دوعا</div>
+        <div style="font-size:17px;font-weight:800;color:#fff;flex:1">📿 زیکر و دوعا</div>
       </div>
       <!-- دوگمەی تەسبیح دیجیتاڵ -->
       <div onclick="switchPage('tasbih')" style="background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.08));border:1px solid rgba(201,168,76,.4);border-radius:16px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;margin-bottom:8px">
@@ -2243,7 +2243,7 @@ function toggleNotifSetting(){
   localStorage.setItem('notifEnabled', notifEnabled);
   if(notifEnabled){
     btn.classList.add('on');
-    requestNotificationPermission();
+    r3t24NpUrJMNunMMASmhAM953bFGeLXzN7();
     showToast('🔔 ئاگادارکردنەوە چالاک کرا');
     setTimeout(startPersistentNotif, 1000);
   } else {
@@ -2253,7 +2253,7 @@ function toggleNotifSetting(){
   }
 }
 
-function requestNotificationPermission(){
+function r3t24NpUrJMNunMMASmhAM953bFGeLXzN7(){
   if(!('Notification' in window)) return;
   if(Notification.permission === 'granted'){
     return; // بێ پەیام
@@ -2800,53 +2800,68 @@ function chLogo(ch){
   return `<div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ch.icon}</div>`;
 }
 
-// ── داتای ڕادیۆ ──────────────────────────────────
-const RADIO_CHANNELS = {
+// ── داتای ڕادیۆ — بەکارهێنانی Radio Browser API ─────
+const RADIO_STATIONS = {
   ku: [
-    {name:'ڕادیۆی میحراب',     sub:'کوردی — ئیسلامی',    icon:'🕌', url:'http://bblserver.ddns.net:1935/live/mihrabfm/chunklist_w873257582.m3u8'},
-    {name:'ڕادیۆی سونە',       sub:'کوردی — سونەی پێغەمبەر',icon:'📿', url:'https://stream.zeno.fm/0r0xa792kwzuv'},
-    {name:'ڕادیۆی قورئان کوردی',sub:'تلاوەتی قورئانی پیرۆز',icon:'📖', url:'http://mmn.mypsx.net:1935/live/mmnhdquran/chunklist.m3u8'},
-    {name:'ڕادیۆی ئامۆژگاری',  sub:'کوردی — ئامۆژگاری',  icon:'📡', url:'https://stream.zeno.fm/4d809ab6pszuv'},
-    {name:'ڕادیۆی ئیمان',      sub:'کوردی — ئیسلامی',    icon:'🌟', url:'https://stream.zeno.fm/vn4uetgxkwzuv'},
-    {name:'ڕادیۆی نور',        sub:'کوردی — زانست و ئایین',icon:'💡', url:'https://stream.zeno.fm/r9qa9bbk9dzuv'},
+    {name:'رادیۆ میحراب',    sub:'سلێمانی — ئیسلامی',     icon:'🕌', query:'Mihrab'},
+    {name:'رادیۆ سوننەت',    sub:'سلێمانی — سوننەی پێغەمبەر',icon:'📿', query:'Sunnah Iraq'},
+    {name:'رادیۆی قورئان',   sub:'کوردی — تلاوەتی پیرۆز',  icon:'📖', query:'Quran Kurdish'},
+    {name:'رادیۆ زەندان',    sub:'سلێمانی — کوردی',        icon:'📡', query:'Xendan'},
+    {name:'رادیۆ نووا',      sub:'سلێمانی — هەواڵ و فێرکاری',icon:'🎙', query:'Radio Nawa Kurdish'},
+    {name:'رادیۆ رووداو',    sub:'هەولێر — هەواڵ',         icon:'📻', query:'Rudaw Radio'},
   ],
   ar: [
-    {name:'ڕادیۆی قورئانی سعودی',sub:'إذاعة القرآن السعودية',icon:'📖', url:'https://stream.radiojar.com/0tpy1h0kxtzuv'},
-    {name:'ڕادیۆی سوننەی سعودی',sub:'إذاعة السنة السعودية', icon:'🕌', url:'https://stream.radiojar.com/snxcsk0kxtzuv'},
-    {name:'ڕادیۆ ئاخیرەت',     sub:'إذاعة الآخرة',         icon:'🌙', url:'https://stream.zeno.fm/yn4ta8kd3zzuv'},
-    {name:'ڕادیۆ نداء الإسلام', sub:'نداء الإسلام',         icon:'📿', url:'https://stream.zeno.fm/0r0xa8mfkwzuv'},
-    {name:'ڕادیۆ تجويد القرآن', sub:'تجویدی قورئانی پیرۆز',icon:'📖', url:'https://stream.zeno.fm/wrjg6d8kxtzuv'},
+    {name:'قورئانی سعودی',   sub:'إذاعة القرآن الكريم',    icon:'📖', query:'Saudi Quran Radio'},
+    {name:'سوننەی سعودی',    sub:'إذاعة السنة النبوية',    icon:'🕌', query:'Saudi Sunnah'},
+    {name:'ڕادیۆ کوەیت',     sub:'إذاعة الكويت',           icon:'📻', query:'Kuwait Radio'},
+    {name:'قورئانی مکە',     sub:'إذاعة القرآن الكريم مكة',icon:'🕋', query:'Makkah Quran'},
   ]
 };
 
 let radioAudio = null;
 let radioPlaying = false;
 let radioCurCh = null;
+let radioStreams = {}; // cache
+
+async function fetchRadioStream(query){
+  // پشکنینی کیشە
+  if(radioStreams[query]) return radioStreams[query];
+  try{
+    const res = await fetch(`https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(query)}&limit=5&hidebroken=true&order=clickcount&reverse=true`);
+    const data = await res.json();
+    if(data && data.length > 0){
+      radioStreams[query] = data[0].url_resolved || data[0].url;
+      return radioStreams[query];
+    }
+  }catch(e){}
+  return null;
+}
 
 function renderRadioChannels(){
   ['ku','ar'].forEach(lang=>{
     const el = document.getElementById('radioList'+lang.charAt(0).toUpperCase()+lang.slice(1));
     if(!el) return;
-    el.innerHTML = RADIO_CHANNELS[lang].map((ch,i)=>`
-      <div id="radioCh_${lang}_${i}" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;cursor:pointer;transition:all .2s" onclick="playRadio('${lang}',${i})">
+    el.innerHTML = RADIO_STATIONS[lang].map((ch,i)=>`
+      <div id="radioCh_${lang}_${i}" onclick="playRadio('${lang}',${i})"
+        style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;cursor:pointer;transition:all .2s">
         <div style="font-size:26px;flex-shrink:0">${ch.icon}</div>
         <div style="flex:1;min-width:0">
           <div style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:#fff">${ch.name}</div>
           <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">${ch.sub}</div>
         </div>
-        <div style="display:flex;align-items:center;gap:4px">
-          <span style="width:6px;height:6px;background:#e74c3c;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+          <span style="width:6px;height:6px;background:#e74c3c;border-radius:50%;animation:pulse 1.5s infinite"></span>
           <span style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">LIVE</span>
         </div>
       </div>`).join('');
   });
 }
 
-function playRadio(lang, idx){
-  const ch = RADIO_CHANNELS[lang][idx];
+async function playRadio(lang, idx){
+  const ch = RADIO_STATIONS[lang][idx];
   if(!ch) return;
 
-  // هایلایتی کارتی چالاک
+  // هایلایت
   document.querySelectorAll('[id^="radioCh_"]').forEach(el=>{
     el.style.background = 'rgba(255,255,255,.05)';
     el.style.borderColor = 'rgba(255,255,255,.08)';
@@ -2871,14 +2886,23 @@ function playRadio(lang, idx){
   document.getElementById('radioNowIcon').textContent = ch.icon;
   document.getElementById('radioNowTitle').textContent = ch.name;
   document.getElementById('radioNowSub').textContent = ch.sub;
-  document.getElementById('radioStatus').textContent = '⏳ بارکردن...';
+  document.getElementById('radioStatus').textContent = '🔍 گەڕان بۆ ستریم...';
   document.getElementById('radioPlayBtn').textContent = '⏳';
 
-  // وەستاندنی دەنگی کۆن
   if(radioAudio){ radioAudio.pause(); radioAudio.src=''; radioAudio=null; }
 
-  radioAudio = new Audio(ch.url);
+  // وەرگرتنی URL لە API
+  const url = await fetchRadioStream(ch.query);
+  if(!url){
+    document.getElementById('radioStatus').textContent = '⚠️ ستریم نەدۆزرایەوە';
+    document.getElementById('radioPlayBtn').textContent = '▶';
+    showToast('⚠️ '+ch.name+' — ستریم نەدۆزرایەوە');
+    return;
+  }
+
+  radioAudio = new Audio(url);
   radioAudio.volume = parseFloat(document.getElementById('radioVolume').value)||1;
+  radioAudio.crossOrigin = 'anonymous';
 
   radioAudio.oncanplay = ()=>{
     radioAudio.play().then(()=>{
@@ -2890,14 +2914,12 @@ function playRadio(lang, idx){
       document.getElementById('radioPlayBtn').textContent = '▶';
     });
   };
-
   radioAudio.onerror = ()=>{
     document.getElementById('radioStatus').textContent = '⚠️ کانەڵەکە بەردەست نییە';
     document.getElementById('radioPlayBtn').textContent = '▶';
     radioPlaying = false;
-    showToast('⚠️ '+ch.name+' — ئێستا بەردەست نییە');
+    showToast('⚠️ '+ch.name+' — کانەڵ بەردەست نییە');
   };
-
   radioAudio.load();
 }
 
@@ -3312,14 +3334,15 @@ function filterZikr(q){
   }
 
   resultsEl.innerHTML = found.map(z=>{
-    const arEsc = (z.ar||'').replace(/`/g,'\\`');
+    const copyText = (z.ar ? z.ar + '\n' : '') + z.ku;
+    const copyEsc = copyText.replace(/`/g,'\\`');
     return `<div class="zikr-card" style="margin:0">
       <div style="font-size:10px;color:rgba(46,204,113,.7);font-family:'Cairo',sans-serif;font-weight:700;margin-bottom:6px">${z.cat}</div>
       ${z.ar ? `
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
         <div class="zikr-arabic" style="flex:1;margin-bottom:0">${z.ar}</div>
-        <button onclick="speakZikr(\`${arEsc}\`,this)"
-          style="flex-shrink:0;width:34px;height:34px;border-radius:50%;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center">🔊</button>
+        <button onclick="copyZikr(\`${copyEsc}\`,this)"
+          style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:rgba(100,150,255,.12);border:1px solid rgba(100,150,255,.25);color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center">📋</button>
       </div>` : ''}
       <div class="zikr-kurdish">${z.ku}</div>
       ${z.count ? `<div class="zikr-count">🔁 ${z.count}</div>` : ''}
@@ -4016,13 +4039,48 @@ function renderZikr(){
 // ── دەنگی زیکر (Web Speech API) ─────────────────
 let zikrSpeaking = false;
 let zikrCurrentBtn = null;
+let zikrVoiceType = localStorage.getItem('zikrVoice') || 'male'; // male / female
+
+function setZikrVoice(type){
+  zikrVoiceType = type;
+  localStorage.setItem('zikrVoice', type);
+  const mBtn = document.getElementById('voiceMaleBtn');
+  const fBtn = document.getElementById('voiceFemaleBtn');
+  if(mBtn) mBtn.style.background = type==='male' ? 'rgba(46,204,113,.3)' : 'transparent';
+  if(mBtn) mBtn.style.color = type==='male' ? '#fff' : 'rgba(255,255,255,.5)';
+  if(fBtn) fBtn.style.background = type==='female' ? 'rgba(46,204,113,.3)' : 'transparent';
+  if(fBtn) fBtn.style.color = type==='female' ? '#fff' : 'rgba(255,255,255,.5)';
+  showToast(type==='male' ? '👨 دەنگی نێر هەڵبژێردرا' : '👩 دەنگی مێ هەڵبژێردرا');
+}
+
+function getZikrVoice(){
+  const voices = window.speechSynthesis.getVoices();
+  // هەموو دەنگە عەرەبییەکان
+  const arVoices = voices.filter(v => v.lang.startsWith('ar'));
+  if(!arVoices.length) return null;
+
+  if(zikrVoiceType === 'male'){
+    // گەڕان بۆ دەنگی نێر — ناوی کۆمون
+    const male = arVoices.find(v =>
+      /male|man|Majed|Tarik|Tarek|Hamza|Omar|Khalid|Ali|Mohamed|Ahmad/i.test(v.name)
+    );
+    if(male) return male;
+    // فالبەک: دەنگی کۆتایی لیستەکە (زۆرجار نێرە)
+    return arVoices[arVoices.length - 1];
+  } else {
+    const female = arVoices.find(v =>
+      /female|woman|Layla|Mia|Lama|Hana|Nora|Sara|Salma/i.test(v.name)
+    );
+    if(female) return female;
+    return arVoices[0];
+  }
+}
 
 function speakZikr(ar, btnEl){
   if(!('speechSynthesis' in window)){
     showToast('براوزەرەکەت پشتگیری دەنگ ناکات');
     return;
   }
-  // ئەگەر ئێستا دەخوێنێت — ده وەستێنە
   if(zikrSpeaking){
     window.speechSynthesis.cancel();
     zikrSpeaking = false;
@@ -4034,31 +4092,36 @@ function speakZikr(ar, btnEl){
     if(zikrCurrentBtn === btnEl) return;
   }
 
-  const utt = new SpeechSynthesisUtterance(ar);
-  utt.lang = 'ar-SA';
-  utt.rate = 0.75;
-  utt.pitch = 1;
+  function doSpeak(){
+    const utt = new SpeechSynthesisUtterance(ar);
+    utt.lang = 'ar-SA';
+    utt.rate = 0.7;
+    utt.pitch = zikrVoiceType === 'male' ? 0.85 : 1.1;
+    const v = getZikrVoice();
+    if(v) utt.voice = v;
+    utt.onstart = () => {
+      zikrSpeaking = true;
+      zikrCurrentBtn = btnEl;
+      btnEl.textContent = '⏹';
+      btnEl.style.background = 'rgba(231,76,60,.2)';
+      btnEl.style.borderColor = 'rgba(231,76,60,.5)';
+    };
+    utt.onend = utt.onerror = () => {
+      zikrSpeaking = false;
+      zikrCurrentBtn = null;
+      btnEl.textContent = '🔊';
+      btnEl.style.background = 'rgba(46,204,113,.15)';
+      btnEl.style.borderColor = 'rgba(46,204,113,.3)';
+    };
+    window.speechSynthesis.speak(utt);
+  }
 
-  // هەڵبژاردنی دەنگی عەرەبی ئەگەر بوو
-  const voices = window.speechSynthesis.getVoices();
-  const arVoice = voices.find(v => v.lang.startsWith('ar'));
-  if(arVoice) utt.voice = arVoice;
-
-  utt.onstart = () => {
-    zikrSpeaking = true;
-    zikrCurrentBtn = btnEl;
-    btnEl.textContent = '⏹';
-    btnEl.style.background = 'rgba(231,76,60,.2)';
-    btnEl.style.borderColor = 'rgba(231,76,60,.5)';
-  };
-  utt.onend = utt.onerror = () => {
-    zikrSpeaking = false;
-    zikrCurrentBtn = null;
-    btnEl.textContent = '🔊';
-    btnEl.style.background = 'rgba(46,204,113,.15)';
-    btnEl.style.borderColor = 'rgba(46,204,113,.3)';
-  };
-  window.speechSynthesis.speak(utt);
+  // ئەگەر دەنگەکان هێشتا بارنەبوون — چاوەڕێ بکە
+  if(window.speechSynthesis.getVoices().length === 0){
+    window.speechSynthesis.onvoiceschanged = ()=>{ doSpeak(); };
+  } else {
+    doSpeak();
+  }
 }
 
 // پلەی هەمووی زیکرەکانی بەشێک
@@ -4134,23 +4197,10 @@ function openZikrCat(cat){
   const items = ZIKRS.filter(z=>z.cat===cat);
   document.getElementById('zikrDetailTitle').textContent = cat;
 
-  // دوگمەی پلەی هەمووی — بۆ زیکری بەیانی و ئێوارە
-  const showPlayAll = cat.includes('بەیانی') || cat.includes('ئێوارە') || cat.includes('ڕۆژانە');
-  let playAllBtn = '';
-  if(showPlayAll){
-    playAllBtn = `<div style="padding:0 0 10px">
-      <button id="zikrPlayAllBtn" onclick="playAllZikr(ZIKRS.filter(z=>z.cat===\`${cat}\`),0)"
-        style="width:100%;padding:10px;border-radius:14px;background:linear-gradient(135deg,rgba(46,204,113,.25),rgba(46,204,113,.1));border:1px solid rgba(46,204,113,.4);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-        ▶ هەمووی بیستن بە دەنگ
-      </button>
-    </div>`;
-  }
-
-  document.getElementById('zikrDetailList').innerHTML = playAllBtn + items.map((z,i)=>{
+  document.getElementById('zikrDetailList').innerHTML = items.map((z,i)=>{
     if(z.info){
       return `<div style="background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.25);border-radius:14px;padding:14px 16px;margin-bottom:8px;font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,220,100,.9);direction:rtl;line-height:1.9">${z.ku}</div>`;
     }
-    const arEscaped = z.ar ? z.ar.replace(/`/g,'\\`') : '';
     const copyText = (z.ar ? z.ar + '\n' : '') + z.ku;
     const copyEsc = copyText.replace(/`/g,'\\`');
     return `
@@ -4158,12 +4208,8 @@ function openZikrCat(cat){
       ${z.ar ? `
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:6px">
         <div class="zikr-arabic" style="flex:1;margin-bottom:0">${z.ar}</div>
-        <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;margin-top:4px">
-          <button onclick="speakZikr(\`${arEscaped}\`,this)"
-            style="width:32px;height:32px;border-radius:50%;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s">🔊</button>
-          <button onclick="copyZikr(\`${copyEsc}\`,this)"
-            style="width:32px;height:32px;border-radius:50%;background:rgba(100,150,255,.12);border:1px solid rgba(100,150,255,.25);color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s">📋</button>
-        </div>
+        <button onclick="copyZikr(\`${copyEsc}\`,this)"
+          style="width:32px;height:32px;flex-shrink:0;margin-top:4px;border-radius:50%;background:rgba(100,150,255,.12);border:1px solid rgba(100,150,255,.25);color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s">📋</button>
       </div>` : ''}
       <div class="zikr-kurdish">${z.ku}</div>
       ${z.count ? `<div class="zikr-count">🔁 ${z.count}</div>` : ''}
@@ -5263,7 +5309,7 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
   loadSavedAzan();
   applySelectedMuezzin();
   renderMuezzinList();
-  requestNotificationPermission();
+  r3t24NpUrJMNunMMASmhAM953bFGeLXzN7();
   // دامەزراندنی toggle بەپێی localStorage
   const nt = document.getElementById('notifToggle');
   if(nt && !notifEnabled) nt.classList.remove('on');
