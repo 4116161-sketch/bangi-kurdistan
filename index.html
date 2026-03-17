@@ -2243,7 +2243,7 @@ function toggleNotifSetting(){
   localStorage.setItem('notifEnabled', notifEnabled);
   if(notifEnabled){
     btn.classList.add('on');
-    r3t24NpUrJMNunMMASmhAM953bFGeLXzN7();
+    requestNotificationPermission();
     showToast('🔔 ئاگادارکردنەوە چالاک کرا');
     setTimeout(startPersistentNotif, 1000);
   } else {
@@ -2253,7 +2253,7 @@ function toggleNotifSetting(){
   }
 }
 
-function r3t24NpUrJMNunMMASmhAM953bFGeLXzN7(){
+function requestNotificationPermission(){
   if(!('Notification' in window)) return;
   if(Notification.permission === 'granted'){
     return; // بێ پەیام
@@ -2800,42 +2800,27 @@ function chLogo(ch){
   return `<div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ch.icon}</div>`;
 }
 
-// ── داتای ڕادیۆ — بەکارهێنانی Radio Browser API ─────
+// ── داتای ڕادیۆ — Radio Garden ─────────────────────
 const RADIO_STATIONS = {
   ku: [
-    {name:'رادیۆ میحراب',    sub:'سلێمانی — ئیسلامی',     icon:'🕌', query:'Mihrab'},
-    {name:'رادیۆ سوننەت',    sub:'سلێمانی — سوننەی پێغەمبەر',icon:'📿', query:'Sunnah Iraq'},
-    {name:'رادیۆی قورئان',   sub:'کوردی — تلاوەتی پیرۆز',  icon:'📖', query:'Quran Kurdish'},
-    {name:'رادیۆ زەندان',    sub:'سلێمانی — کوردی',        icon:'📡', query:'Xendan'},
-    {name:'رادیۆ نووا',      sub:'سلێمانی — هەواڵ و فێرکاری',icon:'🎙', query:'Radio Nawa Kurdish'},
-    {name:'رادیۆ رووداو',    sub:'هەولێر — هەواڵ',         icon:'📻', query:'Rudaw Radio'},
+    {name:'رادیۆ میحراب FM',   sub:'سلێمانی — ١٠٤.٩ FM — ئیسلامی',      icon:'🕌', url:'https://radio.garden/api/ara/content/channel/fiO9aBTD/stream'},
+    {name:'رادیۆ سوننەت',      sub:'سلێمانی — ١٠٦.٩ FM — سوننەی پێغەمبەر',icon:'📿', url:'https://radio.garden/api/ara/content/channel/o10CcVUh/stream'},
+    {name:'رادیۆ زەندان',      sub:'سلێمانی — ١٠١.٧ FM — هەواڵ',         icon:'📡', url:'https://radio.garden/api/ara/content/channel/BeyqWmMX/stream'},
+    {name:'رادیۆ نووا کوردی',  sub:'سلێمانی — هەواڵ و فێرکاری',          icon:'🎙', url:'https://radio.garden/api/ara/content/channel/AxvbMBOX/stream'},
+    {name:'رادیۆ رووداو',      sub:'هەولێر — هەواڵی کوردستان',            icon:'📻', url:'https://radio.garden/api/ara/content/channel/XvGEbwuB/stream'},
   ],
   ar: [
-    {name:'قورئانی سعودی',   sub:'إذاعة القرآن الكريم',    icon:'📖', query:'Saudi Quran Radio'},
-    {name:'سوننەی سعودی',    sub:'إذاعة السنة النبوية',    icon:'🕌', query:'Saudi Sunnah'},
-    {name:'ڕادیۆ کوەیت',     sub:'إذاعة الكويت',           icon:'📻', query:'Kuwait Radio'},
-    {name:'قورئانی مکە',     sub:'إذاعة القرآن الكريم مكة',icon:'🕋', query:'Makkah Quran'},
+    {name:'قرآن السعودية',      sub:'إذاعة القرآن الكريم السعودية',         icon:'📖', url:'https://radio.garden/api/ara/content/channel/o8maOl8B/stream'},
+    {name:'السنة النبوية',      sub:'إذاعة السنة النبوية السعودية',         icon:'🕌', url:'https://radio.garden/api/ara/content/channel/w0YOzLvK/stream'},
+    {name:'قرآن مصر',           sub:'إذاعة القرآن الكريم مصر',              icon:'📖', url:'https://radio.garden/api/ara/content/channel/mGRbfZAB/stream'},
+    {name:'إذاعة الكويت',       sub:'برامج إسلامية كويتية',                 icon:'📻', url:'https://radio.garden/api/ara/content/channel/tIKkWgRJ/stream'},
   ]
 };
 
 let radioAudio = null;
 let radioPlaying = false;
 let radioCurCh = null;
-let radioStreams = {}; // cache
-
-async function fetchRadioStream(query){
-  // پشکنینی کیشە
-  if(radioStreams[query]) return radioStreams[query];
-  try{
-    const res = await fetch(`https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(query)}&limit=5&hidebroken=true&order=clickcount&reverse=true`);
-    const data = await res.json();
-    if(data && data.length > 0){
-      radioStreams[query] = data[0].url_resolved || data[0].url;
-      return radioStreams[query];
-    }
-  }catch(e){}
-  return null;
-}
+let radioStreams = {};
 
 function renderRadioChannels(){
   ['ku','ar'].forEach(lang=>{
@@ -2857,7 +2842,7 @@ function renderRadioChannels(){
   });
 }
 
-async function playRadio(lang, idx){
+function playRadio(lang, idx){
   const ch = RADIO_STATIONS[lang][idx];
   if(!ch) return;
 
@@ -2872,7 +2857,7 @@ async function playRadio(lang, idx){
     activeCard.style.borderColor = 'rgba(46,204,113,.35)';
   }
 
-  // ئەگەر هەمان کانەڵ — toggle
+  // toggle ئەگەر هەمان کانەڵ
   if(radioAudio && radioCurCh === lang+'_'+idx){
     radioTogglePlay();
     return;
@@ -2886,40 +2871,32 @@ async function playRadio(lang, idx){
   document.getElementById('radioNowIcon').textContent = ch.icon;
   document.getElementById('radioNowTitle').textContent = ch.name;
   document.getElementById('radioNowSub').textContent = ch.sub;
-  document.getElementById('radioStatus').textContent = '🔍 گەڕان بۆ ستریم...';
+  document.getElementById('radioStatus').textContent = '⏳ بارکردن...';
   document.getElementById('radioPlayBtn').textContent = '⏳';
 
   if(radioAudio){ radioAudio.pause(); radioAudio.src=''; radioAudio=null; }
 
-  // وەرگرتنی URL لە API
-  const url = await fetchRadioStream(ch.query);
-  if(!url){
-    document.getElementById('radioStatus').textContent = '⚠️ ستریم نەدۆزرایەوە';
-    document.getElementById('radioPlayBtn').textContent = '▶';
-    showToast('⚠️ '+ch.name+' — ستریم نەدۆزرایەوە');
-    return;
-  }
-
-  radioAudio = new Audio(url);
+  radioAudio = new Audio(ch.url);
   radioAudio.volume = parseFloat(document.getElementById('radioVolume').value)||1;
-  radioAudio.crossOrigin = 'anonymous';
 
   radioAudio.oncanplay = ()=>{
     radioAudio.play().then(()=>{
       radioPlaying = true;
       document.getElementById('radioPlayBtn').textContent = '⏸';
-      document.getElementById('radioStatus').textContent = 'دەنگ دەدات...';
+      document.getElementById('radioStatus').textContent = '🔴 دەنگ دەدات...';
     }).catch(()=>{
       document.getElementById('radioStatus').textContent = '⚠️ نەیتوانرا بارکرێت';
       document.getElementById('radioPlayBtn').textContent = '▶';
     });
   };
+
   radioAudio.onerror = ()=>{
     document.getElementById('radioStatus').textContent = '⚠️ کانەڵەکە بەردەست نییە';
     document.getElementById('radioPlayBtn').textContent = '▶';
     radioPlaying = false;
     showToast('⚠️ '+ch.name+' — کانەڵ بەردەست نییە');
   };
+
   radioAudio.load();
 }
 
@@ -4304,7 +4281,7 @@ function tasbihClick(){
 
   // لەرزین
   if(tasbihVibrOn && navigator.vibrate){
-    navigator.vibrate(isDone ? [100,50,100,50,200] : [30]);
+    navigator.vibrate(isDone ? [100,50,100,50,300] : [80]);
   }
 
   // ئەنیمەیشنی دوگمە
@@ -5049,19 +5026,30 @@ function sendWidgetNotif(){
   const nxt = city.t[nextIdx];
   const diffMin = nextMin - curMin;
   const dh = Math.floor(diffMin/60), dm = diffMin%60;
-  const mawaStr = dh>0 ? `${dh} کاتژمێر ${dm} خولەک` : `${dm} خولەک`;
+
+  // شێوازی ئاسانخوێن
+  let mawaStr;
+  if(dh === 0){
+    mawaStr = `${dm} خولەک`;
+  } else if(dm === 0){
+    mawaStr = `${dh} کاتژمێر`;
+  } else {
+    mawaStr = `${dh}s ${dm}d`
+      .replace('s','کاتژمێر').replace('d','خولەک');
+    mawaStr = `${dh} کاتژمێر و ${dm} خولەک`;
+  }
 
   // جێگرتنی بانگەکان لە بەدی
   const prayerLines = city.t.map((t,i)=>{
-    if(i===1) return '';
-    const mark = i===nextIdx ? '◀ ' : '   ';
+    if(i===1) return ''; // گزنگ نەنووسە
+    const mark = i===nextIdx ? '▶ ' : '    ';
     return `${mark}${NAMES[i]}: ${fmt(t.h,t.m)}`;
   }).filter(Boolean).join('\n');
 
   navigator.serviceWorker.controller.postMessage({
     type: 'WIDGET_NOTIF',
     title: `🕌 ${NAMES[nextIdx]} — ${fmt(nxt.h,nxt.m)}`,
-    body: `⏳ ${mawaStr} مایەتەوە\n${prayerLines}`,
+    body: `⏳ ${mawaStr} مایەتەوە\n\n${prayerLines}`,
     cityName: city.ku || CUR,
     tag: 'prayer-widget'
   });
@@ -5309,7 +5297,7 @@ document.addEventListener('click', unlockAudio, {once:true, passive:true});
   loadSavedAzan();
   applySelectedMuezzin();
   renderMuezzinList();
-  r3t24NpUrJMNunMMASmhAM953bFGeLXzN7();
+  requestNotificationPermission();
   // دامەزراندنی toggle بەپێی localStorage
   const nt = document.getElementById('notifToggle');
   if(nt && !notifEnabled) nt.classList.remove('on');
