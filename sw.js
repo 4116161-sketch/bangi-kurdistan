@@ -1,5 +1,5 @@
-// Service Worker - بانگی کوردستان
-const CACHE_NAME = 'bangi-v6';
+// Service Worker - ئاوێزان
+const CACHE_NAME = 'awezhan-v1';
 const ASSETS = ['/', '/index.html', '/azan.mp3', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 // Install
