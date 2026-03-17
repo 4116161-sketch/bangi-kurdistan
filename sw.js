@@ -45,6 +45,40 @@ self.addEventListener('message', e => {
   if(e.data.type === 'PLAY_AZAN'){
     playAzanNotification(e.data.prayerName);
   }
+
+  // نۆتیفیکەیشنی کاتی بانگ (لە index.html دێت)
+  if(e.data.type === 'PRAYER_NOTIFICATION'){
+    self.registration.showNotification(e.data.title || '🕌 کاتی بانگ', {
+      body: e.data.body || '',
+      icon: e.data.icon || '/icon-192.png',
+      badge: '/icon-192.png',
+      tag: 'prayer-azan',
+      renotify: true,
+      requireInteraction: true,
+      silent: false,
+      vibrate: [400, 150, 400, 150, 400, 150, 800],
+      actions: [
+        { action: 'open', title: '📖 کرانەوە' },
+        { action: 'dismiss', title: '✕ داخستن' }
+      ]
+    });
+  }
+
+  // ── ویجێتی بەردەوام — هەموو خولەکێک نوێدەبێتەوە ──
+  if(e.data.type === 'WIDGET_NOTIF'){
+    self.registration.showNotification(e.data.title || '🕌 کاتەکانی بانگ', {
+      body: e.data.body || '',
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      tag: 'prayer-widget',
+      silent: true,
+      renotify: false,
+      requireInteraction: false,
+      actions: [
+        { action: 'open', title: '🕌 کرانەوە' }
+      ]
+    });
+  }
 });
 
 // Schedule prayer notifications
