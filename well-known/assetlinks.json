@@ -1,1 +1,8 @@
-
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.app_4116161_sketch.twa",
+        "sha256_cert_fingerprints": ["80:43:EC:18:03:F6:2C:A7:C5:A2:ED:20:5A:81:43:5B:DB:CB:26:B0:EB:35:EA:B9:4D:78:34:33:41:21:96:F1"]
+      }
+    }]
