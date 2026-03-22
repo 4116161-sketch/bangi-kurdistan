@@ -3907,12 +3907,34 @@ function showSura(id){
   requestWakeLock();
 
   function renderAyat(ayat){
-    // سووڕەتی فاتحە (١) و توبە (٩) بسم الله لە ئایەتەکانیاندا تایبەتن
-    // سووڕەتی تری: ئایەتی یەکەم بسم اللهە — لابردێت چونکە لە HTML هەیە
-    let filtered = ayat;
-    if(id !== 1 && id !== 9){
-      filtered = ayat.filter(a => !(a.numberInSurah === 1 && a.text.includes('بِسْمِ')));
-    }
+    // سووڕەتی فاتحە (١): ئایەتی ١ بسم اللهە — ئاسایییە
+    // سووڕەتی توبە (٩): بسم الله نیە
+    // سووڕەتی تری: API بِسْمِ + ئایەتی ڕاستی تێکەڵ دەکات بۆ ئایەتی ١
+    // مەرجی پاکردنەوە: تەنها لابدە ئەگەر هەموو ئایەتەکە بسم اللهە
+    // ئەگەر دوای بسم الله دەقی تر هەیە (وەک الم)، تەنها بسم اللهەکە بوژارەوە
+    const bismPrefixes = [
+      'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ',
+      'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+      'بسم الله الرحمن الرحيم',
+    ];
+    let filtered = ayat.map(a => {
+      if(id === 1 || id === 9) return a;
+      if(a.numberInSurah !== 1) return a;
+      if(!a.text.includes('بِسْمِ') && !a.text.includes('بسم')) return a;
+      // ئایەتی یەکەم بسم الله هەیەتی
+      let txt = a.text;
+      for(const bp of bismPrefixes){
+        if(txt.startsWith(bp)){
+          txt = txt.slice(bp.length).trim();
+          break;
+        }
+      }
+      // ئەگەر دەق ماوە — ئایەتەکە بماێنه بەڵام بە دەقی تازە
+      // ئەگەر هیچ نەماوە — لایبدە
+      if(!txt) return null;
+      return Object.assign({}, a, {text: txt});
+    }).filter(Boolean);
+
     // بسم الله نیشان بدە تەنها بۆ سووڕەتە ئاسایییەکان
     const bism = document.querySelector('.bismillah');
     if(bism) bism.style.display = (id === 9) ? 'none' : 'block';
