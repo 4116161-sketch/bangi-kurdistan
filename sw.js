@@ -130,16 +130,22 @@ function playAzanNotification(prayerName){
 }
 
 // Notification click
+const APP_URL = 'https://4116161-sketch.github.io/bangi-kurdistan/';
 self.addEventListener('notificationclick', e => {
   e.notification.close();
+  if(e.action === 'dismiss') return;
   e.waitUntil(
-    self.clients.matchAll({type: 'window'}).then(clients => {
-      if(clients.length > 0){
-        clients[0].focus();
-        clients[0].postMessage({type: 'TRIGGER_AZAN', prayerName: e.notification.tag});
-      } else {
-        self.clients.openWindow('/');
+    self.clients.matchAll({type:'window', includeUncontrolled:true}).then(list => {
+      // ئەگەر ئەپەکە کراوەیە — focus بکە
+      for(const c of list){
+        if(c.url.includes('bangi-kurdistan')){
+          c.focus();
+          c.postMessage({type:'TRIGGER_AZAN', prayerName: e.notification.tag});
+          return;
+        }
       }
+      // نا — پەنجەرەی نوێ بکرەوە بۆ ئەپەکە
+      return self.clients.openWindow(APP_URL);
     })
   );
 });
