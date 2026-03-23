@@ -117,7 +117,13 @@ body.light-mode #themePanel{
 /* مۆدالەکان */
 body.light-mode .city-modal .city-sheet,
 body.light-mode #readerPickerModal{
+  background:rgba(0,0,0,.4) !important;
+}
+body.light-mode #readerPickerModal > div{
   background:#ffffff !important;
+}
+body.light-mode #readerPickerModal *:not(img):not(svg):not(path){
+  color:#1a2e22 !important;
 }
 body.light-mode .city-row{
   border-bottom-color:rgba(26,148,86,.1) !important;
@@ -224,6 +230,143 @@ body.light-mode .toggle{
 }
 body.light-mode .toggle.on{
   background:var(--green) !important;
+}
+
+/* ── هەموو بەشی دیکەی ئەپ — لایت مۆد ── */
+
+/* کارتی کەشوهەوا */
+body.light-mode #weatherCard{
+  background:linear-gradient(135deg,rgba(200,230,255,.5),rgba(150,200,255,.3)) !important;
+  border-color:rgba(100,160,220,.3) !important;
+}
+body.light-mode #weatherCard *{ color:#1a2e3d !important; }
+
+/* مۆدالی پێشبینی ٥ ڕۆژ */
+body.light-mode #forecastModal{
+  background:#ffffff !important;
+}
+body.light-mode #forecastModal *:not(svg):not(path){ color:#1a2e22 !important; }
+body.light-mode #forecastLoading{ color:rgba(20,50,30,.5) !important; }
+
+/* ڕۆژمێر */
+body.light-mode #pg-calendar{
+  background:#ffffff !important;
+}
+body.light-mode #pg-calendar *:not(svg):not(path){ color:#1a2e22 !important; }
+body.light-mode #pg-calendar [style*="background:linear-gradient"]{
+  background:rgba(26,148,86,.07) !important;
+}
+body.light-mode #pg-calendar [style*="background:rgba(255,255,255"]{
+  background:rgba(26,148,86,.05) !important;
+}
+
+/* زیکر */
+body.light-mode #pg-zikr{ background:#ffffff !important; }
+body.light-mode #pg-zikr *:not(svg){ color:#1a2e22 !important; }
+
+/* تەسبیح */
+body.light-mode #pg-tasbih{ background:#ffffff !important; }
+body.light-mode #pg-tasbih *:not(svg){ color:#1a2e22 !important; }
+body.light-mode #pg-tasbih [style*="background:rgba(255,255,255"]{
+  background:rgba(26,148,86,.06) !important;
+}
+
+/* سیرەتی نبەوی */
+body.light-mode #pg-seerah{ background:#ffffff !important; }
+body.light-mode #pg-seerah *:not(svg){ color:#1a2e22 !important; }
+
+/* قەڵای موسڵمان */
+body.light-mode #pg-hisn{ background:#ffffff !important; }
+body.light-mode #pg-hisn *:not(svg){ color:#1a2e22 !important; }
+body.light-mode #pg-hisn-detail{ background:#ffffff !important; }
+body.light-mode #pg-hisn-detail *:not(svg){ color:#1a2e22 !important; }
+
+/* TV */
+body.light-mode #pg-tv{ background:#ffffff !important; }
+body.light-mode #pg-tv *:not(svg){ color:#1a2e22 !important; }
+
+/* ڤیدیۆ */
+body.light-mode #pg-videos{ background:#ffffff !important; }
+body.light-mode #pg-videos *:not(svg){ color:#1a2e22 !important; }
+
+/* چۆنیەتی نوێژ */
+body.light-mode #pg-salah{ background:#ffffff !important; }
+body.light-mode #pg-salah *:not(svg){ color:#1a2e22 !important; }
+body.light-mode #pg-salah-detail{ background:#ffffff !important; }
+body.light-mode #pg-salah-detail *:not(svg){ color:#1a2e22 !important; }
+
+/* قیبلە */
+body.light-mode #pg-qibla{ background:#ffffff !important; }
+body.light-mode #pg-qibla *:not(svg):not(canvas){ color:#1a2e22 !important; }
+
+/* کۆمپاسی قیبلە لە لایت مۆد */
+body.light-mode #compassRing{
+  background:radial-gradient(circle at 35% 35%,#d4eedd,#a8d4bc 60%,#7ab89a) !important;
+  box-shadow:0 0 0 2px rgba(26,148,86,.3),0 0 20px rgba(0,0,0,.15) !important;
+}
+body.light-mode #pg-qibla [style*="color:rgba(255,255,255,.4)"]{
+  color:rgba(20,50,30,.5) !important;
+}
+body.light-mode #pg-qibla [style*="color:rgba(255,255,255,.8)"]{
+  color:#1a2e22 !important;
+}
+body.light-mode #pg-qibla [style*="background:rgba(255,255,255"]{
+  background:rgba(26,148,86,.08) !important;
+}
+body.light-mode #pg-qibla [style*="background:rgba(46,204,113"]{
+  background:rgba(26,148,86,.12) !important;
+}
+body.light-mode #pg-qibla [style*="background:linear-gradient"]{
+  background:rgba(26,148,86,.08) !important;
+}
+body.light-mode #pg-qibla [style*="border:1px solid rgba(255,255,255"]{
+  border-color:rgba(26,148,86,.2) !important;
+}
+body.light-mode #qiblaStartBtn{
+  background:linear-gradient(135deg,rgba(26,148,86,.15),rgba(26,148,86,.08)) !important;
+  border-color:rgba(26,148,86,.3) !important;
+  color:var(--green-dark) !important;
+}
+
+/* ڕێکخستن */
+body.light-mode #pg-settings{ background:#ffffff !important; }
+body.light-mode #pg-settings *:not(svg){ color:#1a2e22 !important; }
+
+/* قورئان */
+body.light-mode #pg-quran{ background:#ffffff !important; }
+body.light-mode #pg-sura{ background:#ffffff !important; }
+
+/* مۆدالی ٧ ڕۆژ */
+body.light-mode #weekModalSheet{
+  background:linear-gradient(180deg,#f0fff5,#e8f5ee) !important;
+}
+body.light-mode #weekModalSheet *:not(svg){ color:#1a2e22 !important; }
+
+/* مێنوی لاتەکی */
+body.light-mode #sideMenu{
+  background:linear-gradient(180deg,#f5fff8,#edf8f1) !important;
+}
+body.light-mode #sideMenu *:not(svg){ color:#1a2e22 !important; }
+body.light-mode .smitem:hover,
+body.light-mode .smitem:active{
+  background:rgba(26,148,86,.08) !important;
+}
+
+/* بۆردەری گشتی لایت مۆد */
+body.light-mode [style*="border:1px solid rgba(46,204,113"]{
+  border-color:rgba(26,148,86,.25) !important;
+}
+body.light-mode [style*="background:rgba(255,255,255,.04)"],
+body.light-mode [style*="background:rgba(255,255,255,.05)"],
+body.light-mode [style*="background:rgba(255,255,255,.06)"],
+body.light-mode [style*="background:rgba(255,255,255,.07)"],
+body.light-mode [style*="background:rgba(255,255,255,.08)"],
+body.light-mode [style*="background:rgba(255,255,255,.09)"],
+body.light-mode [style*="background:rgba(255,255,255,.1)"],
+body.light-mode [style*="background:rgba(255,255,255,.12)"],
+body.light-mode [style*="background:rgba(255,255,255,.15)"],
+body.light-mode [style*="background:rgba(255,255,255,.2)"]{
+  background:rgba(26,148,86,.06) !important;
 }
 
 .bg-mosque{
@@ -1208,13 +1351,13 @@ body.light-mode .toggle.on{
         <div style="display:flex;align-items:center;gap:12px">
           <div id="weatherIcon" style="font-size:44px;line-height:1;filter:drop-shadow(0 0 12px rgba(100,180,255,.5))">⏳</div>
           <div>
-            <div id="weatherTemp" style="font-size:30px;font-weight:900;color:#fff;font-family:'Cairo',sans-serif;line-height:1;text-shadow:0 0 20px rgba(100,180,255,.4)">—°</div>
-            <div id="weatherDesc" style="font-size:12px;color:rgba(180,220,255,.8);font-family:'Cairo',sans-serif;margin-top:2px;font-weight:600">بارکردنی کەشوهەوا...</div>
+            <div id="weatherTemp" style="font-size:30px;font-weight:900;color:#FFD700;font-family:'Cairo',sans-serif;line-height:1;text-shadow:0 0 20px rgba(255,200,0,.5)">—°</div>
+            <div id="weatherDesc" style="font-size:12px;color:#90E0FF;font-family:'Cairo',sans-serif;margin-top:2px;font-weight:600">بارکردنی کەشوهەوا...</div>
           </div>
         </div>
         <div style="text-align:left">
-          <div id="weatherCity" style="font-size:12px;color:rgba(130,210,255,.9);font-family:'Cairo',sans-serif;font-weight:700;margin-bottom:4px">—</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.35);font-family:'Cairo',sans-serif">📅 پێشبینی 5 ڕۆژ ←</div>
+          <div id="weatherCity" style="font-size:12px;color:#FFE066;font-family:'Cairo',sans-serif;font-weight:700;margin-bottom:4px">—</div>
+          <div style="font-size:10px;color:rgba(255,220,80,.6);font-family:'Cairo',sans-serif">📅 پێشبینی 5 ڕۆژ ←</div>
         </div>
       </div>
 
@@ -1226,32 +1369,32 @@ body.light-mode .toggle.on{
 
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
           <span style="font-size:18px">💧</span>
-          <span id="weatherHumidity" style="font-size:12px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">—</span>
-          <span style="font-size:9px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">شلەوێ</span>
+          <span id="weatherHumidity" style="font-size:12px;font-weight:800;color:#FFD700;font-family:'Cairo',sans-serif">—</span>
+          <span style="font-size:9px;color:rgba(255,220,100,.5);font-family:'Cairo',sans-serif">شلەوێ</span>
         </div>
 
         <div style="width:1px;height:36px;background:rgba(255,255,255,.1)"></div>
 
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
           <span style="font-size:18px">💨</span>
-          <span id="weatherWind" style="font-size:12px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">—</span>
-          <span style="font-size:9px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">با</span>
+          <span id="weatherWind" style="font-size:12px;font-weight:800;color:#FFD700;font-family:'Cairo',sans-serif">—</span>
+          <span style="font-size:9px;color:rgba(255,220,100,.5);font-family:'Cairo',sans-serif">با</span>
         </div>
 
         <div style="width:1px;height:36px;background:rgba(255,255,255,.1)"></div>
 
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
           <span style="font-size:18px">🌡️</span>
-          <span id="weatherFeelsLike" style="font-size:12px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">—</span>
-          <span style="font-size:9px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">هەست</span>
+          <span id="weatherFeelsLike" style="font-size:12px;font-weight:800;color:#FFD700;font-family:'Cairo',sans-serif">—</span>
+          <span style="font-size:9px;color:rgba(255,220,100,.5);font-family:'Cairo',sans-serif">هەست</span>
         </div>
 
         <div style="width:1px;height:36px;background:rgba(255,255,255,.1)"></div>
 
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
           <span style="font-size:18px">🌧️</span>
-          <span id="weatherRain" style="font-size:12px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">—</span>
-          <span style="font-size:9px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">باران</span>
+          <span id="weatherRain" style="font-size:12px;font-weight:800;color:#FFD700;font-family:'Cairo',sans-serif">—</span>
+          <span style="font-size:9px;color:rgba(255,220,100,.5);font-family:'Cairo',sans-serif">باران</span>
         </div>
 
       </div>
@@ -3171,6 +3314,83 @@ function applyTheme(name){
   document.querySelectorAll('.theme-btn').forEach(b=>{ b.style.opacity='0.6'; b.style.transform=''; });
   const active = document.getElementById('tb-'+name);
   if(active){ active.style.opacity='1'; active.style.transform='scale(1.05)'; }
+
+  // ── کاتی سپی: هەموو inline backgroundی تاریک دەگۆڕێت ──
+  if(name === 'white'){
+    const WHITE = '#ffffff';
+    const WHITE2 = 'rgba(26,148,86,.06)';
+    const BORDER = 'rgba(26,148,86,.15)';
+    const TEXT = '#1a2e22';
+
+    // هەموو پەڕەکان
+    document.querySelectorAll('.pg, .pg.fullscreen, .pg.active').forEach(el=>{
+      el.style.background = WHITE;
+      el.style.color = TEXT;
+    });
+
+    // کارتی کەشوهەوا
+    // کۆمپاسی قیبلە
+    const cr = document.getElementById('compassRing');
+    if(cr) cr.style.background = 'radial-gradient(circle at 35% 35%,#d4eedd,#a8d4bc 60%,#7ab89a)';
+    const wc = document.getElementById('weatherCard');
+    if(wc){ wc.style.background = 'linear-gradient(135deg,rgba(200,230,255,.4),rgba(180,220,255,.25))'; wc.style.borderColor = 'rgba(100,160,220,.25)'; }
+
+    // forecastModal
+    const fm = document.getElementById('forecastModal');
+    if(fm) fm.style.background = WHITE;
+
+    // weekModal
+    const ws = document.getElementById('weekModalSheet');
+    if(ws) ws.style.background = 'linear-gradient(180deg,#f0fff5,#eaf5ee)';
+
+    // سایدمێنیو
+    const sm = document.getElementById('sideMenu');
+    if(sm) sm.style.background = 'linear-gradient(180deg,#f5fff8,#edf8f1)';
+
+    // هەموو divەکانی inline background تاریک
+    document.querySelectorAll('[style]').forEach(el=>{
+      const s = el.style;
+      const bg = s.backgroundColor || s.background || '';
+      // rgba(X,X,X,.04-.2) تاریک → سپی
+      if(/rgba\(\s*\d{1,2}\s*,\s*\d{1,2}\s*,\s*\d{1,2}\s*,\s*0?\.(0[4-9]|1[0-9]?|2)\s*\)/.test(bg)){
+        s.background = WHITE2;
+        s.borderColor = BORDER;
+      }
+      // linear-gradient تاریک (#0, #1) → سپی
+      if(/linear-gradient[^)]*#0[0-9a-f]/.test(bg) || /linear-gradient[^)]*#1[0-3]/.test(bg)){
+        if(!el.classList.contains('theme-btn') && !el.id.includes('tb-')){
+          s.background = WHITE;
+        }
+      }
+    });
+
+    // هەموو دەقی سپی → تاریک
+    document.querySelectorAll('[style*="color:#fff"], [style*="color: #fff"], [style*="color:white"]').forEach(el=>{
+      if(!el.closest('svg')) el.style.color = TEXT;
+    });
+    document.querySelectorAll('[style*="color:rgba(255,255,255"]').forEach(el=>{
+      if(!el.closest('svg')) el.style.color = 'rgba(20,50,30,.6)';
+    });
+
+  } else {
+    // گەڕانەوە بۆ تاریک: ڕیفرێشی inline styleەکان
+    document.querySelectorAll('.pg, .pg.fullscreen').forEach(el=>{
+      el.style.background = '';
+      el.style.color = '';
+    });
+    document.querySelectorAll('[style]').forEach(el=>{
+      if(el.style.background && el.style.background === 'rgba(26,148,86,.06)'){
+        el.style.background = '';
+      }
+      if(el.style.background === '#ffffff'){
+        el.style.background = '';
+      }
+    });
+    const fm2 = document.getElementById('forecastModal');
+    if(fm2) fm2.style.background = 'linear-gradient(180deg,#020e07,#010704)';
+    const ws2 = document.getElementById('weekModalSheet');
+    if(ws2) ws2.style.background = 'linear-gradient(180deg,#0c2418,#060f0a)';
+  }
 }
 
 // لۆدکردنی تیمی پێشوو
@@ -4115,7 +4335,27 @@ function showReaderPicker(){
   const modal = document.getElementById('readerPickerModal');
   const grid = document.getElementById('readerGrid');
   if(!modal) return;
-  modal.style.cssText = 'display:flex!important;flex-direction:column;justify-content:flex-end;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999999;background:rgba(0,0,0,.85);backdrop-filter:blur(8px)';
+  const isLight = document.body.classList.contains('light-mode');
+  const overlayBg = isLight ? 'rgba(0,0,0,.4)' : 'rgba(0,0,0,.85)';
+  const sheetBg   = isLight ? '#ffffff' : 'linear-gradient(180deg,#0a1f12,#040e07)';
+  const cardBg    = isLight ? 'rgba(26,148,86,.06)' : 'rgba(255,255,255,.05)';
+  const cardBorder= isLight ? 'rgba(26,148,86,.2)' : 'rgba(255,255,255,.08)';
+  const txtColor  = isLight ? '#1a2e22' : '#fff';
+  const subColor  = isLight ? 'rgba(20,50,30,.5)' : 'rgba(255,255,255,.4)';
+  const titleColor= isLight ? '#1a2e22' : '#fff';
+  const closeBg   = isLight ? 'rgba(26,148,86,.1)' : 'rgba(255,255,255,.1)';
+
+  modal.style.cssText = 'display:flex!important;flex-direction:column;justify-content:flex-end;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999999;background:'+overlayBg+';backdrop-filter:blur(8px)';
+
+  // شیت
+  const sheet = modal.querySelector('div');
+  if(sheet) sheet.style.background = sheetBg;
+
+  // هێدەری مۆدال
+  const titleEl = modal.querySelector('[style*="color:#fff"]');
+  if(titleEl) titleEl.style.color = titleColor;
+  const closeBtn = modal.querySelector('button');
+  if(closeBtn){ closeBtn.style.background = closeBg; closeBtn.style.color = titleColor; }
 
   grid.innerHTML = READERS.map(r => {
     const isActive = r.key === curReader;
@@ -4124,14 +4364,14 @@ function showReaderPicker(){
       : `<div style="width:100%;height:100%;background:${r.color};display:flex;align-items:center;justify-content:center;font-size:28px">${r.emoji}</div>`;
     return `<div onclick="selectReader('${r.key}')"
       style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:16px;cursor:pointer;
-             background:${isActive ? 'rgba(46,204,113,.2)' : 'rgba(255,255,255,.05)'};
-             border:2px solid ${isActive ? 'rgba(46,204,113,.6)' : 'rgba(255,255,255,.08)'};
+             background:${isActive ? 'rgba(46,204,113,.2)' : cardBg};
+             border:2px solid ${isActive ? 'rgba(46,204,113,.6)' : cardBorder};
              transition:all .2s">
-      <div style="width:64px;height:64px;border-radius:50%;overflow:hidden;border:2px solid ${isActive ? 'rgba(46,204,113,.6)' : 'rgba(255,255,255,.15)'}">
+      <div style="width:64px;height:64px;border-radius:50%;overflow:hidden;border:2px solid ${isActive ? 'rgba(46,204,113,.6)' : (isLight?'rgba(26,148,86,.2)':'rgba(255,255,255,.15)')}">
         ${avatar}
       </div>
-      <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:${isActive ? '#2ecc71' : '#fff'};text-align:center;line-height:1.3">${r.name}</div>
-      <div style="font-family:'Cairo',sans-serif;font-size:9px;color:rgba(255,255,255,.4)">${r.sub}</div>
+      <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:${isActive ? '#2ecc71' : txtColor};text-align:center;line-height:1.3">${r.name}</div>
+      <div style="font-family:'Cairo',sans-serif;font-size:9px;color:${subColor}">${r.sub}</div>
     </div>`;
   }).join('');
 }
@@ -4295,11 +4535,24 @@ function loadSuraAudio(suraId, autoplay){
 
     quranAudio.onloadedmetadata = ()=>{
       if(!quranAudio) return;
-      const ayahEls = document.querySelectorAll('.ayah-line');
-      buildAyahTimings(quranAudio.duration, ayahEls.length);
       const durEl = document.getElementById('audioDur');
       if(durEl) durEl.textContent =
         Math.floor(quranAudio.duration/60)+':'+String(Math.floor(quranAudio.duration%60)).padStart(2,'0');
+      // هاوکات پشکنی — ئەگەر ئایەتەکان ئامادەن
+      const ayahEls = document.querySelectorAll('.ayah-line');
+      if(ayahEls.length > 0){
+        buildAyahTimings(quranAudio.duration, ayahEls.length);
+      } else {
+        // ئایەتەکان هێشتا نەبارکراون — چاوەڕێ بکە
+        const checkAyahs = setInterval(()=>{
+          const els = document.querySelectorAll('.ayah-line');
+          if(els.length > 0 && quranAudio && quranAudio.duration){
+            buildAyahTimings(quranAudio.duration, els.length);
+            clearInterval(checkAyahs);
+          }
+        }, 200);
+        setTimeout(()=>clearInterval(checkAyahs), 10000);
+      }
     };
 
     quranAudio.onended = ()=>{
@@ -4488,10 +4741,18 @@ function showSura(id){
     ).join('');
     document.getElementById('suraText').innerHTML =
       `<div class="quran-flow">${lines}</div>`;
+
+    // ── دوای renderAyat: ئەگەر دەنگ بارکراوە، timings دووبارە بکە ──
+    if(quranAudio && quranAudio.duration){
+      const ayahEls2 = document.querySelectorAll('.ayah-line');
+      if(ayahEls2.length > 0){
+        buildAyahTimings(quranAudio.duration, ayahEls2.length);
+      }
+    }
   }
 
   // سعد الغامدی لە API ی جیاوازدایە
-  if(curReader === 'ar.saadalghamdi' || curReader === 'peshawa' || curReader === 'raad' || curReader === 'ar.minshawi'){
+  if(curReader === 'ar.saadalghamdi' || curReader === 'peshawa' || curReader === 'raad' || curReader === 'ar.minshawi' || curReader === 'ar.shaatree' || curReader === 'ar.qatami'){
     // متن لە ar.alafasy بارکە
     fetch('https://api.alquran.cloud/v1/surah/'+id+'/ar.alafasy')
       .then(r=>r.json())
@@ -4514,6 +4775,14 @@ function showSura(id){
       `https://cdn.islamic.network/quran/audio-surah/128/ar.minshawi/${sgId}.mp3`,
       `https://server13.mp3quran.net/minsh/${sgNum}.mp3`,
       `https://download.quranicaudio.com/quran/muhammad_siddeeq_al-minshaawi/${sgNum}.mp3`,
+    ] : curReader === 'ar.shaatree' ? [
+      `https://cdn.islamic.network/quran/audio-surah/128/ar.shaatree/${sgId}.mp3`,
+      `https://server11.mp3quran.net/shatri/${sgNum}.mp3`,
+      `https://download.quranicaudio.com/quran/abu_bakr_ash-shaatree/${sgNum}.mp3`,
+    ] : curReader === 'ar.qatami' ? [
+      `https://cdn.islamic.network/quran/audio-surah/128/ar.qatami/${sgId}.mp3`,
+      `https://server12.mp3quran.net/qtm/${sgNum}.mp3`,
+      `https://download.quranicaudio.com/quran/nasser_alqatami/${sgNum}.mp3`,
     ] : [
       `https://download.tvquran.com/download/recitations/343/266/${sgNum}.mp3`,
       `https://server10.mp3quran.net/sgmd/${sgNum}.mp3`,
@@ -4529,9 +4798,20 @@ function showSura(id){
         const dm=Math.floor(quranAudio.duration/60), ds=Math.floor(quranAudio.duration%60);
         const durEl=document.getElementById('audioDur');
         if(durEl) durEl.textContent=dm+':'+String(ds).padStart(2,'0');
-        // ✅ هایلایت — buildAyahTimings بۆ قارێ کوردییەکان
+        // buildAyahTimings — ئەگەر ئایەتەکان ئامادەن
         const ayahEls = document.querySelectorAll('.ayah-line');
-        buildAyahTimings(quranAudio.duration, ayahEls.length);
+        if(ayahEls.length > 0){
+          buildAyahTimings(quranAudio.duration, ayahEls.length);
+        } else {
+          const checkAyahs = setInterval(()=>{
+            const els = document.querySelectorAll('.ayah-line');
+            if(els.length > 0 && quranAudio && quranAudio.duration){
+              buildAyahTimings(quranAudio.duration, els.length);
+              clearInterval(checkAyahs);
+            }
+          }, 200);
+          setTimeout(()=>clearInterval(checkAyahs), 10000);
+        }
       };
       quranAudio.ontimeupdate = ()=>{
         if(!quranAudio.duration) return;
@@ -5969,7 +6249,12 @@ function sendWidgetNotif(){
     const pMin = parseInt(t.h,10)*60 + parseInt(t.m,10);
     if(pMin > curMin && pMin < nextMin){ nextMin=pMin; nextIdx=i; }
   });
-  if(nextIdx===-1){ nextIdx=0; } // بەیانی ڕۆژی داهاتوو
+  // ئەگەر هیچ نوێژێکی ئەمڕۆ نەماوە — بەیانی سبەی
+  if(nextIdx===-1){
+    nextIdx = 0;
+    const fajr = city.t[0];
+    nextMin = parseInt(fajr.h,10)*60 + parseInt(fajr.m,10) + 1440; // +24 کاتژمێر
+  }
 
   const nxt = city.t[nextIdx];
   const diffMin = nextMin - curMin;
