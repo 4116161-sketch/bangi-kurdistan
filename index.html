@@ -1242,7 +1242,7 @@ body{
       <!-- ناوەڕۆک -->
       <div style="padding:16px;flex:1">
         <div id="forecastLoading" style="text-align:center;padding:60px 0;font-family:'Cairo',sans-serif;color:rgba(255,255,255,.5);font-size:14px">⏳ بارکردن...</div>
-        <div id="forecastList" style="display:flex;flex-direction:column;gap:10px"></div>
+        <div id="forecastList" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
     </div>
 
@@ -1269,11 +1269,7 @@ body{
         <div class="qz-title">پەخشی ڕاستەوخۆ</div>
         <div class="qz-sub" style="display:flex;align-items:center;justify-content:center;gap:4px"><span style="width:5px;height:5px;background:#e74c3c;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>LIVE</div>
       </div>
-      <div class="qz-card" onclick="switchPage('radio')">
-        <div class="qz-icon">📻</div>
-        <div class="qz-title">ڕادیۆ</div>
-        <div class="qz-sub" style="display:flex;align-items:center;justify-content:center;gap:4px"><span style="width:5px;height:5px;background:#e74c3c;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>LIVE</div>
-      </div>
+
       <div class="qz-card" onclick="switchPage('salah')">
         <div class="qz-icon">🕌</div>
         <div class="qz-title">چۆنیەتی نوێژ</div>
@@ -1283,6 +1279,16 @@ body{
         <div class="qz-icon">📿</div>
         <div class="qz-title">تەسبیح</div>
         <div class="qz-sub">ژمێرەری دیجیتاڵ</div>
+      </div>
+      <div class="qz-card" onclick="switchPage('seerah')">
+        <div class="qz-icon">🌙</div>
+        <div class="qz-title">سیرەتی نبەوی</div>
+        <div class="qz-sub">ژیاننامەی پێغەمبەر ﷺ</div>
+      </div>
+      <div class="qz-card" onclick="switchPage('videos')">
+        <div class="qz-icon">🎥</div>
+        <div class="qz-title">ڤیدیۆی ئیسلامی</div>
+        <div class="qz-sub">زیکری بەیانی و ئێواران</div>
       </div>
     </div>
 
@@ -1645,7 +1651,7 @@ body{
       </div>
 
       <!-- کارتەکانی نوێژ -->
-      <div id="salahList" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div id="salahList" style="display:flex;flex-direction:column;gap:6px"></div>
 
     </div>
   </div>
@@ -1790,65 +1796,174 @@ body{
   </div>
 
   <!-- RADIO PAGE -->
-  <div class="pg fullscreen" id="pg-radio" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
-    <div style="padding:16px 12px 100px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+
+
+  <!-- VIDEOS PAGE — ڤیدیۆی ئیسلامی -->
+  <div class="pg fullscreen" id="pg-videos" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
+    <div style="padding:14px 14px 100px">
+      <!-- هێدر -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
         <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
-        <div style="font-size:17px;font-weight:800;color:#fff">📻 ڕادیۆی ئیسلامی</div>
+        <div style="flex:1">
+          <div style="font-size:17px;font-weight:900;color:#fff;font-family:'Cairo',sans-serif">🎥 ڤیدیۆی ئیسلامی</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">زیکری بەیانی و ئێواران</div>
+        </div>
       </div>
 
-      <!-- پلەیەری ڕادیۆ -->
-      <div id="radioPlayerWrap" style="display:none;margin-bottom:16px;position:sticky;top:0;z-index:50;background:#041408;padding-bottom:8px">
-        <div style="background:linear-gradient(135deg,rgba(46,204,113,.15),rgba(10,40,20,.95));border:1px solid rgba(46,204,113,.3);border-radius:18px;padding:16px">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-            <div id="radioNowIcon" style="font-size:32px">📻</div>
-            <div style="flex:1">
-              <div id="radioNowTitle" style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff"></div>
-              <div id="radioNowSub" style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(46,204,113,.8);margin-top:2px"></div>
-            </div>
-            <button onclick="closeRadioPlayer()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px">✕</button>
+      <!-- زیکری بەیانیان -->
+      <div style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="width:3px;height:16px;background:#F1C40F;border-radius:2px;display:inline-block"></span>
+          <div style="font-size:13px;font-weight:800;color:#F1C40F;font-family:'Cairo',sans-serif">🌅 زیکری بەیانیان</div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden">
+          <div style="position:relative;padding-bottom:56.25%;height:0">
+            <iframe
+              src="https://www.youtube.com/embed/n8ixwmdSyCs?rel=0&modestbranding=1"
+              style="position:absolute;top:0;left:0;width:100%;height:100%;border:none"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
           </div>
-          <!-- دوگمەکان -->
-          <div style="display:flex;align-items:center;justify-content:center;gap:16px">
-            <button onclick="radioTogglePlay()" id="radioPlayBtn"
-              style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1b8a4e,#2ecc71);border:none;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(46,204,113,.4)">▶</button>
-          </div>
-          <!-- دەنگ -->
-          <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
-            <span style="font-size:14px">🔇</span>
-            <input type="range" id="radioVolume" min="0" max="1" step="0.05" value="1" oninput="radioSetVolume(this.value)"
-              style="flex:1;accent-color:#2ecc71">
-            <span style="font-size:14px">🔊</span>
-          </div>
-          <!-- لەرزاندنی دەنگ -->
-          <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px">
-            <div id="radioWave" style="display:flex;align-items:center;gap:3px;height:20px">
-              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite"></div>
-              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite 0.15s"></div>
-              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite 0.3s"></div>
-              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite 0.45s"></div>
-              <div class="rwave-bar" style="width:3px;background:rgba(46,204,113,.6);border-radius:2px;animation:radioWave 0.8s ease-in-out infinite 0.6s"></div>
-            </div>
-            <span style="font-size:10px;color:rgba(46,204,113,.7);font-family:'Cairo',sans-serif" id="radioStatus">دەنگ دەدات...</span>
+          <div style="padding:10px 14px;direction:rtl">
+            <div style="font-size:13px;font-weight:700;color:#fff;font-family:'Cairo',sans-serif">زیکری بەیانیان — کوردی</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;margin-top:3px">گوێ لێبگرە و بخوێنەوە</div>
           </div>
         </div>
       </div>
 
-      <!-- ڕادیۆی کوردی -->
-      <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:var(--green-light);margin:0 0 8px;display:flex;align-items:center;gap:6px">
-        <span style="width:3px;height:14px;background:var(--green-light);border-radius:2px;display:inline-block"></span>🇮🇶 ڕادیۆی کوردی
+      <!-- زیکری ئێواران -->
+      <div style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="width:3px;height:16px;background:#9B59B6;border-radius:2px;display:inline-block"></span>
+          <div style="font-size:13px;font-weight:800;color:#C39BD3;font-family:'Cairo',sans-serif">🌙 زیکری ئێواران</div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden">
+          <div style="position:relative;padding-bottom:56.25%;height:0">
+            <iframe
+              src="https://www.youtube.com/embed/5riq-XXQK3o?rel=0&modestbranding=1"
+              style="position:absolute;top:0;left:0;width:100%;height:100%;border:none"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
+          </div>
+          <div style="padding:10px 14px;direction:rtl">
+            <div style="font-size:13px;font-weight:700;color:#fff;font-family:'Cairo',sans-serif">زیکری ئێواران — کوردی</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;margin-top:3px">گوێ لێبگرە و بخوێنەوە</div>
+          </div>
+        </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px" id="radioListKu"></div>
 
-      <!-- ڕادیۆی عەرەبی -->
-      <div style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:#4fa3e0;margin:0 0 8px;display:flex;align-items:center;gap:6px">
-        <span style="width:3px;height:14px;background:#4fa3e0;border-radius:2px;display:inline-block"></span>🌍 ڕادیۆی عەرەبی
+      <!-- تێبینی -->
+      <div style="background:rgba(46,204,113,.06);border:1px solid rgba(46,204,113,.15);border-radius:12px;padding:10px 14px;direction:rtl;text-align:center">
+        <div style="font-size:11px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">📶 ئینتەرنێت پێویستە بۆ بینینی ڤیدیۆ</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px" id="radioListAr"></div>
     </div>
   </div>
 
-  <!-- HISN DETAIL PAGE -->
+
+  <!-- SEERAH PAGE — ژیاننامەی پێغەمبەر ﷺ -->
+  <div class="pg fullscreen" id="pg-seerah" style="overflow:hidden;display:flex;flex-direction:column">
+    <!-- هێدر -->
+    <div style="background:rgba(2,14,8,.98);border-bottom:1px solid rgba(46,204,113,.15);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;position:relative;z-index:10">
+      <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer;flex-shrink:0">←</button>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:900;color:#fff;font-family:'Cairo',sans-serif">🌙 ژیانی پێغەمبەر ﷺ</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">م.محمد ملا فائق شارەزوری</div>
+      </div>
+      <!-- دوگمەی گۆڕانی تابەت -->
+      <div style="display:flex;gap:6px">
+        <button onclick="seerahTab('audio')" id="seerahTabAudio"
+          style="padding:5px 10px;border-radius:20px;background:rgba(46,204,113,.3);border:1px solid rgba(46,204,113,.5);color:#fff;font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;cursor:pointer">🔊 دەنگ</button>
+        <button onclick="seerahTab('info')" id="seerahTabInfo"
+          style="padding:5px 10px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer">📖 کورتە</button>
+      </div>
+    </div>
+
+    <!-- تابی ئودیۆ — iframe ی ماڵپەڕ -->
+    <div id="seerahAudioTab" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+      <iframe id="seerahIframe"
+        src="https://www.muhammadmalafayaq.com/Audio.aspx?FolderID=44&mapid=5"
+        style="flex:1;border:none;width:100%;height:100%;background:#fff"
+        allow="autoplay"
+        loading="lazy">
+      </iframe>
+    </div>
+
+    <!-- تابی کورتەی ژیاننامە -->
+    <div id="seerahInfoTab" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none">
+      <div style="padding:14px 14px 80px">
+      <!-- بانەری مامۆستا -->
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(139,105,20,.1));border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:18px 16px;text-align:center;margin-bottom:14px">
+        <div style="font-family:'Amiri',serif;font-size:24px;color:#D4AF37;margin-bottom:4px">مُحَمَّدٌ رَّسُولُ اللَّهِ ﷺ</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;margin-bottom:12px">خوێندنەوەی ژیاننامەی پێغەمبەر — مامۆستا محمد ملا فائق شارەزوری</div>
+        <!-- لینکەکانی مامۆستا -->
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <a href="https://www.muhammadmalafayaq.com" target="_blank" rel="noopener"
+            style="display:flex;align-items:center;gap:10px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.3);border-radius:12px;padding:10px 14px;text-decoration:none;direction:rtl">
+            <span style="font-size:20px">🌐</span>
+            <div style="flex:1;text-align:right">
+              <div style="font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">ماڵپەڕی فەرمی</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">muhammadmalafayaq.com</div>
+            </div>
+            <span style="color:rgba(255,255,255,.3);font-size:14px">‹</span>
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.kurdappdev.mamosta_muhammad" target="_blank" rel="noopener"
+            style="display:flex;align-items:center;gap:10px;background:rgba(52,152,219,.12);border:1px solid rgba(52,152,219,.3);border-radius:12px;padding:10px 14px;text-decoration:none;direction:rtl">
+            <span style="font-size:20px">📱</span>
+            <div style="flex:1;text-align:right">
+              <div style="font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">ئەپی مامۆستا — Android</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">خوێندنەوەی ژیاننامە بە دەنگ</div>
+            </div>
+            <span style="color:rgba(255,255,255,.3);font-size:14px">‹</span>
+          </a>
+          <a href="https://apps.apple.com/us/app/%D9%85-%D9%85%D8%AD%D9%85%D8%AF-%D9%85%DB%95%D9%84%D8%A7-%D9%81%D8%A7%D8%A6%D9%82-%D8%B4%D8%A7%D8%B1%DB%95%D8%B2%D9%88%D8%B1%DB%8C/id1541830985" target="_blank" rel="noopener"
+            style="display:flex;align-items:center;gap:10px;background:rgba(149,128,255,.12);border:1px solid rgba(149,128,255,.3);border-radius:12px;padding:10px 14px;text-decoration:none;direction:rtl">
+            <span style="font-size:20px">🍎</span>
+            <div style="flex:1;text-align:right">
+              <div style="font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">ئەپی مامۆستا — iPhone</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">App Store</div>
+            </div>
+            <span style="color:rgba(255,255,255,.3);font-size:14px">‹</span>
+          </a>
+          <a href="https://www.facebook.com/muhammadmalafayaq" target="_blank" rel="noopener"
+            style="display:flex;align-items:center;gap:10px;background:rgba(24,119,242,.12);border:1px solid rgba(24,119,242,.3);border-radius:12px;padding:10px 14px;text-decoration:none;direction:rtl">
+            <span style="font-size:20px">📘</span>
+            <div style="flex:1;text-align:right">
+              <div style="font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">فەیسبووکی مامۆستا</div>
+              <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">١.٨ ملیۆن فۆلۆوەر</div>
+            </div>
+            <span style="color:rgba(255,255,255,.3);font-size:14px">‹</span>
+          </a>
+        </div>
+      </div>
+      <!-- دیڤایدەری -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.08)"></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);font-family:'Cairo',sans-serif">کورتەی ژیاننامە</div>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.08)"></div>
+      </div>
+      <!-- لیستی بەشەکان -->
+      <div style="display:flex;flex-direction:column;gap:8px" id="seerahList"></div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- SEERAH DETAIL PAGE -->
+  <div class="pg fullscreen" id="pg-seerah-detail" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
+    <div style="padding:16px 14px 100px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <button onclick="switchPage('seerah')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
+        <div id="seerahDetailTitle" style="font-size:16px;font-weight:900;color:#D4AF37;flex:1;font-family:'Cairo',sans-serif"></div>
+      </div>
+      <div id="seerahDetailBody" style="font-family:'Cairo',sans-serif;font-size:15px;color:rgba(255,255,255,.9);line-height:2;direction:rtl"></div>
+    </div>
+  </div>
+
+  <!-- HISN DETAIL  <!-- HISN DETAIL PAGE -->
   <div class="pg fullscreen" id="pg-hisn-detail">
     <div style="padding:16px 12px 30px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
@@ -3023,134 +3138,214 @@ function chLogo(ch){
   return `<div style="width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ch.icon}</div>`;
 }
 
-// ── داتای ڕادیۆ — Radio Garden ─────────────────────
-const RADIO_STATIONS = {
-  ku: [
-    {name:'رادیۆ میحراب FM',   sub:'سلێمانی — ١٠٤.٩ FM — ئیسلامی',      icon:'🕌', url:'https://radio.garden/api/ara/content/channel/fiO9aBTD/stream'},
-    {name:'رادیۆ سوننەت',      sub:'سلێمانی — ١٠٦.٩ FM — سوننەی پێغەمبەر',icon:'📿', url:'https://radio.garden/api/ara/content/channel/o10CcVUh/stream'},
-    {name:'رادیۆ زەندان',      sub:'سلێمانی — ١٠١.٧ FM — هەواڵ',         icon:'📡', url:'https://radio.garden/api/ara/content/channel/BeyqWmMX/stream'},
-    {name:'رادیۆ رووداو',      sub:'هەولێر — هەواڵی کوردستان',            icon:'📻', url:'https://radio.garden/api/ara/content/channel/XvGEbwuB/stream'},
-  ],
-  ar: [
-    {name:'إذاعة القرآن الكريم', sub:'السعودية — قرآن پیرۆز ٢٤/٧',       icon:'📖', url:'https://radioplus.sba.sa/live/4'},
-    {name:'نداء الإسلام',        sub:'السعودية — ئیسلامی',                 icon:'🕌', url:'https://radioplus.sba.sa/live/1'},
-    {name:'إذاعة السنة',         sub:'إذاعة سلفية إسلامية',               icon:'📿', url:'https://stream.radiosunna.com/radiosunna'},
-    {name:'قرآن مكة المكرمة',    sub:'بث مباشر من المسجد الحرام',          icon:'🕋', url:'https://radioplus.sba.sa/live/3'},
-  ]
-};
 
-let radioAudio = null;
-let radioPlaying = false;
-let radioCurCh = null;
-let radioStreams = {};
+// ══════════════════════════════════════════
+// سیرەتی نبەوی — ژیاننامەی پێغەمبەر ﷺ
+// ══════════════════════════════════════════
+const SEERAH = [
+  {
+    id: 1, icon: '🌟', title: 'لەدایکبوون و منداڵایەتی',
+    sub: '٥٧٠ — ٥٨٠ زایینی',
+    color: '#C9A84C',
+    text: `لەدایکبووی پێغەمبەری ئیسلام محمد ﷺ لە مەکەی موکەررەمە، لە ساڵی ٥٧٠ زایینی، لەو ساڵەی دەیان "ساڵی فیل" دەناسن، چونکە لە ئەو ساڵەدا هێلیگ ئەبرەهە هێرشی کردە سەر کەعبە.
 
-function renderRadioChannels(){
-  ['ku','ar'].forEach(lang=>{
-    const el = document.getElementById('radioList'+lang.charAt(0).toUpperCase()+lang.slice(1));
-    if(!el) return;
-    el.innerHTML = RADIO_STATIONS[lang].map((ch,i)=>`
-      <div id="radioCh_${lang}_${i}" onclick="playRadio('${lang}',${i})"
-        style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;cursor:pointer;transition:all .2s">
-        <div style="font-size:26px;flex-shrink:0">${ch.icon}</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:#fff">${ch.name}</div>
-          <div style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">${ch.sub}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
-          <span style="width:6px;height:6px;background:#e74c3c;border-radius:50%;animation:pulse 1.5s infinite"></span>
-          <span style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">LIVE</span>
-        </div>
-      </div>`).join('');
-  });
-}
+دایکی: ئامنە بنتی وەهب
+باوکی: عبدالله بنتی عبدالموتەڵیب — پێش لەدایکبوونی کوڕەکەی کۆچی کردبوو
+باپیرەی: عبدالموتەڵیب — سەرپەرشتیاری کردی
 
-function playRadio(lang, idx){
-  const ch = RADIO_STATIONS[lang][idx];
-  if(!ch) return;
+لە ئەو دەمیشدا ئادەتی عەرەب بوو کوڕبچووکەکانیان بدەنە قەبیلەیەکی دیکەی دەشت بۆ شیر خواردن و فێرکردنی زمانی ئەرەبیی شێوازدار. ئامیا بنتی أبی ذوئیب ﺭ لە قەبیلەی بەنی سەعد ساعدەی کردی.
 
-  // هایلایت
-  document.querySelectorAll('[id^="radioCh_"]').forEach(el=>{
-    el.style.background = 'rgba(255,255,255,.05)';
-    el.style.borderColor = 'rgba(255,255,255,.08)';
-  });
-  const activeCard = document.getElementById('radioCh_'+lang+'_'+idx);
-  if(activeCard){
-    activeCard.style.background = 'rgba(46,204,113,.12)';
-    activeCard.style.borderColor = 'rgba(46,204,113,.35)';
-  }
+بەهاری منداڵایەتی: داگیرکراوبوو بە ئیسپیرایشن و نیشانە، رووناکی تایبەتی لە ناو بیاندا دیاری بوو.`
+  },
+  {
+    id: 2, icon: '📚', title: 'گەنجایەتی و پابەندی',
+    sub: '٥٨٠ — ٦١٠ زایینی',
+    color: '#2ECC71',
+    text: `لە گەنجایەتیدا پێغەمبەر ﷺ بە ناوی "ئەمین" ناسرابوو — واتا پشتباز، چونکە هیچکەس هیچ جار دروو لەلای بیستووە.
 
-  // toggle ئەگەر هەمان کانەڵ
-  if(radioAudio && radioCurCh === lang+'_'+idx){
-    radioTogglePlay();
-    return;
-  }
+کارەکانی گەنجایەتی:
+• شوانی مەڕ لە دەشتی مەکە
+• بازرگانی بۆ لای خەدیجە ﺭ
+• بەشداری لە "حیلف الفضول" — پەیمانی مافپاریزی
 
-  radioCurCh = lang+'_'+idx;
+خزمەتگوزاری خەدیجە: لە تەمەن ٢٥ ساڵیدا کاری بازرگانی بۆ خانمی سەروەتمەند خەدیجە بنتی خوویلید دەکرد. ئەویش لەلاتی خۆشویستووبوو، نامەی نێردە و دواتر یاکانەوری دەکرێت.
 
-  // پیشاندانی پلەیەر
-  document.getElementById('radioPlayerWrap').style.display = 'block';
-  document.getElementById('radioPlayerWrap').scrollIntoView({behavior:'smooth'});
-  document.getElementById('radioNowIcon').textContent = ch.icon;
-  document.getElementById('radioNowTitle').textContent = ch.name;
-  document.getElementById('radioNowSub').textContent = ch.sub;
-  document.getElementById('radioStatus').textContent = '⏳ بارکردن...';
-  document.getElementById('radioPlayBtn').textContent = '⏳';
+خزمەتگوزاری ئازارکێشانەی خەڵک، دروستکردنی دۆستایەتی، دووری لە خراپی و بووتەگیری — هەموویان دیمەنی ئاشکرای دیلاریی کاراکتەری ئەویانی بوو.`
+  },
+  {
+    id: 3, icon: '🌄', title: 'دەستپێکی وەحی',
+    sub: '٦١٠ زایینی — تەمەن ٤٠',
+    color: '#3498DB',
+    text: `لە تەمەن ٤٠ ساڵی، لە مانگی ڕەمەزاندا، لە شکەفتی حیرادا لە چیای نور:
 
-  if(radioAudio){ radioAudio.pause(); radioAudio.src=''; radioAudio=null; }
+جیبریلی ئەمین ﷺ هاتە لای و گوتی: "ئیقرأ" — بخوێنە.
+پێغەمبەر ﷺ گوتی: "من خوێنەر نیم"
+جیبریل بیگرتی گرتینێکی بەهێز و دووبارە گوتی: "ئیقرأ"
+ئەمەی سێ جار بووە، دواتر ئەم ئایەتانەی وەرگرت:
 
-  radioAudio = new Audio(ch.url);
-  radioAudio.volume = parseFloat(document.getElementById('radioVolume').value)||1;
+﴿ اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ ﴾
 
-  radioAudio.oncanplay = ()=>{
-    radioAudio.play().then(()=>{
-      radioPlaying = true;
-      document.getElementById('radioPlayBtn').textContent = '⏸';
-      document.getElementById('radioStatus').textContent = '🔴 دەنگ دەدات...';
-    }).catch(()=>{
-      document.getElementById('radioStatus').textContent = '⚠️ نەیتوانرا بارکرێت';
-      document.getElementById('radioPlayBtn').textContent = '▶';
-    });
-  };
+پێغەمبەر ﷺ بە لەرزین و ترس گەڕایەوە، خەدیجە ﺭ دلنیایی کرد:
+"بە خوا، خوا هیچکات بیتی نەکەی، تۆ بەپیوەندیت دەگرێیت، لە ئێمانداری پاراستن دەکەیت..."
 
-  radioAudio.onerror = ()=>{
-    document.getElementById('radioStatus').textContent = '⚠️ کانەڵەکە بەردەست نییە';
-    document.getElementById('radioPlayBtn').textContent = '▶';
-    radioPlaying = false;
-    showToast('⚠️ '+ch.name+' — کانەڵ بەردەست نییە');
-  };
+ئیسلام دەستیپێکرد — هەواڵی مەزنترین بووی مێژوو.`
+  },
+  {
+    id: 4, icon: '☪️', title: 'دەعوەتی نهێنی و ئاشکرا',
+    sub: '٦١٠ — ٦٢٢ زایینی',
+    color: '#9B59B6',
+    text: `سێ ساڵی یەکەمی دەعوەت نهێنی بوو، یەکەمانی باوەڕیان هێنا:
 
-  radioAudio.load();
-}
+یەکەمانی باوەڕیان هێنا:
+👰 خەدیجە — ژنی پێغەمبەر ﷺ
+👦 علی بنی ئەبیتاڵب ﺭ — پسووری
+👴 ئەبوبەکری سیددیق ﺭ — دۆستی نزیک
+🧑 زید بنی حارسە ﺭ — نۆکەری ئازادکراو
 
-function radioTogglePlay(){
-  if(!radioAudio) return;
-  if(radioPlaying){
-    radioAudio.pause();
-    radioPlaying = false;
-    document.getElementById('radioPlayBtn').textContent = '▶';
-    document.getElementById('radioStatus').textContent = 'وەستاو';
+لەگەڵ بەرفراوانبوونی دەعوەت، موشریکانی مەکە دژایەتی خەریکبوون. ئازار، ئیشکەنجە، و بەکارگرتنی ئابووری دژ بە موسڵمانان.
+
+هیجرەتی بۆ ئەحیش: کۆمەڵێک موسڵمانی کرد بچنە ئەحیشتا، شاهی عەدل عەبدالله بنی أبی بەکری مەبەستی پارێزگاریی کرد.
+
+دەعوەتی ئاشکرا: لەدوای ٣ ساڵ، فەرمانی "ئاشکرا دەعوەت بکە" هات. شیعب ئەبیتاڵب: ٣ ساڵ مونافیقیکردن...`
+  },
+  {
+    id: 5, icon: '🚶', title: 'هیجرەتی مەدینە',
+    sub: '٦٢٢ زایینی',
+    color: '#E74C3C',
+    text: `لەدوای ١٣ ساڵ لە مەکە، فەرمانی هیجرەت هات.
+
+پلانی مورشریکان: شەوێک هاتن بۆ ماڵی پێغەمبەر ﷺ بیبکوژن. خوا پێی راگەیاند.
+
+هیجرەت: پێغەمبەر ﷺ و ئەبووبەکری سیددیق ﺭ یەکەوە چوون.
+گشت ئەبووبەکر گوتی: "ئەگەر سەرم بردەسەرووەوە دەبینمت، تەنها ئەمترسم کە تۆت خراپت پێ بگات"
+پێغەمبەر ﷺ گوتی: "لا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا" — مەلرز، خوا لەگەڵماوە
+
+سێ شەو لە شکەفتی سور شاراوەبوون، لێچوون پیاگرتن، بەڵام خوا پاراستی.
+
+دەگەیشتن مەدینە: موسڵمانانی مەدینە — ئەنصار — پێشوازیان کرد. دامەزراندنی یەکەمین دەوڵەتی ئیسلامی.`
+  },
+  {
+    id: 6, icon: '⚔️', title: 'شەڕەکانی ئیسلام',
+    sub: '٦٢٤ — ٦٣٢ زایینی',
+    color: '#E67E22',
+    text: `لەدوای هیجرەت، مورشریکان دەستی هەڵنەگرتن. مەبەستی شەڕەکان پاراستنی ئیسلام بوو نەک داگیرکردن.
+
+شەڕی بەدر — ٦٢٤ زایینی:
+٣١٣ موسڵمان دژ بە ١٠٠٠ قوریشی. سەرکەوتنی موسڵمانان. یەکەمین شەڕی گەورە.
+
+شەڕی ئوحود — ٦٢٥ زایینی:
+لە دەستپێک سەرکەوتن، بەڵام لە کۆتاییدا موسڵمانان زیان بینی چونکە تیرئەندازان جێگایانیان بەجێ هێشتن.
+
+شەڕی خەندەق — ٦٢٧ زایینی:
+پێغەمبەر ﷺ پلانی حەفرکردنی خەندەقی پێشنیازکرد. موشریکان نەتوانی بچنە ناو.
+
+فەتحی مەکە — ٦٣٠ زایینی:
+١٠٠٠٠ موسڵمان ئامادەبوون. مەکەی فەتحکرا بەبێ خوێنریژی. پێغەمبەر ﷺ بەخشایەوە فەرمووی:
+"ئیڤان ئازادن، بچنە."
+
+یەکەمین کعبەی پاکراوەتەوە لە بووتەکان.`
+  },
+  {
+    id: 7, icon: '💛', title: 'مامەڵەی پێغەمبەر ﷺ',
+    sub: 'ئەخلاق و تایبەتمەندی',
+    color: '#F39C12',
+    text: `مامەڵەی پێغەمبەر ﷺ بە خەڵک نموونەی بەرزترین ئاخلاقە:
+
+بە ژن:
+"باشترینتان ئەوەیە کە بە خانمی خۆی باشترە، من باشترینم بە خانمەکانم"
+
+بە منداڵ:
+حوسین ﺭ لەسەر پشتی خستەوە دا، گفتوگۆی دەکرد، پێیان پێدەکەنی.
+
+بە فوقەرا:
+دژ لە سەروەتمەندی بوو، هەموو شتی دابەش دەکرد.
+
+بە دوژمن:
+کاتی فەتحی مەکە بەخشایەوە. حتی کەسانێک کە زۆر زیانیان پێدانی.
+
+بە ئاژەڵ:
+"لە ئاژەڵ بوون مزر و بەلایە" — فەرمووی.
+
+کاریگەری جیهانی: لە ١٢٣٠ ملیۆن دا تا نزیکەی ٢ میلیار کەسی ئێستا پێی باوەڕی هەیە. مایخایلێک هارت — مێژوودان — لە پۆلی ١ کەسی کارامەترینی مێژوو داناوی.`
+  },
+  {
+    id: 8, icon: '🕌', title: 'کۆچی دوایین',
+    sub: '٦٣٢ زایینی — ٦٣ ساڵ',
+    color: '#1ABC9C',
+    text: `لە ساڵی ١١ هیجری، مانگی ربیعالئەوەڵ، پێغەمبەری ئیسلام محمد ﷺ لە تەمەن ٦٣ ساڵیدا کۆچی ئاخرەتی کرد.
+
+حەججەتوداع — ٦٣٢ زایینی:
+یەکەمین و کۆتایین حەجی پێغەمبەر ﷺ. لەوێ خوتبەیەکی مەزنی کردە وتار:
+
+﴿ الْيَوْمَ أَكْمَلْتُ لَكُمْ دِينَكُمْ ﴾
+"ئەمڕۆ دینتانم تەواوکردە"
+
+کۆتایین فەرموودە:
+"کتێب و سوننەتم لەتاندا دەهێڵم، ئەگەر بگریتنە بەرتان هیچ جار لە ڕێدا ناخەون."
+
+کۆچ: سبەیانی دووشەممە، ٢ ربیعالئەوەڵ، کۆچی دوایین کرد. عومەری فاروق ﺭ نەباوەڕدار بوو، ئەبووبەکری سیددیق ﺭ دەرچوو و گوتی:
+
+"هر کەس محمد دەپەرستی، بزانێت محمد مردووە. هر کەس خوا دەپەرستی، بزانێت خوا زیندووە."
+
+مزگەوتی نبەوی: هەمان شوێنی دەفنکرا — لە خانمی عایشە ﺭ دا. ئێستاش لەوێ دا.`
+  },
+];
+
+function seerahTab(tab){
+  const audio = document.getElementById('seerahAudioTab');
+  const info  = document.getElementById('seerahInfoTab');
+  const btnA  = document.getElementById('seerahTabAudio');
+  const btnI  = document.getElementById('seerahTabInfo');
+  if(tab === 'audio'){
+    audio.style.display = 'flex';
+    info.style.display  = 'none';
+    btnA.style.background = 'rgba(46,204,113,.3)';
+    btnA.style.borderColor = 'rgba(46,204,113,.5)';
+    btnA.style.color = '#fff';
+    btnI.style.background = 'rgba(255,255,255,.07)';
+    btnI.style.borderColor = 'rgba(255,255,255,.1)';
+    btnI.style.color = 'rgba(255,255,255,.5)';
   } else {
-    radioAudio.play().then(()=>{
-      radioPlaying = true;
-      document.getElementById('radioPlayBtn').textContent = '⏸';
-      document.getElementById('radioStatus').textContent = 'دەنگ دەدات...';
-    }).catch(()=>{});
+    audio.style.display = 'none';
+    info.style.display  = 'flex';
+    btnI.style.background = 'rgba(46,204,113,.3)';
+    btnI.style.borderColor = 'rgba(46,204,113,.5)';
+    btnI.style.color = '#fff';
+    btnA.style.background = 'rgba(255,255,255,.07)';
+    btnA.style.borderColor = 'rgba(255,255,255,.1)';
+    btnA.style.color = 'rgba(255,255,255,.5)';
   }
 }
 
-function radioSetVolume(v){
-  if(radioAudio) radioAudio.volume = parseFloat(v);
+function renderSeerah(){
+  const el = document.getElementById('seerahList');
+  if(!el) return;
+  el.innerHTML = SEERAH.map(s => `
+    <div onclick="openSeerahDetail(${s.id})"
+      style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;
+             padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px;
+             transition:all .2s;direction:rtl">
+      <div style="font-size:32px;flex-shrink:0">${s.icon}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif;line-height:1.3">${s.title}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;margin-top:3px">${s.sub}</div>
+      </div>
+      <div style="color:rgba(255,255,255,.3);font-size:16px">‹</div>
+    </div>
+  `).join('');
 }
 
-function closeRadioPlayer(){
-  if(radioAudio){ radioAudio.pause(); radioAudio.src=''; radioAudio=null; }
-  radioPlaying = false;
-  radioCurCh = null;
-  document.getElementById('radioPlayerWrap').style.display = 'none';
-  document.querySelectorAll('[id^="radioCh_"]').forEach(el=>{
-    el.style.background = 'rgba(255,255,255,.05)';
-    el.style.borderColor = 'rgba(255,255,255,.08)';
-  });
+function openSeerahDetail(id){
+  const s = SEERAH.find(x => x.id === id);
+  if(!s) return;
+  document.getElementById('seerahDetailTitle').textContent = s.icon + ' ' + s.title;
+  document.getElementById('seerahDetailBody').innerHTML =
+    s.text.split('\n').map(line =>
+      line.trim()
+        ? `<p style="margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06)">${line}</p>`
+        : ''
+    ).join('');
+  switchPage('seerah-detail');
 }
 
 function renderTVChannels(){
@@ -3912,7 +4107,10 @@ function showSura(id){
     // سووڕەتی تری: API بِسْمِ + ئایەتی ڕاستی تێکەڵ دەکات بۆ ئایەتی ١
     // مەرجی پاکردنەوە: تەنها لابدە ئەگەر هەموو ئایەتەکە بسم اللهە
     // ئەگەر دوای بسم الله دەقی تر هەیە (وەک الم)، تەنها بسم اللهەکە بوژارەوە
+    // ﷽ Unicode (U+FDFD) یان دەقی تەواوی بسم الله
     const bismPrefixes = [
+      '\uFDFD',                                        // ﷽ Unicode
+      '\u0628\u0650\u0633\u0652\u0645\u0650 \u0627\u0644\u0644\u0651\u064e\u0647\u0650 \u0627\u0644\u0631\u0651\u064e\u062d\u0652\u0645\u064e\u0670\u0646\u0650 \u0627\u0644\u0631\u0651\u064e\u062d\u0650\u064a\u0645\u0650', // بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
       'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ',
       'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
       'بسم الله الرحمن الرحيم',
@@ -3920,17 +4118,25 @@ function showSura(id){
     let filtered = ayat.map(a => {
       if(id === 1 || id === 9) return a;
       if(a.numberInSurah !== 1) return a;
-      if(!a.text.includes('بِسْمِ') && !a.text.includes('بسم')) return a;
-      // ئایەتی یەکەم بسم الله هەیەتی
-      let txt = a.text;
+      const txt0 = a.text;
+      // پشکنین بۆ ﷽ یان بسم الله
+      const hasBism = txt0.includes('\uFDFD') ||
+                      txt0.includes('\u0628\u0650\u0633\u0652\u0645\u0650') ||
+                      txt0.includes('بسم');
+      if(!hasBism) return a;
+      // لابردنی بسم الله لە سەری ئایەتەکە
+      let txt = txt0;
       for(const bp of bismPrefixes){
         if(txt.startsWith(bp)){
           txt = txt.slice(bp.length).trim();
           break;
         }
+        // زمانی تایبەت — جگەی ﷽ لە ناو دەق
+        if(bp === '\uFDFD' && txt.includes(bp)){
+          txt = txt.replace(bp, '').trim();
+          break;
+        }
       }
-      // ئەگەر دەق ماوە — ئایەتەکە بماێنه بەڵام بە دەقی تازە
-      // ئەگەر هیچ نەماوە — لایبدە
       if(!txt) return null;
       return Object.assign({}, a, {text: txt});
     }).filter(Boolean);
@@ -5120,12 +5326,14 @@ const PAGE_BACK_MAP = {
   'hisn-detail':'hisn',
   'salah-detail':'salah',
   'tasbih':     'zikr',
-  'radio':      'home',
   'quran':      'home',
   'zikr':       'home',
   'hisn':       'home',
   'salah':      'home',
   'tv':         'home',
+  'seerah':     'home',
+  'videos':     'home',
+  'seerah-detail':'seerah',
   'qibla':      'home',
   'calendar':   'home',
   'settings':   'home',
@@ -5159,7 +5367,6 @@ function switchPage(p, fromPopstate){
     if(tvWrap) tvWrap.style.display = 'none';
   }
   if(p !== 'radio'){
-    if(radioAudio){ radioAudio.pause(); radioAudio.src=''; radioAudio=null; radioPlaying=false; radioCurCh=null; }
     const rWrap = document.getElementById('radioPlayerWrap');
     if(rWrap) rWrap.style.display = 'none';
   }
@@ -5177,8 +5384,8 @@ function switchPage(p, fromPopstate){
   // پاک کردنەوەی سرچی قورئان کاتی چوونەدەرەوە
   if(p!=='quran'){ const sq=document.getElementById('suraSearch'); if(sq) sq.value=''; }
   if(p==='hisn') renderHisn();
+  if(p==='seerah') renderSeerah();
   if(p==='tv') renderTVChannels();
-  if(p==='radio') renderRadioChannels();
   if(p==='widgets') renderWidgets();
 
   // history pushState — بۆ دوگمەی گەڕانەوەی مۆبایل
@@ -5541,14 +5748,14 @@ function showWeatherForecast(){
       const todayBorder = isToday ? '1.5px solid rgba(46,204,113,.5)' : '1px solid rgba(255,255,255,.09)';
       const todayShadow = isToday ? 'box-shadow:0 4px 20px rgba(46,204,113,.15);' : '';
 
-      html += '<div style="background:'+todayBg+';border:'+todayBorder+';border-radius:18px;padding:0;direction:rtl;overflow:hidden;'+todayShadow+'">';
+      html += '<div style="background:'+todayBg+';border:'+todayBorder+';border-radius:12px;padding:0;direction:rtl;overflow:hidden;'+todayShadow+'">';
 
       // ── ڕیزی سەرەوە: ئایکۆن + ناوی ڕۆژ + پیلەی گەرمی ──
-      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px">';
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px 4px">';
 
       // چەپ: ئایکۆن + ناوی ڕۆژ + بەروار
       html += '<div style="display:flex;align-items:center;gap:10px">';
-      html += '<div style="font-size:36px;line-height:1">'+icon+'</div>';
+      html += '<div style="font-size:24px;line-height:1">'+icon+'</div>';
       html += '<div>';
       html += '<div style="font-size:15px;font-weight:900;color:'+(isToday?'#2ecc71':'#fff')+';font-family:\'Cairo\',sans-serif;line-height:1.2">'+dayName+'</div>';
       html += '<div style="font-size:11px;color:rgba(255,255,255,.4);font-family:\'Cairo\',sans-serif;margin-top:2px">'+monthDay+'</div>';
@@ -5557,17 +5764,17 @@ function showWeatherForecast(){
 
       // ڕاست: گەرمای زۆر / کەم
       html += '<div style="text-align:left">';
-      html += '<div style="font-size:26px;font-weight:900;color:'+(isToday?'#2ecc71':'#fff')+';font-family:\'Cairo\',sans-serif;line-height:1">'+maxT+'°</div>';
+      html += '<div style="font-size:20px;font-weight:900;color:'+(isToday?'#2ecc71':'#fff')+';font-family:\'Cairo\',sans-serif;line-height:1">'+maxT+'°</div>';
       html += '<div style="font-size:12px;color:rgba(255,255,255,.4);font-family:\'Cairo\',sans-serif;text-align:center">/ '+minT+'°</div>';
       html += '</div>';
 
       html += '</div>';
 
       // ── دیڤایدەر ──
-      html += '<div style="height:1px;background:rgba(255,255,255,.06);margin:0 16px"></div>';
+      html += '<div style="height:1px;background:rgba(255,255,255,.06);margin:0 12px"></div>';
 
       // ── ڕیزی خوارەوە: وەسف + باران + با ──
-      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px 12px;gap:6px">';
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 12px 7px;gap:4px">';
 
       html += '<div style="display:flex;align-items:center;gap:5px">';
       html += '<span style="font-size:13px">🌥</span>';
