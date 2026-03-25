@@ -47,13 +47,35 @@ body{
 /* ── پاشزەمینی دەروازەی بهەشت ── */
 
 /* ── لایت مۆد — هەموو بەشەکان سپی ── */
-body.light-mode,
-body.light-mode *:not(svg):not(path):not(circle):not(line):not(polygon):not(rect):not(stop){
+/* تەنها پەڕە و بەشەکانی ئەپ — نەک مێنو و مۆدالەکانی دارک */
+body.light-mode .pg,
+body.light-mode .spage,
+body.light-mode .hdr,
+body.light-mode .bnav,
+body.light-mode .top-row,
+body.light-mode .top-widget,
+body.light-mode .cd-wrap,
+body.light-mode .plist-toggle,
+body.light-mode #plist{
+  color:#1a2e22;
+}
+/* تەنها نووسینی پەڕەکانی ئاسایی */
+body.light-mode .pg *:not(svg):not(path):not(circle):not(line):not(polygon):not(rect):not(stop):not(button),
+body.light-mode .hdr *:not(svg):not(path):not(button),
+body.light-mode .top-widget *:not(svg):not(path),
+body.light-mode .cd-wrap *:not(svg):not(path),
+body.light-mode .plist-toggle *:not(svg):not(path),
+body.light-mode #plist *:not(svg):not(path){
   color:#1a2e22 !important;
 }
 /* باگراوەندی گشتی */
 body.light-mode{ background:#ffffff !important; }
 body.light-mode .bg-mosque{ background:#ffffff !important; }
+
+/* هێدەر — نووسینی سپی بمێنێتەوە لە دوگمەکاندا */
+body.light-mode .hdr-day{ color:#1a2e22 !important; }
+body.light-mode .hdr-hijri{ color:#8a6a1b !important; }
+body.light-mode .city-pill{ color:#fff !important; }
 
 /* هێدەر */
 body.light-mode .hdr{
@@ -86,7 +108,9 @@ body.light-mode #sideMenu{
 }
 body.light-mode .smitem{
   border-bottom-color:rgba(26,148,86,.1) !important;
+  color:#1a2e22 !important;
 }
+body.light-mode .smitem span{ color:#1a2e22 !important; }
 /* کارتی نوێژ و ساعات */
 body.light-mode .prayer-row,
 body.light-mode .prayer-card,
@@ -109,11 +133,14 @@ body.light-mode [style*="border:1px solid rgba(255,255,255,.12)"],
 body.light-mode [style*="border:1px solid rgba(255,255,255,.15)"]{
   border-color:rgba(26,148,86,.15) !important;
 }
-/* ستایل پانێلی تیم */
+/* ستایل پانێلی تیم — لە ناو مێنوی لایەکی */
 body.light-mode #themePanel{
   background:rgba(26,148,86,.05) !important;
   border-color:rgba(26,148,86,.15) !important;
 }
+body.light-mode #themePanel *:not(svg):not(path):not(button){ color:#1a2e22 !important; }
+body.light-mode #aboutPanel *:not(svg):not(path):not(a){ color:#1a2e22 !important; }
+body.light-mode #moreAppsPanel *:not(svg):not(path){ color:#1a2e22 !important; }
 /* مۆدالەکان */
 body.light-mode .city-modal .city-sheet,
 body.light-mode #readerPickerModal{
@@ -272,8 +299,6 @@ body.light-mode #pg-tasbih [style*="background:rgba(255,255,255"]{
 }
 
 /* سیرەتی نبەوی */
-body.light-mode #pg-seerah{ background:#ffffff !important; }
-body.light-mode #pg-seerah *:not(svg){ color:#1a2e22 !important; }
 
 /* قەڵای موسڵمان */
 body.light-mode #pg-hisn{ background:#ffffff !important; }
@@ -353,11 +378,11 @@ body.light-mode #weekModalSheet{
 }
 body.light-mode #weekModalSheet *:not(svg){ color:#1a2e22 !important; }
 
-/* مێنوی لاتەکی */
+/* مێنوی لاتەکی — لایت مۆد: پاشزەمینی سپی بەڵام نووسینی تاریک */
 body.light-mode #sideMenu{
   background:linear-gradient(180deg,#f5fff8,#edf8f1) !important;
 }
-body.light-mode #sideMenu *:not(svg){ color:#1a2e22 !important; }
+body.light-mode #sideMenu *:not(svg):not(path){ color:#1a2e22 !important; }
 body.light-mode .smitem:hover,
 body.light-mode .smitem:active{
   background:rgba(26,148,86,.08) !important;
@@ -1491,11 +1516,6 @@ body.light-mode [style*="background:rgba(255,255,255,.2)"]{
         <div class="qz-title">تەسبیح</div>
         <div class="qz-sub">ژمێرەری دیجیتاڵ</div>
       </div>
-      <div class="qz-card" onclick="switchPage('seerah')">
-        <div class="qz-icon">🌙</div>
-        <div class="qz-title">سیرەتی نبەوی</div>
-        <div class="qz-sub">ژیاننامەی پێغەمبەر ﷺ</div>
-      </div>
       <div class="qz-card" onclick="switchPage('videos')">
         <div class="qz-icon">🎥</div>
         <div class="qz-title">ڤیدیۆی ئیسلامی</div>
@@ -2192,130 +2212,6 @@ body.light-mode [style*="background:rgba(255,255,255,.2)"]{
   </div>
 
 
-  <!-- SEERAH PAGE — ژیاننامەی پێغەمبەر ﷺ -->
-  <div class="pg fullscreen" id="pg-seerah" style="overflow:hidden;display:flex;flex-direction:column">
-    <!-- هێدر -->
-    <div style="background:rgba(2,14,8,.98);border-bottom:1px solid rgba(46,204,113,.15);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;position:relative;z-index:10">
-      <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer;flex-shrink:0">←</button>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:900;color:#fff;font-family:'Cairo',sans-serif">🌙 ژیانی پێغەمبەر ﷺ</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">م.محمد ملا فائق شارەزوری</div>
-      </div>
-      <!-- دوگمەی گۆڕانی تابەت -->
-      <div style="display:flex;gap:6px">
-        <button onclick="seerahTab('audio')" id="seerahTabAudio"
-          style="padding:5px 10px;border-radius:20px;background:rgba(46,204,113,.3);border:1px solid rgba(46,204,113,.5);color:#fff;font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;cursor:pointer">🔊 دەنگ</button>
-        <button onclick="seerahTab('info')" id="seerahTabInfo"
-          style="padding:5px 10px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer">📖 کورتە</button>
-      </div>
-    </div>
-
-    <!-- تابی ئودیۆ — پلەیەری ناوخۆ -->
-    <div id="seerahAudioTab" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 12px 80px">
-
-      <!-- بانەر -->
-      <div style="background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(139,105,20,.08));border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:12px 14px;direction:rtl;margin-bottom:12px;text-align:center">
-        <div style="font-size:14px;font-weight:800;color:#D4AF37;font-family:'Amiri',serif;margin-bottom:2px">ژیانی پێغەمبەری خوداﷺ</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">م. محمد ملا فائق شارەزوری — ٧٢+ وتار</div>
-      </div>
-
-      <!-- پلەیەر -->
-      <div id="seerahPlayer" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px;margin-bottom:10px;display:none">
-        <div style="direction:rtl;margin-bottom:10px">
-          <div id="seerahNowTitle" style="font-size:13px;font-weight:700;color:#fff;font-family:'Cairo',sans-serif;line-height:1.4"></div>
-          <div id="seerahNowDur" style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;margin-top:2px"></div>
-        </div>
-        <!-- پروگرێسبار -->
-        <div onclick="seerahSeek(event)" style="height:4px;background:rgba(255,255,255,.1);border-radius:2px;cursor:pointer;margin-bottom:10px;position:relative">
-          <div id="seerahProgress" style="height:100%;background:linear-gradient(90deg,#1b8a4e,#2ecc71);border-radius:2px;width:0%;transition:width .5s"></div>
-        </div>
-        <!-- دوگمەکان -->
-        <div style="display:flex;align-items:center;justify-content:center;gap:14px">
-          <button onclick="seerahSkip(-10)" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:13px">⏪</button>
-          <button id="seerahPlayBtn" onclick="seerahToggle()"
-            style="background:linear-gradient(135deg,#1b8a4e,#2ecc71);border:none;color:#fff;width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(46,204,113,.4)">▶</button>
-          <button onclick="seerahSkip(10)" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:13px">⏩</button>
-        </div>
-        <div style="text-align:center;margin-top:6px">
-          <span id="seerahStatus" style="font-size:10px;color:rgba(46,204,113,.7);font-family:'Cairo',sans-serif">⏳ بارکردن...</span>
-        </div>
-      </div>
-
-      <!-- لیستی وتارەکان -->
-      <div style="display:flex;flex-direction:column;gap:6px" id="seerahEpList"></div>
-    </div>
-
-    <!-- تابی کورتەی ژیاننامە -->
-    <div id="seerahInfoTab" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none">
-      <div style="padding:14px 14px 80px">
-      <!-- بانەری مامۆستا -->
-      <div style="background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(139,105,20,.1));border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:18px 16px;text-align:center;margin-bottom:14px">
-        <div style="font-family:'Amiri',serif;font-size:24px;color:#D4AF37;margin-bottom:4px">مُحَمَّدٌ رَّسُولُ اللَّهِ ﷺ</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif;margin-bottom:12px">خوێندنەوەی ژیاننامەی پێغەمبەر — مامۆستا محمد ملا فائق شارەزوری</div>
-        <!-- لینکەکانی مامۆستا -->
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <a href="https://www.muhammadmalafayaq.com" target="_blank" rel="noopener"
-            style="display:flex;align-items:center;gap:10px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.3);border-radius:12px;padding:10px 14px;text-decoration:none;direction:rtl">
-            <span style="font-size:20px">🌐</span>
-            <div style="flex:1;text-align:right">
-              <div style="font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">ماڵپەڕی فەرمی</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">muhammadmalafayaq.com</div>
-            </div>
-            <span style="color:rgba(255,255,255,.3);font-size:14px">‹</span>
-          </a>
-          <a href="https://play.google.com/store/apps/details?id=com.kurdappdev.mamosta_muhammad" target="_blank" rel="noopener"
-            style="display:flex;align-items:center;gap:10px;background:rgba(52,152,219,.12);border:1px solid rgba(52,152,219,.3);border-radius:12px;padding:10px 14px;text-decoration:none;direction:rtl">
-            <span style="font-size:20px">📱</span>
-            <div style="flex:1;text-align:right">
-              <div style="font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">ئەپی مامۆستا — Android</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">خوێندنەوەی ژیاننامە بە دەنگ</div>
-            </div>
-            <span style="color:rgba(255,255,255,.3);font-size:14px">‹</span>
-          </a>
-          <a href="https://apps.apple.com/us/app/%D9%85-%D9%85%D8%AD%D9%85%D8%AF-%D9%85%DB%95%D9%84%D8%A7-%D9%81%D8%A7%D8%A6%D9%82-%D8%B4%D8%A7%D8%B1%DB%95%D8%B2%D9%88%D8%B1%DB%8C/id1541830985" target="_blank" rel="noopener"
-            style="display:flex;align-items:center;gap:10px;background:rgba(149,128,255,.12);border:1px solid rgba(149,128,255,.3);border-radius:12px;padding:10px 14px;text-decoration:none;direction:rtl">
-            <span style="font-size:20px">🍎</span>
-            <div style="flex:1;text-align:right">
-              <div style="font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">ئەپی مامۆستا — iPhone</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">App Store</div>
-            </div>
-            <span style="color:rgba(255,255,255,.3);font-size:14px">‹</span>
-          </a>
-          <a href="https://www.facebook.com/muhammadmalafayaq" target="_blank" rel="noopener"
-            style="display:flex;align-items:center;gap:10px;background:rgba(24,119,242,.12);border:1px solid rgba(24,119,242,.3);border-radius:12px;padding:10px 14px;text-decoration:none;direction:rtl">
-            <span style="font-size:20px">📘</span>
-            <div style="flex:1;text-align:right">
-              <div style="font-size:13px;font-weight:800;color:#fff;font-family:'Cairo',sans-serif">فەیسبووکی مامۆستا</div>
-              <div style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">١.٨ ملیۆن فۆلۆوەر</div>
-            </div>
-            <span style="color:rgba(255,255,255,.3);font-size:14px">‹</span>
-          </a>
-        </div>
-      </div>
-      <!-- دیڤایدەری -->
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <div style="flex:1;height:1px;background:rgba(255,255,255,.08)"></div>
-        <div style="font-size:11px;color:rgba(255,255,255,.3);font-family:'Cairo',sans-serif">کورتەی ژیاننامە</div>
-        <div style="flex:1;height:1px;background:rgba(255,255,255,.08)"></div>
-      </div>
-      <!-- لیستی بەشەکان -->
-      <div style="display:flex;flex-direction:column;gap:8px" id="seerahList"></div>
-      </div>
-    </div>
-    </div>
-  </div>
-
-  <!-- SEERAH DETAIL PAGE -->
-  <div class="pg fullscreen" id="pg-seerah-detail" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
-    <div style="padding:16px 14px 100px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-        <button onclick="switchPage('seerah')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer">←</button>
-        <div id="seerahDetailTitle" style="font-size:16px;font-weight:900;color:#D4AF37;flex:1;font-family:'Cairo',sans-serif"></div>
-      </div>
-      <div id="seerahDetailBody" style="font-family:'Cairo',sans-serif;font-size:15px;color:rgba(255,255,255,.9);line-height:2;direction:rtl"></div>
-    </div>
-  </div>
-
   <!-- HISN DETAIL  <!-- HISN DETAIL PAGE -->
   <div class="pg fullscreen" id="pg-hisn-detail">
     <div style="padding:16px 12px 30px">
@@ -2423,57 +2319,78 @@ body.light-mode [style*="background:rgba(255,255,255,.2)"]{
   </div>
 
   <!-- 🕌 MOSQUE PAGE — مزگەوتەکانی نزیک -->
-  <div class="pg fullscreen" id="pg-mosque" style="overflow-y:scroll;-webkit-overflow-scrolling:touch">
+  <div class="pg fullscreen" id="pg-mosque" style="overflow-y:scroll;-webkit-overflow-scrolling:touch;background:#020e06">
     <div style="padding:0 0 100px">
 
       <!-- هێدەر -->
-      <div style="background:rgba(2,12,7,.96);border-bottom:1px solid rgba(46,204,113,.15);padding:12px 14px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;backdrop-filter:blur(20px)">
+      <div style="background:rgba(2,12,7,.97);border-bottom:1px solid rgba(46,204,113,.15);padding:12px 14px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;backdrop-filter:blur(20px)">
         <button onclick="switchPage('home')" style="background:rgba(255,255,255,.1);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer;flex-shrink:0">←</button>
         <div style="flex:1">
           <div style="font-family:'Cairo',sans-serif;font-size:16px;font-weight:800;color:#fff">🕌 مزگەوتەکانی نزیک</div>
-          <div id="mosqueSubtitle" style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.4);margin-top:1px">لۆکەیشنەکەت بدە تا مزگەوتی نزیک پیشان بدرێت</div>
+          <div id="mosqueSubtitle" style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.4);margin-top:1px">لۆکەیشنەکەت بدە تا مزگەوتەکان پیشان بدرێن</div>
         </div>
-        <button onclick="loadNearbyMosques()" id="mosqueRefreshBtn" style="background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:var(--green-light);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center">🔄</button>
+        <button onclick="loadNearbyMosques()" id="mosqueRefreshBtn"
+          style="background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:var(--green-light);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center">🔄</button>
       </div>
 
-      <!-- دوگمەی لۆکەیشن -->
-      <div id="mosqueLocPrompt" style="padding:20px 16px">
-        <div style="background:linear-gradient(135deg,rgba(46,204,113,.12),rgba(46,204,113,.05));border:1px solid rgba(46,204,113,.25);border-radius:20px;padding:28px 20px;text-align:center;direction:rtl">
-          <div style="font-size:48px;margin-bottom:12px">🕌</div>
-          <div style="font-family:'Cairo',sans-serif;font-size:16px;font-weight:800;color:#fff;margin-bottom:8px">مزگەوتی نزیکترت بدۆزەرەوە</div>
-          <div style="font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;line-height:1.8">بە دانانی مۆڵەتی لۆکەیشن<br>مزگەوتەکانی نزیک پیشان دەدرێن</div>
-          <button onclick="loadNearbyMosques()" style="background:linear-gradient(135deg,#1a9456,#2ecc71);border:none;color:#fff;font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;padding:12px 28px;border-radius:30px;cursor:pointer;box-shadow:0 4px 20px rgba(46,204,113,.35)">
-            📍 مۆڵەتی لۆکەیشن بدە
+      <!-- نەخشەی گووگڵ مێپ -->
+      <div id="mosqueMapWrap" style="display:none">
+        <div id="mosqueGoogleMap" style="width:100%;height:260px;background:#1a2a1a"></div>
+        <!-- ئینفۆ ئۆڤەرلەی -->
+        <div id="mosqueMapInfo" style="display:none;position:absolute;bottom:10px;right:10px;background:rgba(2,12,7,.95);border:1px solid rgba(46,204,113,.3);border-radius:12px;padding:8px 12px;font-family:'Cairo',sans-serif;direction:rtl;max-width:200px;backdrop-filter:blur(10px)">
+          <div id="mosqueMapName" style="font-size:12px;font-weight:800;color:#fff;margin-bottom:2px"></div>
+          <div id="mosqueMapDist" style="font-size:10px;color:var(--green-light)"></div>
+        </div>
+      </div>
+
+      <!-- دوگمەی دەستپێکردن -->
+      <div id="mosqueLocPrompt" style="padding:24px 16px">
+        <div style="background:linear-gradient(135deg,rgba(46,204,113,.1),rgba(26,148,86,.05));border:1px solid rgba(46,204,113,.2);border-radius:24px;padding:32px 20px;text-align:center;direction:rtl">
+          <div style="font-size:56px;margin-bottom:16px">🕌</div>
+          <div style="font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;color:#fff;margin-bottom:10px">مزگەوتی نزیکترت بدۆزەرەوە</div>
+          <div style="font-family:'Cairo',sans-serif;font-size:12px;color:rgba(255,255,255,.45);margin-bottom:24px;line-height:2">
+            لۆکەیشنت دیاریدەکرێت و هەموو مزگەوتەکانی<br>
+            نزیک لەسەر نەخشەی گووگڵ پیشان دەدرێن
+          </div>
+          <button onclick="loadNearbyMosques()"
+            style="background:linear-gradient(135deg,#1a9456,#2ecc71);border:none;color:#fff;font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;padding:14px 32px;border-radius:50px;cursor:pointer;box-shadow:0 4px 24px rgba(46,204,113,.4);display:inline-flex;align-items:center;gap:8px">
+            <span>📍</span> مۆڵەتی لۆکەیشن بدە
           </button>
         </div>
       </div>
 
       <!-- لۆدینگ -->
-      <div id="mosqueLoading" style="display:none;padding:40px 20px;text-align:center">
-        <div style="font-size:36px;animation:spin 1s linear infinite;display:inline-block;margin-bottom:12px">⏳</div>
-        <div style="font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,255,255,.5)">مزگەوتەکان دەدۆزرێنەوە...</div>
+      <div id="mosqueLoading" style="display:none;padding:50px 20px;text-align:center">
+        <div style="font-size:40px;animation:spin 1s linear infinite;display:inline-block;margin-bottom:14px">🕌</div>
+        <div style="font-family:'Cairo',sans-serif;font-size:14px;color:rgba(255,255,255,.5)">مزگەوتەکان دەدۆزرێنەوە...</div>
+        <div style="font-family:'Cairo',sans-serif;font-size:11px;color:rgba(255,255,255,.3);margin-top:6px">تکایە چەند چرکەیەک چاوەڕێ بکە</div>
       </div>
 
       <!-- هەڵە -->
       <div id="mosqueError" style="display:none;padding:20px 16px">
-        <div style="background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.25);border-radius:16px;padding:20px;text-align:center;direction:rtl">
-          <div style="font-size:32px;margin-bottom:10px">⚠️</div>
-          <div id="mosqueErrorMsg" style="font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,100,100,.85);line-height:1.8"></div>
-          <button onclick="loadNearbyMosques()" style="margin-top:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;padding:8px 20px;border-radius:20px;cursor:pointer">
-            دووبارە هەوڵبدە
+        <div style="background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.2);border-radius:18px;padding:24px 20px;text-align:center;direction:rtl">
+          <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+          <div id="mosqueErrorMsg" style="font-family:'Cairo',sans-serif;font-size:13px;color:rgba(255,120,100,.9);line-height:2"></div>
+          <button onclick="loadNearbyMosques()"
+            style="margin-top:16px;background:linear-gradient(135deg,#1a9456,#2ecc71);border:none;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;padding:10px 24px;border-radius:20px;cursor:pointer">
+            🔄 دووبارە هەوڵبدە
           </button>
         </div>
       </div>
 
-      <!-- لیستی مزگەوتەکان -->
-      <div id="mosqueList" style="display:none;padding:12px 14px;display:flex;flex-direction:column;gap:10px"></div>
-
-      <!-- نەخشە -->
-      <div id="mosqueMapWrap" style="display:none;padding:0 14px 14px">
-        <div style="border-radius:16px;overflow:hidden;border:1px solid rgba(46,204,113,.2)">
-          <iframe id="mosqueMapFrame" width="100%" height="220" style="border:none;display:block" loading="lazy"></iframe>
+      <!-- ستاتس بار -->
+      <div id="mosqueStats" style="display:none;padding:10px 14px 0">
+        <div style="background:linear-gradient(135deg,rgba(26,148,86,.15),rgba(46,204,113,.08));border:1px solid rgba(46,204,113,.2);border-radius:14px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;direction:rtl">
+          <div>
+            <div id="mosqueCount" style="font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;color:var(--green-light)"></div>
+            <div id="mosqueArea" style="font-family:'Cairo',sans-serif;font-size:10px;color:rgba(255,255,255,.4);margin-top:1px"></div>
+          </div>
+          <div style="font-size:28px">🕌</div>
         </div>
       </div>
+
+      <!-- لیستی مزگەوتەکان -->
+      <div id="mosqueList" style="display:none;padding:10px 14px;flex-direction:column;gap:8px"></div>
 
     </div>
   </div>
@@ -3879,29 +3796,30 @@ function buildSeerahList(){
 function renderSeerahEpisodes(){
   const el = document.getElementById('seerahEpList');
   if(!el) return;
-  // بار بکە لە archive.org metadata API
-  el.innerHTML = '<div style="text-align:center;padding:30px;color:rgba(255,255,255,.4);font-family:Cairo,sans-serif;font-size:12px">⏳ بارکردن...</div>';
-  fetch('https://archive.org/metadata/abo_abdrahman_kordi_barid_01_20160420_0201')
-    .then(r => r.json())
-    .then(data => {
-      const files = (data.files || []).filter(f => f.name && f.name.endsWith('.mp3') && !f.name.includes('_64kb'));
-      files.sort((a,b) => a.name.localeCompare(b.name));
-      SEERAH_EPISODES = files.map((f,i) => {
-        const secs = parseFloat(f.length||0);
-        const m = Math.floor(secs/60), s = Math.floor(secs%60);
-        const dur = secs ? m+':'+String(s).padStart(2,'0') : '';
-        const title = decodeURIComponent(f.name.replace('.mp3','').replace(/_/g,' '));
-        return { n:i+1, title, dur, url: 'https://archive.org/download/abo_abdrahman_kordi_barid_01_20160420_0201/'+encodeURIComponent(f.name) };
-      });
-      if(SEERAH_EPISODES.length === 0){
-        el.innerHTML = '<div style="text-align:center;padding:20px;font-family:Cairo,sans-serif;color:rgba(255,200,100,.8);font-size:12px">⚠️ کانەڵ نەدۆزرایەوە</div>';
-        return;
-      }
-      buildSeerahList();
-    })
-    .catch(() => {
-      el.innerHTML = '<div style="text-align:center;padding:20px;font-family:Cairo,sans-serif;direction:rtl"><div style="font-size:28px">📡</div><div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:8px">ئینتەرنێت پشکنە</div></div>';
-    });
+
+  // وتارەکانی سیرەتی نبەوی — یوتیوب
+  const episodes = [
+    { n:1,  title:'دەستپێکردن — ژیاننامەی پێغەمبەر ﷺ',      vid:'dQw4w9WgXcQ' },
+    { n:2,  title:'نەسەب و خێزانی پێغەمبەر ﷺ',               vid:'dQw4w9WgXcQ' },
+    { n:3,  title:'لەدایکبوونی پێغەمبەر ﷺ',                   vid:'dQw4w9WgXcQ' },
+    { n:4,  title:'منداڵایەتی پێغەمبەر ﷺ',                    vid:'dQw4w9WgXcQ' },
+    { n:5,  title:'پێش بعسەت — باکری ژیان',                   vid:'dQw4w9WgXcQ' },
+  ];
+
+  // نیشاندانی لینکی پلەیلیست
+  el.innerHTML = `
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:14px;direction:rtl;text-align:center">
+      <div style="font-size:13px;font-weight:700;color:#D4AF37;font-family:'Cairo',sans-serif;margin-bottom:6px">🎬 پلەیلیستی سیرەتی نبەوی</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);font-family:'Cairo',sans-serif;margin-bottom:12px;line-height:1.8">
+        م. محمد ملا فائق شارەزوری<br>
+        پلەیەری سەرەوە بەکاربهێنە بۆ گوێگرتنی وتارەکان
+      </div>
+      <a href="https://www.youtube.com/@MuhammadMalaFayaq" target="_blank" rel="noopener"
+        style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,0,0,.15);border:1px solid rgba(255,0,0,.35);border-radius:10px;padding:8px 16px;text-decoration:none">
+        <span style="font-size:16px">📺</span>
+        <span style="font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;color:#ff6666">کەناڵی یوتیوب</span>
+      </a>
+    </div>`;
 }
 
 function playSeerahEp(idx){
@@ -4035,7 +3953,7 @@ function openSeerahDetail(id){
         ? `<p style="margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.06)">${line}</p>`
         : ''
     ).join('');
-  switchPage('seerah-detail');
+  // seerah removed;
 }
 
 function renderTVChannels(){
@@ -6130,9 +6048,7 @@ const PAGE_BACK_MAP = {
   'hisn':       'home',
   'salah':      'home',
   'tv':         'home',
-  'seerah':     'home',
   'videos':     'home',
-  'seerah-detail':'seerah',
   'qibla':      'home',
   'calendar':   'home',
   'settings':   'home',
@@ -6187,6 +6103,7 @@ function switchPage(p, fromPopstate){
   if(p==='seerah'){ renderSeerah(); renderSeerahEpisodes(); }
   if(p==='tv') renderTVChannels();
   if(p==='widgets') renderWidgets();
+  if(p==='mosque'&&userLatLng&&allMosques.length){const mw=document.getElementById('mosqueMapWrap');const ml=document.getElementById('mosqueList');const ms=document.getElementById('mosqueStats');if(mw)mw.style.display='block';if(ml)ml.style.display='flex';if(ms)ms.style.display='block';}
 
   // history pushState — بۆ دوگمەی گەڕانەوەی مۆبایل
   if(!fromPopstate){
@@ -6763,18 +6680,27 @@ document.addEventListener('touchstart', unlockAudio, {once:true, passive:true});
 document.addEventListener('click', unlockAudio, {once:true, passive:true});
 
 // ── مزگەوتەکانی نزیک ────────────────────────────
+// ── مزگەوتەکانی نزیک — Google Maps ─────────────────
+let mosqueMap = null;
+let mosqueMarkers = [];
+let userMarker = null;
+let allMosques = [];
+let userLatLng = null;
+
 function loadNearbyMosques(){
   const prompt = document.getElementById('mosqueLocPrompt');
   const loading = document.getElementById('mosqueLoading');
   const error = document.getElementById('mosqueError');
   const list = document.getElementById('mosqueList');
   const mapWrap = document.getElementById('mosqueMapWrap');
+  const stats = document.getElementById('mosqueStats');
 
-  if(prompt) prompt.style.display='none';
-  if(loading) loading.style.display='block';
-  if(error) error.style.display='none';
-  if(list){ list.style.display='none'; list.innerHTML=''; }
-  if(mapWrap) mapWrap.style.display='none';
+  if(prompt) prompt.style.display = 'none';
+  if(loading) loading.style.display = 'block';
+  if(error) error.style.display = 'none';
+  if(list){ list.style.display = 'none'; list.innerHTML = ''; }
+  if(stats) stats.style.display = 'none';
+  if(mapWrap) mapWrap.style.display = 'none';
 
   if(!navigator.geolocation){
     showMosqueError('براوزەرەکەت لۆکەیشن پاڵپشتی ناکات');
@@ -6783,121 +6709,384 @@ function loadNearbyMosques(){
 
   navigator.geolocation.getCurrentPosition(
     function(pos){
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      fetchMosques(lat, lng);
+      userLatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      initMosqueMap(userLatLng.lat, userLatLng.lng);
     },
     function(err){
-      let msg = 'لۆکەیشن نەدۆزرایەوە';
+      let msg = '❌ لۆکەیشن نەدۆزرایەوە';
       if(err.code === 1) msg = '❌ مۆڵەتی لۆکەیشن نەدرا\nتکایە لە ڕێکخستنەکانی براوزەرەکەت مۆڵەتی لۆکەیشن بدە';
       if(err.code === 2) msg = '⚠️ لۆکەیشن نەدۆزرایەوە — دووبارە هەوڵبدە';
-      if(err.code === 3) msg = '⏱ کاتی لۆکەیشن تێپەڕی — دووبارە هەوڵبدە';
+      if(err.code === 3) msg = '⏱ کات تێپەڕی — دووبارە هەوڵبدە';
       showMosqueError(msg);
     },
-    { timeout: 10000, enableHighAccuracy: true }
+    { timeout: 12000, enableHighAccuracy: true }
   );
 }
 
-function fetchMosques(lat, lng){
+function initMosqueMap(lat, lng){
+  const mapWrap = document.getElementById('mosqueMapWrap');
+  const loading = document.getElementById('mosqueLoading');
+  if(mapWrap) mapWrap.style.display = 'block';
+
+  // Google Maps ئامادە کردن
+  if(typeof google !== 'undefined' && google.maps){
+    buildMap(lat, lng);
+  } else {
+    // بار کردنی Google Maps API
+    const script = document.createElement('script');
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY&libraries=places&callback=onGoogleMapsLoaded&language=ar';
+    script.async = true;
+    script.defer = true;
+    window.onGoogleMapsLoaded = function(){ buildMap(lat, lng); };
+    script.onerror = function(){
+      // فالبەک: OpenStreetMap Overpass
+      fetchMosquesOverpass(lat, lng);
+    };
+    document.head.appendChild(script);
+  }
+}
+
+function buildMap(lat, lng){
+  const loading = document.getElementById('mosqueLoading');
+  const mapEl = document.getElementById('mosqueGoogleMap');
+  if(!mapEl) return;
+
+  // دروستکردنی نەخشە
+  mosqueMap = new google.maps.Map(mapEl, {
+    center: { lat, lng },
+    zoom: 14,
+    mapTypeId: 'roadmap',
+    styles: [
+      { elementType: 'geometry', stylers: [{ color: '#0a1f10' }] },
+      { elementType: 'labels.text.fill', stylers: [{ color: '#9ec98a' }] },
+      { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#1a3320' }] },
+      { featureType: 'water', stylers: [{ color: '#041408' }] },
+      { featureType: 'poi.park', stylers: [{ color: '#0d2a14' }] },
+    ],
+    disableDefaultUI: false,
+    zoomControl: true,
+    streetViewControl: false,
+    mapTypeControl: false,
+    fullscreenControl: false,
+  });
+
+  // مارکەری شوێنی بەکارهێنەر
+  userMarker = new google.maps.Marker({
+    position: { lat, lng },
+    map: mosqueMap,
+    title: 'شوێنی من',
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 10,
+      fillColor: '#2ECC71',
+      fillOpacity: 1,
+      strokeColor: '#fff',
+      strokeWeight: 2,
+    },
+    zIndex: 999,
+  });
+
+  if(loading) loading.style.display = 'none';
+
+  // دۆزینەوەی مزگەوتەکان بە Places API
+  searchMosquesNearby(lat, lng);
+}
+
+function searchMosquesNearby(lat, lng){
   const subtitle = document.getElementById('mosqueSubtitle');
-  if(subtitle) subtitle.textContent = 'دەدۆزرێنەوە...';
+  if(subtitle) subtitle.textContent = '⏳ دەدۆزرێنەوە...';
 
-  // Overpass API بۆ دۆزینەوەی مزگەوتەکان
-  const radius = 3000; // ٣ کیلۆمەتر
-  const query = `[out:json][timeout:15];(node["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lng});way["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lng}););out center 20;`;
-  const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+  const service = new google.maps.places.PlacesService(mosqueMap);
+  const request = {
+    location: new google.maps.LatLng(lat, lng),
+    radius: 5000,
+    type: 'mosque',
+    language: 'ar',
+  };
 
-  fetch(url)
-    .then(r => r.json())
-    .then(data => {
-      const loading = document.getElementById('mosqueLoading');
-      if(loading) loading.style.display='none';
-
-      let elements = data.elements || [];
-
-      // ئەوانەی ناوی هەیە پێشەوە
-      elements = elements.map(el => {
-        const elLat = el.lat || (el.center && el.center.lat) || lat;
-        const elLng = el.lon || (el.center && el.center.lon) || lng;
-        const dist = calcDistKm(lat, lng, elLat, elLng);
-        return { ...el, _lat: elLat, _lng: elLng, _dist: dist };
+  service.nearbySearch(request, function(results, status){
+    if(status !== google.maps.places.PlacesServiceStatus.OK || !results.length){
+      // فالبەک بە keyword
+      service.nearbySearch({
+        location: new google.maps.LatLng(lat, lng),
+        radius: 5000,
+        keyword: 'mosque OR مسجد OR مزگەوت',
+      }, function(r2, s2){
+        if(s2 === google.maps.places.PlacesServiceStatus.OK && r2.length){
+          processMosqueResults(r2, lat, lng);
+        } else {
+          fetchMosquesOverpass(lat, lng);
+        }
       });
-      elements.sort((a, b) => a._dist - b._dist);
+      return;
+    }
+    processMosqueResults(results, lat, lng);
+  });
+}
 
-      if(elements.length === 0){
-        showMosqueError('هیچ مزگەوتێک لە نزیکت نەدۆزرایەوە\n(تا ٣ کیلۆمەتر)');
-        return;
-      }
+function processMosqueResults(results, userLat, userLng){
+  // دووری هەر مزگەوتێک حیساب بکە
+  allMosques = results.map(place => {
+    const plLat = place.geometry.location.lat();
+    const plLng = place.geometry.location.lng();
+    const dist = calcDistKm(userLat, userLng, plLat, plLng);
+    return { place, lat: plLat, lng: plLng, dist };
+  }).sort((a,b) => a.dist - b.dist);
 
-      renderMosques(elements, lat, lng);
-      showMosqueMap(lat, lng);
+  renderMosqueMarkers();
+  renderMosqueList(userLat, userLng);
 
-      if(subtitle) subtitle.textContent = elements.length + ' مزگەوت دۆزرایەوە';
-    })
-    .catch(() => {
-      showMosqueError('ئینتەرنێت پێویستە بۆ دۆزینەوەی مزگەوتەکان');
+  const subtitle = document.getElementById('mosqueSubtitle');
+  if(subtitle) subtitle.textContent = allMosques.length + ' مزگەوت دۆزرایەوە';
+
+  const stats = document.getElementById('mosqueStats');
+  const count = document.getElementById('mosqueCount');
+  const area = document.getElementById('mosqueArea');
+  if(stats) stats.style.display = 'block';
+  if(count) count.textContent = '🕌 ' + allMosques.length + ' مزگەوت دۆزرایەوە';
+  if(area) area.textContent = 'لە دەوری ٥ کیلۆمەتری شوێنەکەت';
+}
+
+function renderMosqueMarkers(){
+  // سڕینەوەی مارکەرە کۆنەکان
+  mosqueMarkers.forEach(m => m.setMap(null));
+  mosqueMarkers = [];
+
+  allMosques.forEach((item, i) => {
+    const marker = new google.maps.Marker({
+      position: { lat: item.lat, lng: item.lng },
+      map: mosqueMap,
+      title: item.place.name,
+      label: {
+        text: String(i + 1),
+        color: '#fff',
+        fontSize: '11px',
+        fontWeight: 'bold',
+      },
+      icon: {
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="42" viewBox="0 0 36 42">' +
+          '<path d="M18 0C8 0 0 8 0 18c0 14 18 24 18 24s18-10 18-24C36 8 28 0 18 0z" fill="#1a9456"/>' +
+          '<circle cx="18" cy="18" r="10" fill="white" opacity="0.9"/>' +
+          '<text x="18" y="23" text-anchor="middle" font-size="12" font-weight="bold" fill="#1a9456">🕌</text>' +
+          '</svg>'
+        ),
+        scaledSize: new google.maps.Size(36, 42),
+        anchor: new google.maps.Point(18, 42),
+      },
+      animation: i === 0 ? google.maps.Animation.DROP : null,
     });
+
+    marker.addListener('click', () => {
+      mosqueMap.panTo({ lat: item.lat, lng: item.lng });
+      mosqueMap.setZoom(16);
+      // هایلایت کردنی کارتەکە
+      document.querySelectorAll('.mosque-item-card').forEach(el => el.style.borderColor = 'rgba(46,204,113,.15)');
+      const card = document.getElementById('mc_' + i);
+      if(card){
+        card.style.borderColor = 'rgba(46,204,113,.6)';
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+
+    mosqueMarkers.push(marker);
+  });
+
+  // زوم بکە بۆ نزیکترین
+  if(allMosques.length > 0){
+    mosqueMap.panTo({ lat: allMosques[0].lat, lng: allMosques[0].lng });
+    mosqueMap.setZoom(15);
+    setTimeout(() => {
+      if(userLatLng) mosqueMap.panTo(userLatLng);
+    }, 1500);
+  }
 }
 
-function calcDistKm(lat1, lng1, lat2, lng2){
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat/2)*Math.sin(dLat/2) +
-    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
-    Math.sin(dLng/2)*Math.sin(dLng/2);
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
-
-function renderMosques(elements, userLat, userLng){
+function renderMosqueList(userLat, userLng){
   const list = document.getElementById('mosqueList');
   if(!list) return;
   list.innerHTML = '';
+  list.style.display = 'flex';
+  list.style.flexDirection = 'column';
 
-  elements.slice(0, 15).forEach((el, i) => {
-    const name = el.tags && (el.tags['name:ku'] || el.tags['name:ar'] || el.tags.name) || 'مزگەوت ' + (i+1);
-    const dist = el._dist < 1
-      ? Math.round(el._dist * 1000) + ' م'
-      : el._dist.toFixed(1) + ' كم';
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${el._lat},${el._lng}`;
-    const dirUrl  = `https://www.google.com/maps/dir/?api=1&destination=${el._lat},${el._lng}`;
+  allMosques.forEach((item, i) => {
+    const place = item.place;
+    const name = place.name || ('مزگەوت ' + (i+1));
+    const dist = item.dist < 1
+      ? Math.round(item.dist * 1000) + ' م'
+      : item.dist.toFixed(1) + ' كم';
+    const rating = place.rating ? '⭐ ' + place.rating : '';
+    const isOpen = place.opening_hours ? (place.opening_hours.open_now ? '🟢 کراوەیە' : '🔴 داخراوە') : '';
+
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lng}&query_place_id=${place.place_id||''}`;
+    const dirUrl  = `https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}&destination_place_id=${place.place_id||''}`;
 
     const card = document.createElement('div');
-    card.className = 'mosque-card';
-    card.style.cssText = 'background:rgba(255,255,255,.05);border:1px solid rgba(46,204,113,.15);border-radius:16px;padding:14px;direction:rtl;transition:background .2s';
+    card.id = 'mc_' + i;
+    card.className = 'mosque-item-card';
+    card.style.cssText = `
+      background:linear-gradient(135deg,rgba(20,55,28,.8),rgba(8,25,12,.85));
+      border:1px solid rgba(46,204,113,.15);border-radius:18px;
+      padding:14px;direction:rtl;transition:border-color .2s;
+      box-shadow:0 3px 15px rgba(0,0,0,.3);
+    `;
     card.innerHTML = `
       <div style="display:flex;align-items:flex-start;gap:12px">
-        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(26,148,86,.3),rgba(46,204,113,.15));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🕌</div>
+        <!-- ژمارە -->
+        <div style="width:38px;height:38px;border-radius:50%;background:${i===0?'linear-gradient(135deg,#1a9456,#2ecc71)':'rgba(46,204,113,.12)'};
+          border:1px solid ${i===0?'rgba(46,204,113,.6)':'rgba(46,204,113,.2)'};
+          display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:${i===0?'18px':'14px'};font-weight:800;color:#fff">
+          ${i===0?'🕌':i+1}
+        </div>
+        <!-- زانیاری -->
         <div style="flex:1;min-width:0">
-          <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</div>
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap">
+            <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px">${name}</div>
+            ${i===0?'<span style="font-size:9px;background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(201,168,76,.15));color:#E8C96A;padding:2px 7px;border-radius:20px;border:1px solid rgba(201,168,76,.3);font-family:Cairo,sans-serif;font-weight:700;flex-shrink:0">نزیکترین</span>':''}
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
             <span style="font-size:10px;background:rgba(46,204,113,.15);color:var(--green-light);padding:2px 8px;border-radius:20px;font-family:'Cairo',sans-serif;font-weight:700">📍 ${dist}</span>
-            ${i===0?'<span style="font-size:10px;background:rgba(201,168,76,.15);color:#E8C96A;padding:2px 8px;border-radius:20px;font-family:\'Cairo\',sans-serif">نزیکترین</span>':''}
+            ${rating?`<span style="font-size:10px;color:rgba(255,200,100,.8);font-family:'Cairo',sans-serif">${rating}</span>`:''}
+            ${isOpen?`<span style="font-size:10px;color:rgba(255,255,255,.4);font-family:'Cairo',sans-serif">${isOpen}</span>`:''}
           </div>
           <div style="display:flex;gap:7px">
-            <a href="${mapsUrl}" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.25);border-radius:10px;padding:7px 4px;text-decoration:none">
-              <span style="font-size:13px">🗺</span>
-              <span style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:var(--green-light)">نەخشە</span>
-            </a>
-            <a href="${dirUrl}" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(52,152,219,.1);border:1px solid rgba(52,152,219,.25);border-radius:10px;padding:7px 4px;text-decoration:none">
-              <span style="font-size:13px">🧭</span>
+            <button onclick="mosqueGoTo(${i})"
+              style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.25);border-radius:10px;padding:8px 4px;cursor:pointer;color:var(--green-light)">
+              <span style="font-size:14px">🗺</span>
+              <span style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700">نەخشە</span>
+            </button>
+            <a href="${dirUrl}" target="_blank"
+              style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(52,152,219,.1);border:1px solid rgba(52,152,219,.22);border-radius:10px;padding:8px 4px;text-decoration:none">
+              <span style="font-size:14px">🧭</span>
               <span style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:#5dade2">ئارەزوو</span>
+            </a>
+            <a href="${mapsUrl}" target="_blank"
+              style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.2);border-radius:10px;padding:8px 4px;text-decoration:none">
+              <span style="font-size:14px">📌</span>
+              <span style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:#e88">گووگڵ</span>
             </a>
           </div>
         </div>
       </div>`;
     list.appendChild(card);
   });
-
-  list.style.display = 'flex';
 }
 
-function showMosqueMap(lat, lng){
-  const wrap = document.getElementById('mosqueMapWrap');
-  const frame = document.getElementById('mosqueMapFrame');
-  if(!wrap || !frame) return;
-  frame.src = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.02},${lat-0.02},${lng+0.02},${lat+0.02}&layer=mapnik&marker=${lat},${lng}`;
-  wrap.style.display = 'block';
+function mosqueGoTo(i){
+  const item = allMosques[i];
+  if(!item || !mosqueMap) return;
+  mosqueMap.panTo({ lat: item.lat, lng: item.lng });
+  mosqueMap.setZoom(17);
+  if(mosqueMarkers[i]) mosqueMarkers[i].setAnimation(google.maps.Animation.BOUNCE);
+  setTimeout(() => { if(mosqueMarkers[i]) mosqueMarkers[i].setAnimation(null); }, 2000);
+  // سکرۆڵ بۆ سەرەوە بۆ بینینی نەخشە
+  document.getElementById('pg-mosque').scrollTop = 0;
+  // هایلایت
+  document.querySelectorAll('.mosque-item-card').forEach(el => el.style.borderColor = 'rgba(46,204,113,.15)');
+  const card = document.getElementById('mc_' + i);
+  if(card) card.style.borderColor = 'rgba(46,204,113,.6)';
+}
+
+// فالبەک: Overpass API ئەگەر Google Maps بار نەبوو
+function fetchMosquesOverpass(lat, lng){
+  const loading = document.getElementById('mosqueLoading');
+  const subtitle = document.getElementById('mosqueSubtitle');
+  if(subtitle) subtitle.textContent = '⏳ دەدۆزرێنەوە...';
+
+  const radius = 5000;
+  const query = `[out:json][timeout:15];(node["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lng});way["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${lat},${lng}););out center 30;`;
+  const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      if(loading) loading.style.display = 'none';
+      let elements = (data.elements || []).map(el => {
+        const eLat = el.lat || (el.center && el.center.lat) || lat;
+        const eLng = el.lon || (el.center && el.center.lon) || lng;
+        const dist = calcDistKm(lat, lng, eLat, eLng);
+        return { ...el, _lat: eLat, _lng: eLng, _dist: dist };
+      }).sort((a,b) => a._dist - b._dist);
+
+      if(!elements.length){
+        showMosqueError('هیچ مزگەوتێک لە نزیکت نەدۆزرایەوە');
+        return;
+      }
+
+      renderMosquesOverpass(elements, lat, lng);
+
+      const subtitle = document.getElementById('mosqueSubtitle');
+      if(subtitle) subtitle.textContent = elements.length + ' مزگەوت دۆزرایەوە';
+      const stats = document.getElementById('mosqueStats');
+      const count = document.getElementById('mosqueCount');
+      if(stats) stats.style.display = 'block';
+      if(count) count.textContent = '🕌 ' + elements.length + ' مزگەوت دۆزرایەوە';
+    })
+    .catch(() => showMosqueError('ئینتەرنێت پشکنە — دووبارە هەوڵبدە'));
+}
+
+function renderMosquesOverpass(elements, userLat, userLng){
+  const mapWrap = document.getElementById('mosqueMapWrap');
+  const mapEl = document.getElementById('mosqueGoogleMap');
+  const list = document.getElementById('mosqueList');
+
+  // نەخشەی OpenStreetMap
+  if(mapWrap && mapEl){
+    mapWrap.style.display = 'block';
+    mapEl.innerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.width = '100%';
+    iframe.height = '260';
+    iframe.style.border = 'none';
+    iframe.style.display = 'block';
+    iframe.loading = 'lazy';
+    iframe.src = `https://www.openstreetmap.org/export/embed.html?bbox=${userLng-0.04},${userLat-0.04},${userLng+0.04},${userLat+0.04}&layer=mapnik&marker=${userLat},${userLng}`;
+    mapEl.appendChild(iframe);
+  }
+
+  if(!list) return;
+  list.innerHTML = '';
+  list.style.display = 'flex';
+  list.style.flexDirection = 'column';
+
+  elements.slice(0, 20).forEach((el, i) => {
+    const name = el.tags && (el.tags['name:ku'] || el.tags['name:ar'] || el.tags.name) || ('مزگەوت ' + (i+1));
+    const dist = el._dist < 1 ? Math.round(el._dist*1000)+' م' : el._dist.toFixed(1)+' كم';
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${el._lat},${el._lng}`;
+    const dirUrl  = `https://www.google.com/maps/dir/?api=1&destination=${el._lat},${el._lng}`;
+
+    const card = document.createElement('div');
+    card.className = 'mosque-item-card';
+    card.style.cssText = 'background:linear-gradient(135deg,rgba(20,55,28,.8),rgba(8,25,12,.85));border:1px solid rgba(46,204,113,.15);border-radius:18px;padding:14px;direction:rtl;box-shadow:0 3px 15px rgba(0,0,0,.3);margin-bottom:0';
+    card.innerHTML = `
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="width:38px;height:38px;border-radius:50%;background:${i===0?'linear-gradient(135deg,#1a9456,#2ecc71)':'rgba(46,204,113,.12)'};border:1px solid ${i===0?'rgba(46,204,113,.6)':'rgba(46,204,113,.2)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:${i===0?'18px':'13px'};font-weight:800;color:#fff">${i===0?'🕌':i+1}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+            <div style="font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</div>
+            ${i===0?'<span style="font-size:9px;background:rgba(201,168,76,.2);color:#E8C96A;padding:2px 7px;border-radius:20px;font-family:Cairo,sans-serif;flex-shrink:0">نزیکترین</span>':''}
+          </div>
+          <span style="font-size:10px;background:rgba(46,204,113,.15);color:var(--green-light);padding:2px 8px;border-radius:20px;font-family:'Cairo',sans-serif;font-weight:700;display:inline-block;margin-bottom:10px">📍 ${dist}</span>
+          <div style="display:flex;gap:7px">
+            <a href="${mapsUrl}" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.25);border-radius:10px;padding:8px;text-decoration:none">
+              <span style="font-size:13px">🗺</span><span style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:var(--green-light)">نەخشە</span>
+            </a>
+            <a href="${dirUrl}" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(52,152,219,.1);border:1px solid rgba(52,152,219,.22);border-radius:10px;padding:8px;text-decoration:none">
+              <span style="font-size:13px">🧭</span><span style="font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:#5dade2">ئارەزوو</span>
+            </a>
+          </div>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function calcDistKm(lat1, lng1, lat2, lng2){
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
 function showMosqueError(msg){
