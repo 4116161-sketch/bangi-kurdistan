@@ -6658,6 +6658,18 @@ if('serviceWorker' in navigator){
     });
   });
 }
+              function displayTimes(data) {
+    document.getElementById('fajr').innerText = data.fajr;
+    document.getElementById('dhuhr').innerText = data.dhuhr;
+    // ... هەموو کاتەکانی تر ...
+
+    // لێرەدا کۆدەکەی ئێمە زیاد بکە:
+    if (typeof updateAndroidWidget === "function") {
+        updateAndroidWidget(data.city, data.fajr, data.dhuhr, data.asr, data.maghrib, data.isha);
+      // ئەم دێڕە زیاد بکە بۆ ئەوەی یەکسەر داتا بنێرێت
+updateAndroidWidget('پێنجوێن', '04:29', '12:18', '03:44', '06:30', '07:45');
+    }
+}
 </script>
 </body>
 </html>
